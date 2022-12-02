@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+# Run code quality tool flake8 on all python sources which can be found
+
+cd $JUPYTERHUB_DIR
+
+echo "flake8 version:"  `flake8 --version`
+flake8  --max-line-length 120  --ignore E302,E203,W291,W503,W504 --count  --statistics  `sscan-find-python-files`

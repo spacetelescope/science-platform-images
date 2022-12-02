@@ -1,0 +1,110 @@
+#! /usr/bin/env python
+
+import subprocess
+import glob
+from collections import defaultdict
+
+import yaml
+
+
+def run(cmd):
+    result = subprocess.run(
+        cmd.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )  # maybe succeeds
+    return result.stdout
+
+
+def envs():
+    return set(
+        run("/opt/common-scripts/env-list-dirs /opt/environments").splitlines()
+    ) - set(["frozen"])
+
+
+def load_spec(path):
+    with open(path) as file_:
+        if path.endswith(".yml"):
+            spec = yaml.full_load(file_)
+        elif path.endswith((".pip", ".conda", ".txt")):
+            spec = [line for line in file_.read().splitlines() if line.strip()]
+        else:
+            raise ValueError("Unhandled spec extension for: " + repr(path))
+    return spec
+
+
+def get_frozen():
+    frozen = {}
+    for env in envs():
+        frozen[env] = (
+            load_spec(f"/opt/env-frozen/{env}/requirements.yml"),
+            load_spec(f"/opt/env-frozen/{env}/requirements.txt"),
+        )
+    return frozen
+
+
+def get_pkg_lists():
+    pkgs = defaultdict(dict)
+    for env in envs():
+        for spec in glob.glob(f"/opt/environments/{env}/*"):
+            if spec.endswith((".yml", ".pip", ".conda")):
+                pkgs[env][spec] = load_spec(spec)
+    return dict(pkgs)
+
+
+def get_apt_pkgs():
+    lines = run("apt list").splitlines()
+    if lines[1].startswith("WARNING: apt does not have a stable CLI"):
+        lines = lines[4:]
+    return {line.split()[0]: line.split()[1] for line in lines}
+
+
+def get_labextensions():
+    lines = [
+        " ".join(line.strip().split()[:2])
+        for line in run("jupyter labextension list").splitlines()
+    ]
+    exts = dict([line.split() for line in lines if len(line.split()) == 2])
+    exts.pop("app", None)
+    exts.pop("Other", None)
+    return exts
+
+
+def get_nbextensions():
+    lines = [
+        " ".join(line.strip().split()[:1])
+        for line in run("jupyter nbextension list").splitlines()
+        if "Validating" not in line
+    ]
+    lines.remove("Known")
+    lines.remove("config")
+    return lines
+
+
+def get_npm():
+    lines = run("npm version").splitlines()[1:-1]
+    lines = [" ".join(line.split()[:2]) for line in lines]
+    lines = [line.replace("'", "") for line in lines]
+    lines = [line.replace(",", "") for line in lines]
+    lines = [line.replace(":", "") for line in lines]
+    return dict(line.split() for line in lines)
+
+
+def main():
+    versions = dict(
+        etc_issue=" ".join(run("cat /etc/issue").strip().split()[:2]),
+        uname=" ".join(run("uname -a").strip().split()),
+        apt_pkgs=get_apt_pkgs(),
+        npm=get_npm(),
+        jupyter_labextensions=get_labextensions(),
+        jupyter_nbextensions=get_nbextensions(),
+        kernel_frozen_specs=get_frozen(),
+        kernel_package_lists=get_pkg_lists(),
+    )
+    print(yaml.dump(versions))
+
+
+if __name__ == "__main__":
+    main()

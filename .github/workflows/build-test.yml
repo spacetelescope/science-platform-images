@@ -1,0 +1,86 @@
+name:  Image Build, Test
+on:
+   push:
+      branches:
+        - main
+   pull_request:
+      branches:
+        - main
+   workflow_dispatch:
+jobs:
+  docker:
+    name: "${{ matrix.DEPLOYMENT_NAME }}  USE_FROZEN=${{ matrix.USE_FROZEN }} ${{ matrix.CAL_VERSION }} -- Image Build, Test"
+    runs-on: ubuntu-18.04
+
+    strategy:
+      max-parallel: 4
+      fail-fast: false
+      matrix:
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        USE_FROZEN: [ 0 ]
+        CAL_VERSION: [ latest ]
+        include:
+        - DEPLOYMENT_NAME: roman
+          USE_FROZEN: 0
+          CAL_VERSION: none
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Free Disk Space,  Enlarge Swapfile
+        shell: bash
+        run: |
+             df -h
+             sudo apt clean
+             docker rmi $(docker image ls -aq)
+             docker container prune -f
+             sudo rm -rf "/usr/local/share/boost"
+             sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+             sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+             sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+             sudo swapoff -a
+             sudo rm -f /swapfile
+             sudo fallocate -l 24G /swapfile
+             sudo chmod 0600 /swapfile
+             sudo mkswap /swapfile
+             sudo swapon /swapfile
+             cat /proc/meminfo
+             df -h
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }} 1  ${{ matrix.CAL_VERSION }}
+           df -h
+
+      - name: Image Build
+        shell: bash
+        run: |
+           source setup-env
+           scripts/image-build
+           df -h
+           docker system df
+           docker system prune
+           docker image ls
+           df -h
+
+      - name: Git Diffs (Frozen Version Specs)
+        shell: bash
+        run: git diff
+
+      - name: Image Functional Tests
+        shell: bash
+        run: |
+           df -h
+           source setup-env
+           scripts/image-test
+           df -h
+
+      - name: Scan image
+        uses: anchore/scan-action@v3
+        with:
+          fail-build: false
+          severity-cutoff: medium
+          output-format: table
+          image: notebook-${{ matrix.DEPLOYMENT_NAME }}

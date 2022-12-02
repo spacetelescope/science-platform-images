@@ -1,0 +1,5 @@
+mirage
+#git+https://github.com/spacetelescope/mirage.git
+healpy
+grismconf
+nircam_gsim

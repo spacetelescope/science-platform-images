@@ -1,0 +1,9 @@
+export PS1="${debian_chroot:+($debian_chroot)}\u@notebook:\w\$ "
+
+# Enable conda and activate jwebbinar by default
+
+. /opt/conda/etc/profile.d/conda.sh
+
+conda activate jwebbinar
+
+alias ll="ls -l"

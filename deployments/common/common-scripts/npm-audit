@@ -1,0 +1,54 @@
+#! /bin/bash
+
+if [[ "$#" == "0" ]]; then
+   cat <<EOF
+usage:  npm-audit <root-path> [fix]
+
+Runs npm audit on all discoverable package-lock.json and yarn.lock
+files under <root_path> to identify vulnerabilities in described
+packages.   yarn.lock files are first replaced by package-lock.json
+
+Adding "fix" should result in innocuous package updates according to
+semver rules to address vulnerabilities.
+
+There's no guarantee every package follows semver rules and that
+the resulting "fixes" don't break something.
+EOF
+exit 2
+fi
+
+root_path=$1
+shift
+
+fix=$1
+shift
+
+# scope=""
+scope="--prod"
+
+#level=""
+level="--level moderate"
+
+for lockfile in `find ${root_path} -name yarn.lock -o -name package-lock.json 2>/dev/null`; do
+    audit_path=`dirname ${lockfile}`
+    cd ${audit_path}
+    if [ -f yarn.lock ]; then
+	echo "----- Converting ${audit_path} from yarn.lock to package-lock.json"
+	rm -f yarn.lock
+	npm i --package-lock-only ${scope}
+    fi
+    if [ -d node_modules ]; then
+	lock_only="--package-lock-only"
+    else
+	lock_only=""
+    fi
+    if [[ "$fix" == "fix" ]]; then
+        echo "----- Fixing ${audit_path}"
+        echo before: `npm audit --no-progress ${scope} ${level} ${lock_only} 2>&1 | grep vulnerabil`
+        npm audit fix --no-progress ${scope} ${level}  ${lock_only}  2>&1 >/dev/null
+        echo after:  `npm audit --no-progress ${scope} ${level} ${lock_only} 2>&1 | grep vulnerabil`
+    else
+        echo "----- Auditing ${audit_path}"
+        npm audit --no-progress --package-lock-only ${scope} ${level} 2>&1 | grep vulnerabil
+    fi
+done

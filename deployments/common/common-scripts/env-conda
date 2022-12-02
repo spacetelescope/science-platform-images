@@ -1,0 +1,76 @@
+#! /bin/bash -eu
+
+if [ $# -eq 0 ]; then
+    cat <<EOF
+usage:  env-conda  <env>
+
+Step 1 of pip-tools workflow: Create the baseline conda environment into which
+pip packages will added later;  include as few pip packages as possible.
+
+If USE_FROZEN == 0:          # compile weak constraints <env>.yml to requirements.yml
+
+If USE_FROZEN == 1 or 2:     # install from requirements.yml
+
+Nominal pip-tools workflow:
+
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
+    3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
+    4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
+    ...
+EOF
+    exit 2
+fi
+
+env=$1
+
+# The "floating" conda environment should either be a .yml spec or an @explicit spec,
+# not both.
+
+# env_spec=$(ls -1 /opt/environments/${env}/${env}.{yml,explicit} 2>/dev/null)
+shopt -s extglob
+env_spec=/opt/environments/${env}/${env}.@(yml|explicit)
+
+env_frozen_yml=/opt/env-frozen/${env}/requirements.yml
+env_chilly_yml=/opt/env-chilly/${env}/requirements.yml
+
+. /etc/profile.d/conda.sh
+
+function env_create {
+    spec=$1
+    if [[ ${spec} = *.yml ]]; then
+        ${CONDA_VER} env create --quiet --name ${env} --file ${spec}
+    else  # .explicit or .txt
+        ${CONDA_VER} create --quiet --name ${env} --file ${spec}
+    fi
+}
+
+echo "-------------------------------------------------------------------------------"
+case ${USE_FROZEN} in
+    0) echo "===== Creating conda environment ${env} from floating constraints ${env_spec}"
+       env_create ${env_spec}
+       echo "===== Adding common conda packages to ${env}:"
+       /opt/common-scripts/env-update ${env}  `find /opt/common-env /opt/environments/${env} -name '*.conda' | sort`
+       ;;
+    1) echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
+       env_create ${env_frozen_yml}
+       ;;
+    2) echo "===== Creating conda environment ${env} from chilly constraints ${env_chilly_yml}"
+       env_create ${env_chilly_yml}
+       ;;
+esac
+
+# Save frozen requirements inside image on the fly,  copy out to source distro later
+echo "===== Saving frozen conda constraints for environment ${env} to ${env_frozen_yml}"
+${CONDA_VER} env export --no-build -n ${env} > ${env_frozen_yml}
+
+# echo "===== Removing draft conda env ${env}"
+# ${CONDA_VER} env remove -n ${env}
+# echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
+# env_create ${env_frozen_yml}
+
+source /opt/common-scripts/env-activate ${env}
+
+/opt/common-scripts/fix-conda-certs   # new env may install new certs
+
+/opt/common-scripts/env-clean

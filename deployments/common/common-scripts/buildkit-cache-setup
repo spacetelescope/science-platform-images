@@ -1,0 +1,13 @@
+#! /bin/bash
+
+set -eu
+
+# Skip this setup if buildkit caching is *not* being used.
+mkdir -p /opt
+chown -R $NB_UID:$NB_GID /opt
+
+mkdir -p /home/jovyan/.cache
+chown -R $NB_UID:$NB_GID /home/jovyan/.cache
+
+mkdir -p /opt/conda/pkgs
+chown $NB_UID:$NB_GID -R /opt/conda/pkgs

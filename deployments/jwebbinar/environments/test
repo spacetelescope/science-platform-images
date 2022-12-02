@@ -1,0 +1,18 @@
+#! /bin/bash
+
+# Simple == fail script on first failed test.
+
+# The generic test performs import and notebook checks for test environments
+# laid out as required:
+#
+# 1. Add a "tests" subdirectory for each kernel being tested, that
+# environment will be activated for subtests.
+#
+# 2. Create an "imports" file listing packages to attempt to
+# import for that kernel environment.  Use these for packages w/o notebook coverage.
+#
+# 3. Copy, Hard link, or symlink test notebooks into <env>.  All files
+# ending in .ipynb will be executed.  Symlinks need to be specified with respect
+# to the within-container file system perspective,  not the CI-node file system.
+
+/opt/common-scripts/test-environments

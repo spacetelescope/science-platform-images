@@ -1,0 +1,10 @@
+#! /bin/bash -eu
+#-*-sh-*-
+
+# Run tests from the "tests" subdirectory of every environment defined
+# in "environments".
+
+for kernel in `/opt/common-scripts/env-list-dirs /opt/environments | grep -v frozen`
+do
+    /opt/common-scripts/env-test $kernel
+done

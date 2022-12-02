@@ -1,0 +1,49 @@
+name: Security Scans
+on:
+   schedule: # weekly
+     - cron: '0 0 * * 0'
+   push:
+   pull_request:
+   workflow_dispatch:
+jobs:
+  security-scanning:
+    name: "${{ matrix.DEPLOYMENT_NAME }}  -- Security"
+    runs-on: ubuntu-18.04
+
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        USE_FROZEN: [ 0 ]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }}
+           pip install -r requirements.txt
+           df -h
+
+      - name: Bandit Scan
+        shell: bash
+        continue-on-error: false
+        run: |
+           source setup-env
+           scripts/sscan-bandit
+
+      - name: Anchore Scan
+        uses: anchore/scan-action@v3
+        with:
+          fail-build: true
+          severity-cutoff: critical
+          output-format: table
+          path: "."

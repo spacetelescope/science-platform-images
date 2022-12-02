@@ -1,0 +1,136 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------------
+#
+# This file is used to initialize $HOME after a notebook session has been spawned.
+#
+# When running on JupyterHub,  $HOME is backed by and overlay of EFS and AWS features
+#   are available.
+# When running in Docker,  $HOME is part of the image being initialized for standalone
+#   usage.   AWS features are assumed to be unavailable.
+#
+# Only this file should be called from the Dockerfile or hub post
+# start hook.
+#
+# This file implements:
+#
+# 0. EFS quota lockouts on jupyterhub.
+#
+# 1. Setup and update of the default-home-contents.
+#
+# 2. Notebook setup for class and test notebooks.
+#
+set -eu
+
+# .............................................................................................
+
+HUB_FLAG=${1:-"on-hub"}
+
+if [[ $HUB_FLAG == "on-hub" ]]; then   
+    /opt/common-scripts/check-quota
+fi
+
+# .............................................................................................
+
+rsync -r  /etc/default-home-contents/ /home/jovyan
+
+# .............................................................................................
+
+TC=/home/jovyan/tike_content
+/opt/common-scripts/git-sync  https://github.com/spacetelescope/tike_content.git  main  $TC
+
+SN=/home/jovyan/spacetelescope-notebooks
+/opt/common-scripts/git-sync   https://github.com/spacetelescope/notebooks.git   master   ${SN}
+
+# .............................................................................................
+
+mkdir -p /opt/environments/tess/tests
+
+cat <<EOF >/opt/environments/tess/tests/notebooks
+    ${TC}/code/test_notebooks/packages_priority1.ipynb
+    ${TC}/code/test_notebooks/packages_priority2.ipynb
+    ${TC}/code/test_notebooks/packages_priority3.ipynb
+    ${TC}/code/test-cloud-lightkurve.py
+
+    ${SN}/notebooks/MAST/TESS/beginner_how_to_use_lc/beginner_how_to_use_lc.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_how_to_use_dvt/beginner_how_to_use_dvt.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_tour_lc_tp/beginner_tour_lc_tp.ipynb
+    ${SN}/notebooks/MAST/TESS/tess_removing_scattered_light_using_regression/tess_removing_scattered_light_using_regression.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_tess_exomast/beginner_tess_exomast.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_tic_search_hd209458/beginner_tic_search_hd209458.ipynb
+    ${SN}/notebooks/MAST/TESS/interm_gi_query/interm_gi_query.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_astroquery_dv/beginner_astroquery_dv.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_how_to_use_tp/beginner_how_to_use_tp.ipynb
+
+    ${SN}/notebooks/MAST/TESS/interm_tesscut_requests/interm_tesscut_requests.ipynb
+EOF
+
+# These are tests we'd like to run which fail for various reasons.
+# These can be run in the container with:
+#      /opt/common-scripts/test-notebooks tess `cat /opt/environments/test/tests/notebooks-failing`
+
+cat <<EOF >/opt/environments/tess/tests/notebooks-failing
+    ${SN}/notebooks/MAST/TESS/interm_tasc_lc/interm_tasc_lc.ipynb
+    ${SN}/notebooks/MAST/TESS/interm_tess_prf_retrieve/interm_tess_prf_retrieve.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_tess_tap_search/beginner_tess_tap_search.ipynb
+
+    ${SN}/notebooks/MAST/Kepler/kepler_searching_for_data_products/kepler_searching_for_data_products.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_using_light_curve_products_with_lightkurve/kepler_using_light_curve_products_with_lightkurve.ipynb
+
+    ${SN}/notebooks/MAST/Kepler/kepler_verifying_the_location_of_a_signal/kepler_verifying_the_location_of_a_signal.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_instrumental_noise_1_data_gaps_and_quality_flags/kepler_instrumental_noise_1_data_gaps_and_quality_flags.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_instrumental_noise_2_spurious_signals_and_time_sampling_effects/kepler_instrumental_noise_2_spurious_signals_and_time_sampling_effects.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_instrumental_noise_3_seasonal_and_detector_effects/kepler_instrumental_noise_3_seasonal_and_detector_effects.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_creating_your_own_light_curves/kepler_creating_your_own_light_curves.ipynb
+
+    ${SN}/notebooks/MAST/TESS/interm_tesscut_dss_overlay/interm_tesscut_dss_overlay.ipynb
+    ${SN}/notebooks/MAST/TESS/beginner_how_to_use_ffi/beginner_how_to_use_ffi.ipynb
+
+EOF
+
+# .............................................................................................
+
+# For now,  test everything in CI except known failing notebooks, add these to "notebooks" vs. "long-notebooks".
+# cat <<EOF >/opt/environments/tess/tests/long-notebooks
+cat <<EOF >>/opt/environments/tess/tests/notebooks
+    ${SN}/notebooks/MAST/Kepler/Kepler_Lightcurve/kepler_lightcurve.ipynb
+    ${SN}/notebooks/MAST/Kepler/Kepler_TPF/kepler_tpf.ipynb
+    ${SN}/notebooks/MAST/Kepler/Kepler_DVT/Kepler_DVT.ipynb
+    ${SN}/notebooks/MAST/Kepler/Kepler_FFI/kepler_ffi.ipynb
+    ${SN}/notebooks/MAST/K2/K2_Lightcurve/K2_Lightcurve.ipynb
+    ${SN}/notebooks/MAST/K2/K2_TPF/K2_TPF.ipynb
+    ${SN}/notebooks/MAST/K2/beginner_how_to_use_ffi/beginner_how_to_use_ffi.ipynb
+
+    ${SN}/notebooks/MAST/Kepler/kepler_using_target_pixel_file_products_with_lightkurve/kepler_using_target_pixel_file_products_with_lightkurve.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_plotting_target_pixel_files/kepler_plotting_target_pixel_files.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_combining_multiple_quarters/kepler_combining_multiple_quarters.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_interactively_inspecting_target_pixel_files_and_light_curves/kepler_interactively_inspecting_target_pixel_files_and_light_curves.ipynb
+
+    ${SN}/notebooks/MAST/Kepler/kepler_identifying_transiting_planet_signals/kepler_identifying_transiting_planet_signals.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_measuring_a_rotation_period/kepler_measuring_a_rotation_period.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_visualizing_periodic_signals_using_a_river_plot/kepler_visualizing_periodic_signals_using_a_river_plot.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_instrumental_noise_4_electronic_noise/kepler_instrumental_noise_4_electronic_noise.ipynb
+
+    ${SN}/notebooks/MAST/Kepler/kepler_creating_periodograms/kepler_creating_periodograms.ipynb
+    ${SN}/notebooks/MAST/Kepler/kepler_how_to_understand_and_manipulate_the_periodogram_of_an_oscillating_star/kepler_how_to_understand_and_manipulate_the_periodogram_of_an_oscillating_star.ipynb
+    !${SN}/notebooks/MAST/Kepler/kepler_how_to_estimate_a_stars_mass_and_radius_using_asteroseismology/kepler_how_to_estimate_a_stars_mass_and_radius_using_asteroseismology.ipynb
+EOF
+
+# This runs for e.g. 30 min
+cat <<EOF >/opt/environments/tess/tests/long-notebooks-failing
+    ${SN}/notebooks/MAST/TESS/interm_tesscut_astroquery/interm_tesscut_astroquery.ipynb
+    ${SN}/notebooks/MAST/K2/k2_removing_instrumental_noise_using_pld/k2_removing_instrumental_noise_using_pld.ipynb
+EOF
+
+# .............................................................................................
+
+# /opt/common-scripts/set-notebook-kernel tess  `cat /opt/environments/tess/tests/notebooks`
+# /opt/common-scripts/set-notebook-kernel tess  `cat /opt/environments/tess/tests/notebooks-failing`
+
+# /opt/common-scripts/set-notebook-kernel tess  `cat /opt/environments/tess/tests/long-notebooks`
+# /opt/common-scripts/set-notebook-kernel tess  `cat /opt/environments/tess/tests/long-notebooks-failing`
+
+# .............................................................................................
+# Remove VNC Desktop from Launcher
+rm -rf /home/jovyan/.user-dirs/Desktop
+rm -rf /home/jovyan/Desktop

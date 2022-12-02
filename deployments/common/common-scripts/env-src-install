@@ -1,0 +1,34 @@
+#! /bin/bash
+
+set -eu
+
+if [ $# -eq 0 ]; then
+    cat <<EOF
+usage:  env-src-install  <environment>   <pkg>
+
+This script installs a src tarball downloaded from a URL.  It is ideally suited
+to installing source tarballs from PyPi as a way of building binaries which are
+tailored to a particular JH environment and associated dependency solution.
+
+Step 4+ of pip-tools workflow: When forced by incompatible PyPi binaries, build
+compatible binaries from source and install into <env>.
+
+Nominal pip-tools workflow:
+
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
+    3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
+    4+ /opt/common-scripts/env-src-install  ... # Build package binaries from source.
+    ...
+EOF
+    exit 2
+fi
+
+ENV=$1
+PKG=$2
+
+source /opt/common-scripts/env-activate $ENV
+
+pip install --verbose --no-deps --no-cache --no-binary :all: --force-reinstall --no-build-isolation ${PKG}
+
+/opt/common-scripts/env-clean

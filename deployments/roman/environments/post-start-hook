@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------------
+#
+# This file is used to initialize $HOME after a notebook session has been spawned.
+#
+# When running on JupyterHub,  $HOME is backed by and overlay of EFS and AWS features
+#   are available.
+# When running in Docker,  $HOME is part of the image being initialized for standalone
+#   usage.   AWS features are assumed to be unavailable.
+#
+# Only this file should be called from the Dockerfile or hub post
+# start hook.
+#
+# This file implements:
+#
+# 0. EFS quota lockouts on jupyterhub.
+#
+# 1. Setup and update of the default-home-contents.
+#
+# 2. Notebook setup for class and test notebooks.
+#
+set -eu
+
+# .............................................................................................
+
+HUB_FLAG=${1:-"on-hub"}
+
+if [[ $HUB_FLAG == "on-hub" ]]; then   
+    /opt/common-scripts/check-quota
+fi
+
+# .............................................................................................
+
+rsync -r  /etc/default-home-contents/ /home/jovyan
+
+# .............................................................................................
+
+/opt/common-scripts/git-sync https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/romancal-notebooks
+
+# ROMANCAL_ALL_NOTEBOOKS=`find /home/jovyan/romancal-notebooks -name '*.ipynb' | xargs ls -1`
+
+
+# /opt/common-scripts/set-notebook-kernel romam-cal  ${ROMANCAL_ALL_NOTEBOOKS}
+
+# needs update from romancal_datamodels to new package arrangement
+# echo ${ROMANCAL_ALL_NOTEBOOKS} >/opt/environments/roman-cal/tests/notebooks
+
+# .............................................................................................
+# Remove VNC Desktop from Launcher
+rm -rf /home/jovyan/.user-dirs/Desktop
+rm -rf /home/jovyan/Desktop

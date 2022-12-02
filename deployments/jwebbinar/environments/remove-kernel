@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# This script is only necessary because some kernel have been eliminated,
+# but the kernel configurations may already exist for previous users
+
+# one arg: name of kernel
+
+kernel_dir=/home/jovyan/.local/share/jupyter/kernels/$1
+
+if [ -d $kernel_dir ]; then
+    rm -rf $kernel_dir
+fi

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+# Undefined variables cause "random" failures during activation and deactivation,  first seen for TESS
+
+env=$1
+
+set +u    # due to missing PS1,  etc.  turn off undefined var trapping
+source /etc/profile.d/conda.sh
+conda activate $env
+set -u
+# conda env list
+

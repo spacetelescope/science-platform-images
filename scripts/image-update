@@ -1,0 +1,91 @@
+#! /bin/bash
+
+set -eu
+
+# Update the configured deployment based on files stored in the commmon
+# deployment.
+
+cd ${IMAGE_DIR}
+
+# -------------------------------------------------------------------------
+# Update TLS cert in "common" image directory to CI-node's cert.  This cert
+# enables TLS/SSL to work inside the Docker build process which tunnels through
+# the host OS without decryption, but must be decrypted for the STScI firewall
+# to do packet inspection before continuing on to package distribution sites.
+#
+# This cert bundle should work anywhere enabling the same image to work inside
+# and outside AWS networks.
+
+if [ -f "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem" ]; then
+   cp -f /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem ../common
+fi
+
+# ------------------------------------------------------------------------ This
+# dynamically updates requirements for any kernel that defines an
+# update-requirements script.  CAL_VERSION depends on mission but is nominally
+# a github tag, e.g. x.y.z or "latest", where latest nominally means
+# master/main but behavior is truly defined by the update-requirements script
+# which may vary by mission and kernel.
+#
+# Note that the update below runs uncondtionally if update-requirememts is
+# implemented and potentially overwrites the floating requirements which are in
+# the repo; in the context of CI/CD this is important because the actual
+# installed requirements may/will be in the image but not the repo unless they
+# are explicitly committed after this script runs.  This is particularly true
+# for "latest" where requirements are nominally copied directly from
+# e.g. github whereas x.y.z versions generally have static requirements lists in
+# github or artifactory once they exist.
+#
+# This approach enables a 1 kernel image to be built with either tagged
+# or floating requirements.  To start with only latest updates automatically
+# with the expectation that the release version is CM'ed as the floating
+# requirements but then replaced below by latest.  Eventually,  both forms
+# should work dynamically from github.
+#
+if [[ ${CAL_VERSION} != none ]]; then
+    for env in `image-envs`; do
+        (
+            cd environments/${env};
+            if [ -f update-requirements ]; then
+                echo "Updating requirements for environment ${env} to ${CAL_VERSION}"
+                ./update-requirements ${CAL_VERSION}
+            fi
+        )
+    done
+fi
+
+
+# -------------------------------------------------------------------------
+# Ideally mission images are defined by a Dockerfile created from two parts
+# which are concatenated:
+#
+# 1. Dockerfile.custom in the mission image directory.
+#
+# 2. Dockerfile.trailer from the common image directory.
+#
+# If no Dockerfile.custom is defined,  assume the mission has opted out of
+# the standard approach for using the common base image and leave the
+# Dockerfile alone.
+#
+#
+cd $IMAGE_DIR
+
+if [[ -f Dockerfile.custom ]]; then
+   cat Dockerfile.custom ../common/Dockerfile.trailer >Dockerfile
+fi
+
+# -------------------------------------------------------------------------
+# If a prior build updated environment xxx-frozen.yml files,  they become
+# Docker cache busters since they must be copied into the image prior to
+# building the related environment. To avoid busting,  clear all changes to
+# the xxx-frozen.yml files prior to starting any un-frozen build;  they'll
+# be automatically recreated anyway and don't contribute until USE_FROZEN=1.
+
+cd $IMAGE_DIR
+
+if [[ $USE_FROZEN == "0" ]]; then
+  # echo "Clearing frozen image specs to avoid Docker cache busting."
+  # echo "Add or commit them to git prior to unfrozen builds to avoid this clear."
+  git checkout -- env-frozen
+  git checkout -- env-chilly
+fi

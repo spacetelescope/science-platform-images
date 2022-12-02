@@ -1,0 +1,10 @@
+#! /bin/bash -eu
+
+# Run a bash shell in the last tagged mission container.  This will lag
+# behind any partially built container with newer image layers.
+
+export IMAGE_RUN_PARS="$IMAGE_RUN_PARS -it"
+
+export IMAGE_ID=${1:-`docker image ls -q | head -1`}
+
+image-exec /bin/bash --rcfile /etc/bash.bashrc

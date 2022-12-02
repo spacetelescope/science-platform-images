@@ -1,0 +1,12 @@
+#! /usr/bin/env bash
+
+# Run security scanner "bandit" on all python sources which can be found
+
+run_bandit() {
+    # MEDIUM level and confidence,  or greater.
+    bandit -v -ll -ii --format txt  $*
+}
+
+cd $JUPYTERHUB_DIR
+
+run_bandit `sscan-find-python-files`

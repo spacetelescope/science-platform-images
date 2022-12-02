@@ -1,0 +1,43 @@
+#! /bin/bash -eu
+
+#
+# Does jupyter lab kernel setup for each of the environments defined in conda
+# which enables selection of the environments within jupyter lab and supports
+# command line notebook execution in specific kernels using papermill or
+# nbconvert.
+#
+
+source /opt/common-scripts/env-activate base
+
+mkdir -p $HOME/.jupyter
+
+cat > $HOME/.jupyter/jupyter_config.json  <<EOF
+{
+  "CondaKernelSpecManager": {
+    "kernelspec_path": "--user",
+    "name_format" : "{environment} -- {display_name}"
+  }
+}
+EOF
+
+# Only set up kernels which have actually been installed, e.g. not
+# disabled by Dockerfile edits during debug.
+
+# Potentially among other things,  these are needed so that image-test will run.
+
+for kernel in `${CONDA_VER} env list | grep -v '#' | grep -v base | cut -d' ' -f1`; do
+
+    echo "================== Adding kernel $kernel ====================="
+
+    source /opt/common-scripts/env-activate $kernel
+
+    python -m ipykernel install --user --name $kernel --display-name "`cat  /opt/environments/${kernel}/kernel.name`"
+
+    source /opt/common-scripts/env-deactivate $kernel
+done
+
+# echo "nb_kernels:"
+# python -m nb_conda_kernels list
+
+echo "jupyter kernelspecs:"
+jupyter kernelspec list

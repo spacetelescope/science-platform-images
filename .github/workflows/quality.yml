@@ -1,0 +1,49 @@
+name: Code Quality
+on:
+   schedule: # weekly
+     - cron: '0 0 * * 0'
+   push:
+   pull_request:
+   workflow_dispatch:
+
+jobs:
+  quality-scanning:
+    name: "${{ matrix.DEPLOYMENT_NAME }}  -- Code Quality"
+    runs-on: ubuntu-18.04
+
+    strategy:
+      max-parallel: 5
+      fail-fast: false
+      matrix:
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        USE_FROZEN: [ 0 ]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }}
+           pip install -r requirements.txt
+           df -h
+
+      - name: YAML Parsing
+        shell: bash
+        continue-on-error: false
+        run: |
+           source setup-env
+           scripts/sscan-yaml `find deployments tools -name '*.yaml' -o -name '*.yml'`
+
+      - name: Flake8 Scan
+        shell: bash
+        continue-on-error: false
+        run: |
+           source setup-env
+           scripts/sscan-flake8

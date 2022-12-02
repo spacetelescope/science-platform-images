@@ -1,0 +1,19 @@
+#! /bin/bash -eu
+
+# ----------------------------------------------------------------------
+# Install common packages into the base (scipy-notebook) environment.
+#
+
+
+env=$1
+
+source /opt/common-scripts/env-activate ${env}
+
+#  Install pip packages defined by /opt/common/*.conda
+/opt/common-scripts/env-update $env `find /opt/common-env -name '*.conda' | sort`
+
+#  Install pip packages defined in all of *.pip
+/opt/common-scripts/env-update $env `find /opt/common-env -name '*.pip' | sort`
+
+# Save fully pinned requirements for base,  copy out of image to git later.
+${CONDA_VER} env export --no-build -n base >/opt/env-frozen/base/requirements.yml

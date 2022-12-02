@@ -1,0 +1,40 @@
+#! /bin/bash
+
+set -eu
+
+if [[ "$#" == "0" ]]; then
+    cat <<EOF
+usage:  env-graph  [-r] <environment> [pkg1 pkg2 ....]  > output_file.png
+
+Plot the dependency graph of the specified packages in conda <environment>.
+
+If -r is specified,  graph reverse dependencies.  Must be first parameter.
+
+If no packages are specified,  plot all pkgs in conda <environment>.
+
+e.g.  image-graph-env  tess  -r  s3fs boto3 botocore aiobotocore >s3fs.png
+      image-graph-env  tess  >all.png
+EOF
+    exit 1
+fi
+
+if [[ "$1" == "-r" ]]; then
+    reverse="-r"
+    shift
+else
+    reverse=""
+fi
+
+env=$1
+shift;
+
+pkgs=$*
+if [[ "$pkgs" != "" ]]; then
+    pkgs="-p `echo $pkgs | tr ' ' ',' `"
+fi
+
+/opt/common-scripts/env-run ${env} \
+       pip install graphviz  >& /dev/null
+
+/opt/common-scripts/env-run ${env} \
+       pipdeptree ${reverse} ${pkgs} --graph-output png

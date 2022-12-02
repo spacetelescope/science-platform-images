@@ -1,0 +1,10 @@
+#! /bin/bash
+
+set -eu
+
+env=$1
+shift;
+
+source /opt/common-scripts/env-activate $env
+
+$*

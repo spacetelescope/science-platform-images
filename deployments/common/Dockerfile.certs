@@ -1,0 +1,75 @@
+ARG ROOT_CONTAINER=ubuntu:jammy
+ARG BASE_CONTAINER=$ROOT_CONTAINER
+FROM $BASE_CONTAINER
+
+USER root
+
+ARG TZ='America/New_York'
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG USE_FROZEN=1
+ENV USE_FROZEN=$USE_FROZEN
+
+ARG PIP_SWITCHES="--no-cache-dir"
+ENV PIP_SWITCHES=$PIP_SWITCHES
+
+# Enable easy swap of conda with e.g. mamba
+ARG CONDA_VER=conda
+ENV CONDA_VER=${CONDA_VER}
+
+# Clearing caches at the end of each RUN saves image space
+# but seems to mess up dependency debug tools like pipdeptree.
+# NOT setting this is also a requirement of effective Docker
+# buildkit cache use.  ATM jupyter/docker-stacks will still wipe
+# out caches created prior to the common base image regardless.
+ARG CLEAR_PKG_CACHES="1"
+ENV CLEAR_PKG_CACHES=${CLEAR_PKG_CACHES}
+
+# These are duplicated in jupyter/docker-stacks so need to be changed
+# in both locations.  Better than hard coding in scripts though.
+ENV NB_UID=1000
+ENV NB_GID=100
+
+# ------------------------------------------------------------------------
+
+# When buildkit caching is enabled,  map package dirs for apt, pip, etc.
+#   onto the buildkit cache directories for them.
+COPY common-scripts/buildkit-cache-setup  /opt/common-scripts/buildkit-cache-setup
+RUN /opt/common-scripts/buildkit-cache-setup
+
+COPY common-scripts/apt-install  /opt/common-scripts/apt-install
+RUN /opt/common-scripts/apt-install \
+    apt-utils \
+    tzdata \
+    ca-certificates \
+    openssl \
+    wget \
+    vim \
+    npm \
+    nodejs
+
+# ------------------------------------------------------------------------
+# SSL/TLS cert setup for STScI AWS firewalling
+
+RUN mkdir -p /etc/ssl/certs && \
+    mkdir -p /etc/pki/ca-trust/extracted/pem
+
+COPY tls-ca-bundle.pem /etc/ssl/certs/stsci-tls-ca-bundle.pem
+
+# These should only happen once
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem
+
+RUN mkdir -p /home/jovyan &&\
+    echo "export REQUESTS_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> ~/.bashrc &&\
+    echo "export REQUESTS_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> /home/jovyan/.bashrc &&\
+    echo "export CURL_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> ~/.bashrc &&\
+    echo "export CURL_CA_BUNDLE=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> /home/jovyan/.bashrc  &&\
+    echo "export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> ~/.bashrc  &&\
+    echo "export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/stsci-tls-ca-bundle.pem" >> /home/jovyan/.bashrc  &&\
+    echo "ssl_verify: /etc/ssl/certs/stsci-tls-ca-bundle.pem" >> /home/jovyan/.condarc
+
+# this needs to be repeated after Ubuntu updates.
+COPY common-scripts/fix-certs /opt/common-scripts/fix-certs
+COPY common-scripts/fix-conda-certs /opt/common-scripts/fix-conda-certs
+RUN /opt/common-scripts/fix-certs

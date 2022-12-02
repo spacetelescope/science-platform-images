@@ -1,0 +1,10 @@
+#! /bin/bash -eu
+
+# Run an arbitrary command using the current Docker mission image.
+#
+# Customize Docker parameters specified using env var IMAGE_RUN_PARS.
+# See setup-env.template for default values.
+#
+cd $IMAGE_DIR
+
+docker run $IMAGE_RUN_PARS  $IMAGE_ID $*

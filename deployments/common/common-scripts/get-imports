@@ -1,0 +1,213 @@
+#! /usr/bin/env python
+
+"""This script is used to determine probable import names given a PyPi package
+name.  Generally these are the same, but with too much frequency to ignore,
+they are not the same.
+
+For example the PyYAML package is imported as yaml.  Given PyYAML, this package
+attempts to determine yaml.  My current use case is simply to try to import
+yaml to see if it is fundamentally broken or not, as part of installing large
+sets of packages it is a first line of defense which runs basically anywhere.
+
+This effort is mostly inspired by:
+
+   https://stackoverflow.com/questions/49764802/get-module-name-programmatically-with-only-pypi-package-name
+
+This scripts adds the ability to cope with multiple packages and/or
+@packge-list-files, including removing version requirements,  and goes from there.
+
+"""
+import os.path
+import sys
+import argparse
+import subprocess
+
+import distlib.database
+import yaml
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(
+        description="Determine important imports from specified packages.",
+        epilog="""
+Based on a specified package list, map each package to top level and binary
+imports which should nominally be perfomed as smoke tests for a complex
+environment.  Such an import test can help identify packages which are built or
+installed incorrectly.
+        """,
+    )
+    parser.add_argument(
+        "included_packages",
+        nargs="*",
+        type=str,
+        default=(),
+        metavar="PACKAGE or @PKG-LIST-FILE",
+        help="Specify PyPi packages from which to define imports,  "
+        "either directly or in an @-file which lists packages 1 per line.",
+    )
+    parser.add_argument(
+        "--excluded-packages",
+        nargs="*",
+        type=str,
+        default=(),
+        metavar="PACKAGE or @PKG-LIST-FILE",
+        dest="excluded_packages",
+        help="Specify PyPi packages which should be dropped from processing,  "
+        "nominally because imports cannot be reliably determined.",
+    )
+    parser.add_argument(
+        "--excluded-imports",
+        nargs="*",
+        type=str,
+        default=(),
+        metavar="PACKAGE or @PKG-LIST-FILE",
+        dest="excluded_imports",
+        help="Specify identified imports which should be dropped from testing.",
+    )
+    parser.add_argument(
+        "--environment",
+        type=str,
+        default=(),
+        metavar="PYTHON-ENVIRONMENT",
+        dest="environment",
+        help="Conda environment / kernel to examine.",
+    )
+    return parser.parse_args(argv)
+
+
+def run(cmd, cwd=".", timeout=10):
+    """Run subprocess `cmd` in dir `cwd` failing if not completed within `timeout` seconds
+    of if `cmd` returns a non-zero exit status.
+
+    Returns both stdout+stderr from `cmd`.  (untested, verify manually if in doubt)
+    """
+    result = subprocess.run(
+        cmd.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+        cwd=cwd,
+        timeout=timeout,
+    )  # maybe succeeds
+    return result.stdout
+
+
+def pip_show(pkg, environment):
+    try:
+        loaded_pip_show = yaml.safe_load(
+            run(f"/opt/common-scripts/env-run {environment} pip show -f {pkg}")
+        )
+        return loaded_pip_show["Files"].split()
+    except Exception:
+        print("=====> pip show -f failed for", pkg, file=sys.stderr)
+        return []
+
+
+def pkg_to_imports(pkg, environment):
+    try:
+        __import__(pkg)
+        print("Direct import of", pkg, "works.", file=sys.stderr)
+        return [pkg]
+    except Exception:
+        pass
+    dp = distlib.database.DistributionPath()
+    dist = dp.get_distribution(pkg)
+    if dist:
+        files = [t[0] for t in dist.list_installed_files()]
+        if files:
+            print("=====> get_distribution", pkg, "found:", file=sys.stderr)
+    else:
+        files = pip_show(pkg, environment)
+        if files:
+            print("=====> pip show -f", pkg, "found:", file=sys.stderr)
+        else:
+            print("=====> Skipping", pkg, file=sys.stderr)
+            return []
+    imports = []
+    first_py = ""
+    for f in files:
+        if f.endswith(".so"):
+            imports.append(to_import(f))
+        elif not first_py and f.endswith(".py"):
+            imports.append(to_import(f))
+            first_py = f
+    print(imports, file=sys.stderr)
+    return imports
+
+
+def to_import(s):
+    parts = os.path.splitext(s)[0].split(os.sep)
+    if s.endswith(".py"):
+        if parts[-1] == "__init__":
+            parts.pop()
+    elif s.endswith(".so"):
+        parts[-1], _, _ = parts[-1].partition(".")
+    return ".".join(parts)
+
+
+def load_pkg_file(name):
+    print("=====> Loading", name, "...", file=sys.stderr)
+    pkgs = []
+    with open(name) as file:
+        for line in file.readlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            assert len(line.split()) == 1, f"More than one package per line at: {line}"
+            pkgs.append(line)
+    return pkgs
+
+
+def get_packages(name):
+    print("=====> CLI package names", name, file=sys.stderr)
+
+    # expand CLI @-files to lists of packages
+    if name.startswith("@"):
+        pkgs = load_pkg_file(name[1:])
+    else:
+        pkgs = [name]
+
+    # remove version info
+    for sep in "[]~=<>":
+        pkgs = [pkg.split(sep)[0] for pkg in pkgs]
+
+    print("=====> Loaded package names:", pkgs, file=sys.stderr)
+    return pkgs
+
+
+def main(argv):
+    """Parse command line arguments to determine packages to include and exclude
+    from import mapping.   Diagnostics are printed to stderr,  import names are
+    printed so stdout.
+
+    Return the number of failing tests or 0 if all tests pass.
+    """
+    args = parse_args(argv)
+
+    pkgs = []
+    for raw in args.included_packages:
+        pkgs.extend(get_packages(raw))
+    for raw in args.excluded_packages:
+        for pkg in get_packages(raw):
+            pkgs.remove(pkg)
+    excluded_imports = []
+    for raw in args.excluded_imports:
+        excluded_imports.extend(get_packages(raw))
+
+    print("=====> Expanded packages:", pkgs, file=sys.stderr)
+    print("=====> Excluded imports:", excluded_imports, file=sys.stderr)
+
+    imports = []
+    for pkg in sorted(pkgs):
+        imports.extend(pkg_to_imports(pkg, args.environment))
+
+    imports = [imp for imp in imports if imp not in excluded_imports]
+    for imp in imports:
+        print(imp)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

@@ -1,0 +1,21 @@
+#! /bin/bash
+
+set -eu
+
+# This is a placeholder version of post-start-hook which eventually should
+# fully replace setup-notebooks once common.yaml and this file are appropriately
+# refactored.   This file should contain only those functions which need to
+# be performed both on AWS and standalone.  AWS-only functions should be included
+# directly in common.yaml or perhaps another script.
+
+rsync -r /etc/default-home-contents/ /home/jovyan
+
+/opt/environments/setup-notebooks
+
+/opt/common-scripts/symlink-crds 
+
+/opt/environments/remove-kernel jdaviz 
+
+# Remove VNC Desktop from Launcher
+rm -rf /home/jovyan/.user-dirs/Desktop
+rm -rf /home/jovyan/Desktop

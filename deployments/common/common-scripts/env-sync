@@ -1,0 +1,32 @@
+#! /bin/bash -eu
+
+if [ $# -eq 0 ]; then
+    cat <<EOF
+usage:  env-sync  <env>
+
+Step 3 of pip-tools workflow: Install pip packages from compiled requirements.txt into <env>.
+
+Nominal pip-tools workflow:
+
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
+    3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
+    4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
+    ...
+EOF
+    exit 2
+fi
+
+env=$1
+
+echo "-------------------------------------------------------------------------------"
+
+source /opt/common-scripts/env-activate ${env}
+
+echo "===== Installing required pip packages for environment ${env}..."
+
+pip-sync --verbose --pip-args "${PIP_SWITCHES}" --python-executable `which python`   /opt/env-frozen/${env}/requirements.txt
+
+/opt/common-scripts/fix-conda-certs   # new env may install new certs
+
+/opt/common-scripts/env-clean

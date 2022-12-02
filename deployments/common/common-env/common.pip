@@ -1,0 +1,13 @@
+papermill
+#nbconvert
+ipykernel
+ipython
+boto3
+pyds9
+pipdeptree
+pip-tools
+pydeps
+numpy
+black
+jupyterhub
+nbgitpuller

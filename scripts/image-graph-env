@@ -1,0 +1,5 @@
+#! /bin/bash
+
+set -eu
+
+image-exec  /opt/common-scripts/env-graph $*

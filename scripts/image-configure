@@ -1,0 +1,19 @@
+#! /bin/bash -eu
+
+# Used to create setup-env files for CI/CD runs based on the template and simple inputs
+
+cp   setup-env.template   setup-env
+
+DEPLOYMENT_NAME=$1
+perl -pi -e "s/DEPLOYMENT_NAME=cluster-name/DEPLOYMENT_NAME=$DEPLOYMENT_NAME/g" setup-env
+
+USE_FROZEN=${2:-0}
+perl -pi -e "s/USE_FROZEN=[\d]/USE_FROZEN=$USE_FROZEN/g" setup-env
+
+FREEZE_CHILL=${3:-1}
+perl -pi -e "s/FREEZE_CHILL=[\d]/FREEZE_CHILL=$FREEZE_CHILL/g" setup-env
+
+CAL_VERSION=${4:-latest}
+perl -pi -e "s/CAL_VERSION=latest/CAL_VERSION=$CAL_VERSION/g" setup-env
+
+cat  setup-env

@@ -1,0 +1,17 @@
+name: tess
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python~=3.8.0
+  - pip
+  - freetds
+  - fftw
+  - pip:
+    - numpy<1.22
+    - pyfftw
+    - cython
+
+#  - mkl_fft
+#  - mkl
+#  - mkl-service

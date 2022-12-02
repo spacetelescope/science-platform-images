@@ -1,0 +1,100 @@
+#! /usr/bin/env python
+
+import os
+import sys
+
+import yaml
+
+import logging
+
+# ---------------------------------------------------------
+
+QUOTA_FILE = "/quota-control/quota.yaml"
+
+# ---------------------------------------------------------
+
+
+def human_format_number(number):
+    """Reformat `number` by switching to engineering units and dropping to two fractional digits,
+    10s of megs for G-scale files.
+    """
+    convert = [
+        (2**40, "T"),
+        (2**30, "G"),
+        (2**20, "M"),
+        (2**10, "K"),
+    ]
+    for limit, sym in convert:
+        if isinstance(number, (float, int)) and number > limit:
+            number /= limit
+            break
+    else:
+        sym = ""
+    if isinstance(number, int):
+        # numstr = "%d" % number
+        numstr = "{}".format(number)
+    else:
+        numstr = "{:0.1f}{}".format(number, sym)
+    return "{!s:>7}".format(numstr)
+
+
+# ---------------------------------------------------------
+
+
+def main(argv=()):
+
+    quota_file = QUOTA_FILE if len(argv) < 1 else argv[0]
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(levelname)s - %(message)s")
+    consoleHandler = logging.StreamHandler(sys.stdout)
+    consoleHandler.setFormatter(formatter)
+    logger.addHandler(consoleHandler)
+
+    if not os.path.exists(quota_file):
+        logger.info(f"No quota control file found: {quota_file}")
+        return 0  # do not block logins
+
+    with open(quota_file) as qfile:
+        quota = yaml.safe_load(qfile)
+
+    if not quota["quota_enabled"]:
+        logger.info("Quotas have been disabled for this user. Be responsible...")
+        return 0  # do not block logins
+
+    using = human_format_number(int(quota["actual_bytes"]))
+    permitted = human_format_number(int(quota["quota_bytes"]))
+    state = quota["quota_state"]
+
+    if state == "lockout":
+        logger.critical(
+            f"You are using {using} bytes but are only permitted {permitted} "
+            f"bytes of $HOME storage.  Logins are disabled."
+        )
+        return 1  # block logins with failed check
+    elif state == "violation":
+        logger.error(
+            f"You are using {using} bytes but are only permitted {permitted} "
+            f"bytes of $HOME storage.   Please reduce storage usage as soon as possible."
+        )
+    elif state == "timed-out":
+        logger.warning(
+            f"Measurement of your $HOME usage timed out and is assumed to be high. "
+            f"Make sure your $HOME usage is below {permitted} bytes or logins may be disabled."
+        )
+    elif state == "nearing-limit":
+        logger.warning(
+            f"You are using {using} bytes of {permitted} permitted bytes "
+            f"of $HOME storage.  If you exceed your quota logins may be disabled."
+        )
+    else:
+        logger.info(
+            f"You are using {using} bytes of {permitted} permitted bytes "
+            f"of $HOME storage.  Usage OK."
+        )
+    return 0  # do not block logins
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

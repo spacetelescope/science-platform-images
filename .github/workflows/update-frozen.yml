@@ -1,0 +1,90 @@
+name: Update Frozen Requirements
+on:
+  schedule:  # weekly
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+
+jobs:
+  docker:
+    name: "${{ matrix.DEPLOYMENT_NAME }} -- Image Build, Test"
+    runs-on: ubuntu-18.04
+
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        DEPLOYMENT_NAME: [ tike, jwebbinar, roman ]
+        USE_FROZEN: [ 2 ]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: Free Disk Space,  Enlarge Swapfile
+        shell: bash
+        run: |
+             df -h
+             sudo apt clean
+             docker rmi $(docker image ls -aq)
+             docker container prune -f
+             sudo rm -rf "/usr/local/share/boost"
+             sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+             sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+             sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+             sudo swapoff -a
+             sudo rm -f /swapfile
+             sudo fallocate -l 24G /swapfile
+             sudo chmod 0600 /swapfile
+             sudo mkswap /swapfile
+             sudo swapon /swapfile
+             cat /proc/meminfo
+             df -h
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }} ${{ matrix.USE_FROZEN }}
+           df -h
+
+      - name: Image Build
+        shell: bash
+        run: |
+           source setup-env
+           scripts/image-build
+           df -h
+           docker system df
+           docker system prune
+           docker image ls
+           df -h
+
+      - name: Git Diffs (Frozen Specs)
+        shell: bash
+        run: |
+           git diff deployments/${{ matrix.DEPLOYMENT_NAME }}/image/env-frozen | grep -v '#' | grep -E '^[+-]'
+
+      - name: Image Functional Tests
+        shell: bash
+        run: |
+           df -h
+           source setup-env
+           scripts/image-test
+           df -h
+
+      - name: Clear setup-env
+        shell: bash
+        run: |
+           rm setup-env
+
+      - name: Commit & Push
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          author_email: mrfreeze@nowhere.com
+          author_name: Mr. Freeze
+          message: Automatic requirements update
+          branch: update-frozen-${{ matrix.DEPLOYMENT_NAME }}
+          directory: deployments/${{ matrix.DEPLOYMENT_NAME }}/image/env-frozen
+          force: true
+          tags: false

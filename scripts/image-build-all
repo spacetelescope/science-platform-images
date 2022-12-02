@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# This is for doing parallel builds of all deployments using buildkit
+
+FREEZE_MODES=${1:-0}  # $1 or 0==floating
+
+export DOCKER_BUILDKIT=1
+
+set -eu
+
+for USE_FROZEN in $FREEZE_MODES; do
+    for DEPLOYMENT_NAME in jwebbinar roman tike; do
+        id="build-${DEPLOYMENT_NAME}-${USE_FROZEN}"
+        echo "============ Starting ${id}"
+        cd ${JUPYTERHUB_DIR}
+        image-configure ${DEPLOYMENT_NAME} ${USE_FROZEN}
+        source setup-env
+        # tags for tracking here only, not intended for push, not valid for e.g. running on hub
+        export IMAGE_ID=${IMAGE_ID}-${USE_FROZEN}
+        export COMMON_ID=${COMMON_ID}-${USE_FROZEN}
+        image-build 2>&1 >${id}.log
+    done
+done

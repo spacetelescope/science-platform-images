@@ -1,0 +1,7 @@
+#! /bin/sh
+
+set -u
+
+level=${1:-high}
+
+image-exec npm audit --audit-level $level

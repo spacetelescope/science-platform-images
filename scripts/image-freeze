@@ -1,0 +1,13 @@
+#! /bin/bash
+
+set -u
+
+# pip-tools frozen requirements for use with USE_FROZEN=1 are stored at
+# /opt/envs-frozen in the image.  Copy /opt/envs-frozen to env-frozen in the
+# Docker sources mission dir.
+
+cd $IMAGE_DIR
+
+rm -rf env-frozen
+image-cp /opt/env-frozen
+

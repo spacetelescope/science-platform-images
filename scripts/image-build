@@ -1,0 +1,61 @@
+#! /bin/bash
+
+set -eu
+
+# Build the combined deployment image,  including:
+# 1. Perform any required source code updates,  including updating SSL certs
+#    and regenerating any generated Dockerfiles from constituent parts.
+# 2. Build the jupyterhub base image, e.g. scipy-notebook on Ubuntu,  including STScI cert
+# 3. Build and tag the common image
+# 4. Build and tag the combined mission image.
+# 5. If operating with USE_FROZEN=0, re-export frozen conda environments
+#    as fully versioned conda config files.  These may still need tweaking
+#    but form the basis for building frozen environments using USE_FROZEN=1.
+
+time (
+
+# ..................................................................................
+# Make automatic source adjustments including STScI cert update when on CI-nodes
+image-update
+
+
+# ..................................................................................
+# Build base image, e.g. our version of scipy-notebook including cert handling
+image-base
+
+
+# ..................................................................................
+# Build STScI shared layer for all deployments
+cd ${COMMON_IMAGE_DIR}
+echo "========================= Building Common Image ========================"
+time docker build --progress plain --tag ${COMMON_ID} --tag notebook-common --build-arg BASE_IMAGE=stsci-jh/scipy-notebook .  --file Dockerfile
+
+# ..................................................................................
+# Build custom layers for this deployment
+cd ${IMAGE_DIR}
+echo "========================= Building $IMAGE_ID USE_FROZEN=${USE_FROZEN} =========================="
+time docker build --progress plain --tag ${IMAGE_ID} --tag "notebook-${DEPLOYMENT_NAME}" --build-arg BASE_IMAGE=${COMMON_ID} . --file Dockerfile
+
+# ..................................................................................
+# Optionally update requirements used by frozen and chilly builds.
+# In principle this may shift entirely to CI/CD
+if [[ "$FREEZE_CHILL" == "1" ]]; then
+    # Dump out environment/kernel specs which capture as much version
+    # information as possible, not yet perfect/complete, may require
+    # examination of diffs and manual updates to reject bad changes.
+    if [[ "$USE_FROZEN" == "0" ]] || [[ "$USE_FROZEN" == "2" ]]; then
+        echo "========================= Freezing Requirements =========================="
+        time image-freeze
+    fi
+
+    # Only chill for floating builds,  the first time frozen requirements are created since
+    # re-chilling should not really change the frozen baseline used to determine the latest
+    # chill... althought it might by accident due to the chilly changes to frozen if we do
+    # this every time.
+    if [[ "$USE_FROZEN" == "0" ]]; then
+        echo "========================= Chilling Requirements ========================="
+        time image-chill
+    fi
+fi
+
+)

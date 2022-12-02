@@ -1,0 +1,18 @@
+#! /bin/bash
+
+set -eu
+
+# print out the basic environment names from the frozen environment
+
+# usage:  image-envs  [<deployment_name>]
+
+# Defaults to current DEPLOYMENT_NAME
+
+DEPLOYMENT=${1:-${DEPLOYMENT_NAME}}
+
+# cd $IMAGE_DIR
+cd ${JUPYTERHUB_DIR}/deployments/${DEPLOYMENT}
+
+# Get environment names,  exclude base
+echo $(find env-frozen -type d | grep env-frozen/ | grep -v /base | cut -d'/' -f2)
+

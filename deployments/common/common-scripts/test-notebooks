@@ -1,0 +1,140 @@
+#! /usr/bin/env python
+# -*-python-*-
+
+"""Using the Python env/kernel specified by the first parameter, execute all
+notebooks specified by subsequent positional parameters.
+
+If --jobs <N> is specified run <N> notebooks in parallel.
+
+Skip notebooks preceded by "#", as in #<notebookpath> with no spaces.
+
+Run notebooks preceded by "!" serially,  as in !<notebookpath> with no spaces.
+"""
+
+import sys
+import os.path
+import subprocess
+import shutil
+import tempfile
+import argparse
+import datetime
+
+
+from concurrent.futures import ProcessPoolExecutor
+
+
+def test_notebooks(kernel, notebooks, jobs=1):
+    """Run all the notebooks specified by globbing `notebook_globs` using `kernel`,
+    running `jobs` notebooks in parallel subprocesses.
+
+    Return   count of failed notebooks
+    """
+    print(
+        divider(
+            f"Testing {len(notebooks)} notebooks on kernel {kernel} using {jobs} jobs"
+        ).strip()
+    )
+    failing_notebooks = []
+    with ProcessPoolExecutor(max_workers=jobs) as e:
+        for (failed, notebook, output) in e.map(
+            test_notebook, [kernel] * len(notebooks), notebooks
+        ):
+            sys.stdout.write(output)
+            sys.stdout.flush()
+            if failed:
+                failing_notebooks.append(notebook)
+    return failing_notebooks
+
+
+def divider(title, char="*", width=100):
+    """Print a divider with `title` centered between N `char` characters for a total of `width`."""
+    return f" {title} ".center(width, char) + "\n"
+
+
+# Because test_notebook chdir's,  it needs to be run serially or as a true subprocess.
+
+
+def test_notebook(kernel, notebook):
+    """Run one `notebook` on JupyterHub `kernel` with temporary output."""
+
+    if notebook.startswith("#"):
+        return (0, divider(f"Skipping {notebook}"))
+
+    base_nb = os.path.basename(notebook)
+
+    start = datetime.datetime.now()
+
+    output = divider(f"Testing {base_nb} on kernel {kernel}")
+
+    here = os.getcwd()
+    err = 1  # assume failed
+
+    with tempfile.TemporaryDirectory() as temp_dir:
+
+        source_path = os.path.dirname(os.path.abspath(notebook))
+        test_dir = temp_dir + "/notebook-test"
+        shutil.copytree(source_path, test_dir)
+        os.chdir(test_dir)
+
+        if notebook.endswith(".ipynb"):
+            cmd = f"papermill --no-progress-bar {os.path.basename(notebook)} test.ipynb -k {kernel}"
+        elif notebook.endswith(".py"):
+            cmd = f"/opt/common-scripts/env-run  {kernel}  python {notebook}"
+        else:
+            raise ValueError(f"Unhandled test file extension for: {notebook}")
+
+        result = subprocess.run(
+            cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        )  # maybe succeeds
+
+        err = result.returncode
+        output += result.stdout
+
+    os.chdir(here)
+
+    elapsed = datetime.datetime.now() - start
+    output += divider(f"Tested {base_nb} {'OK' if not err else 'FAIL'} {elapsed}")
+
+    return int(err != 0), notebook, output
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "kernel", type=str, help="JupyterHub kernel to execute notebook on."
+    )
+    parser.add_argument("notebooks", type=str, nargs="*", help="Notebooks to test.")
+    parser.add_argument(
+        "--jobs", type=int, default=1, help="Number of notebooks to run in parallel."
+    )
+    args = parser.parse_args()
+
+    # Sometimes application file caching causes collisions making parallel jobs infeasible
+    # while serially executed jobs work just fine.  Use a leading "!" to designate notebooks
+    # which need serial execution.
+
+    parallel_notebooks = [
+        notebook for notebook in args.notebooks if not notebook.startswith("!")
+    ]
+    parallel_errs = test_notebooks(args.kernel, parallel_notebooks, args.jobs)
+
+    serial_notebooks = [
+        notebook[1:] for notebook in args.notebooks if notebook.startswith("!")
+    ]
+    serial_errs = test_notebooks(args.kernel, serial_notebooks, 1)
+
+    if parallel_notebooks or serial_notebooks:
+        errs = parallel_errs + serial_errs
+        if errs:
+            print(divider(f"Test Notebooks Errors={len(errs)}"))
+            print("\n".join(errs))
+            print(divider(f"Test Notebooks Errors={len(errs)}"))
+        else:
+            print(divider("Test Notebooks OK"))
+        return len(errs) != 0
+    else:
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,11 @@
+name: jdaviz
+channels:
+    - conda-forge
+    - https://ssb.stsci.edu/astroconda
+    - defaults
+dependencies:
+    - freetds
+    - fftw
+    - openblas
+    - python~=3.8.0
+    - pip

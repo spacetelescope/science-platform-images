@@ -1,0 +1,53 @@
+#! /bin/bash -u
+
+cd $JUPYTERHUB_DIR
+
+echo "====================================================="
+echo "Checking YAML files for loadability                  "
+echo "====================================================="
+raw_files=$(find . -name '*.yaml' -o -name '*.yml')
+yaml_files=""
+for file in $raw_files; do
+    if ! grep -q '\}\}' $file; then
+        yaml_files="$yaml_files $file"
+    fi
+done
+#echo $yaml_files
+sscan-yaml $yaml_files
+yaml_status=$?
+
+echo "====================================================="
+echo "Scanning source code for quality with flake8         "
+echo "====================================================="
+sscan-flake8
+flake8_status=$?
+
+echo "====================================================="
+echo "Scanning source code for vulnerabilities using bandit"
+echo "====================================================="
+sscan-bandit
+bandit_status=$?
+
+echo
+echo "----------------------------- sscan overall summary ----------------------------"
+
+if [[ "$yaml_status" == "1" ]]; then
+    echo "ERROR - YAML parsing checks failed."
+else
+    echo "OK - YAML parsing"
+fi
+
+if [[ "$flake8_status" == "1" ]]; then
+    echo "ERROR - Flake8 Python code quality checks failed."
+else
+    echo "OK - Flake8 Python code quality checks."
+fi
+
+if [[ "$bandit_status" == "1" ]]; then
+    echo "ERROR - Bandit source code security scanning found vulnerabilities."
+else
+    echo "OK - Bandit source code security scanning."
+fi
+
+fail=`expr $yaml_status + $flake8_status + $bandit_status `
+exit $fail

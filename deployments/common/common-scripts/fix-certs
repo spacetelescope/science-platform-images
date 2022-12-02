@@ -1,0 +1,30 @@
+#! /bin/bash
+
+# This script replaces Ubuntu certs and sets environment variables and needs to be called
+# after every apt install or upgrade remediating possible cert updates which undo this
+# STScI cert install.
+
+set -eu
+
+echo "-------------------------------------------------------------------------------"
+echo "===== Fixing system certs..."
+
+ln -fs /etc/ssl/certs/stsci-tls-ca-bundle.pem  /etc/ssl/certs/ca-bundle.crt
+
+ln -fs /etc/ssl/certs/stsci-tls-ca-bundle.pem /etc/ssl/certs/tls-ca-bundle.pem
+
+ln -fs /etc/ssl/certs/stsci-tls-ca-bundle.pem  /etc/ssl/certs/ca-certificates.crt
+
+ln -fs /etc/ssl/certs/stsci-tls-ca-bundle.pem  /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+
+# mv /usr/lib/ssl/cert.pem  /usr/lib/ssl/cert.pem.org
+mkdir -p /usr/lib/ssl
+ln -fs /etc/ssl/certs/stsci-tls-ca-bundle.pem /usr/lib/ssl/cert.pem
+
+mkdir -p /etc/pki/ca-trust/extracted/openssl
+
+npm config -g set cafile "/etc/ssl/certs/stsci-tls-ca-bundle.pem"
+
+if [ -d /opt/conda ]; then
+    /opt/common-scripts/fix-conda-certs
+fi

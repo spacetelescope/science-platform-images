@@ -1,0 +1,8 @@
+#! /bin/bash -eu
+
+# Run the image tests,  currently by launching a container and executing
+# the  tests defined in it in the mission-specific /opt/environments/test
+# script.   Typically this runs all import and notebook tests in a single
+# container run,  this may change.
+
+time image-exec /opt/environments/test

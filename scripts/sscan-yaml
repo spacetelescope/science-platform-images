@@ -1,0 +1,23 @@
+#! /usr/bin/env python
+# -*-python-*-
+
+"""This script loads each of the YAML filepaths specified on the command line to
+prove that they can be successfully parsed.
+"""
+
+import sys
+
+import yaml
+
+errors = 0
+for filepath in sys.argv[1:]:
+    with open(filepath) as file:
+        try:
+            yaml.safe_load(file)
+        except Exception as exc:
+            errors += 1
+            print("ERROR loading", repr(filepath), ":", repr(str(exc)))
+
+if errors:
+    print("ERROR some files failed to YAML parse correctly")
+sys.exit(errors)

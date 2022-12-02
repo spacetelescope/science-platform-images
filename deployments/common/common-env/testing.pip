@@ -1,0 +1,9 @@
+ci-watson
+pytest
+pytest-doctestplus
+requests_mock
+pytest-openfiles
+#pytest-cov
+#codecov
+flake8
+distlib

@@ -1,0 +1,34 @@
+#! /bin/bash -eu
+
+# This script dynamically updates kernel requirements and is run as part of
+# image-update.  For something more manual, rename it to
+# update-requirements-manual.  It is tightly coupled to roman/jwst calibration
+# kernels.  Other missions or kernel types should implement their own
+# variations as needed.
+#
+# This is a prototype version which should probably be generalized some to
+# include jwst support for the hosted environment.  This is probably fairly
+# easy in terms of artifactory and github similarities between romancal and
+# jwst.
+
+set -o pipefail
+
+CAL_VERSION=${1:-latest}   # figure out automatic definition later;  but...  should be a tag?
+
+if [[ ${CAL_VERSION} == none ]]; then  # in case called manually
+    echo "Skipping requirements update due to CAL_VERSION==none"
+    exit
+fi
+
+if [[ ${CAL_VERSION} != "latest" ]]; then  # formal release
+    SOURCE=https://bytesalad.stsci.edu/artifactory/roman-pipeline-results/v${CAL_VERSION}
+    curl -s ${SOURCE}/conda_python_stable-deps.txt >roman-cal.explicit
+    curl -s ${SOURCE}/reqs_stable-deps.txt >roman-cal.pip
+else
+    # no conda env defined on github yet,  let the last roman-cal.explicit ride
+    SOURCE=https://raw.githubusercontent.com/spacetelescope/romancal/main
+    curl -s ${SOURCE}/requirements-dev.txt >roman-cal.pip
+fi
+
+echo ${CAL_VERSION} >CAL_VERSION
+echo "Roman Calibration ${CAL_VERSION}"  >kernel.name

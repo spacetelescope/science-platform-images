@@ -1,0 +1,202 @@
+#! /usr/bin/env python
+# -*- python -*-
+
+"""This script is used to analyze directory trees for duplicate files and
+replace extra copies with hard links to a single master copy.
+
+It is nominally used to force sharing identical files between different Python
+environments, particularly conda environments,  but operates on primitive files
+and has no real awareness of Python per-say.
+"""
+
+import os
+import subprocess
+import hashlib
+import pprint
+import argparse
+
+from collections import defaultdict
+
+
+def get_file_paths(path):
+    """Return a list of all the paths of all files under `path`."""
+    output = subprocess.run(
+        tuple(f"/usr/bin/find  {path}  -type f".split()),
+        capture_output=True,
+        check=True,
+    ).stdout.decode("utf-8")
+    return output.splitlines()
+
+
+def sha1sum(path):
+    """Compute the sha1sum of file path.
+
+    Return the hex digest sha1sum
+    """
+    block_size = 2 ** 20
+    h = hashlib.new("sha256")
+    with open(path, "rb") as file:
+        block = file.read(block_size)
+        while block:
+            h.update(block)
+            block = file.read(block_size)
+    return h.hexdigest()
+
+
+def get_info(filepath):
+    """Return ((sha1sum, size_in_bytes), inode, filepath) for filepath."""
+    sha1 = sha1sum(filepath)
+    stat = os.stat(filepath)
+    return ((sha1, stat.st_size), stat.st_ino, filepath)
+
+
+def collect_hash_paths(paths):
+    """Create this data struture:
+
+    { (sha1sum, size) : { inode : [ filepath, ...], ... }, ... }
+
+    for all files under `paths`.
+
+    This sorts files under `paths` out by sha1sum indicating identical content,
+    and next by inode indicating identical tracking, or not,  by the file system.
+
+    Two files with the same inode are just two names for the same storage.
+
+    When there are multiple filepaths associated with the same inode,  they are
+    already hard linked and sharing the same storage.
+    """
+    hash_paths = defaultdict(lambda: defaultdict(list))
+    for path in paths:
+        for filepath in get_file_paths(path):
+            info = get_info(filepath)
+            hash_paths[info[0]][info[1]].append(info[2])
+    return hash_paths
+
+
+def human_format_number(number):
+    """Reformat `number` by switching to engineering units and dropping to two fractional digits,
+    10s of megs for G-scale files.
+    """
+    convert = [
+        (1e12, "T"),
+        (1e9, "G"),
+        (1e6, "M"),
+        (1e3, "K"),
+    ]
+    for limit, sym in convert:
+        if isinstance(number, (float, int)) and number > limit:
+            number /= limit
+            break
+    else:
+        sym = ""
+    if isinstance(number, int):
+        # numstr = "%d" % number
+        numstr = "{}".format(number)
+    else:
+        numstr = "{:0.1f} {}".format(number, sym)
+    return "{!s:>7}".format(numstr)
+
+
+def compute_squash_savings(hash_paths):
+    """Given the hash_paths data structure returned by collect_hash_paths(),
+    return the the total storage required with the current unsquashed linking
+    as well as the storage required when duplicate files are hardlinked to a
+    master copy to save space.
+
+    Returns  (unsquashed_size,  linked_and_squashed_size)
+    """
+    unsquashed, linked_and_squashed = 0, 0
+    for (sha1, size) in hash_paths.keys():
+        ino_to_file = hash_paths[(sha1, size)]
+        linked_and_squashed += size
+        unsquashed += size * len(ino_to_file.keys())
+    return human_format_number(unsquashed), human_format_number(linked_and_squashed)
+
+
+def replace_dups_with_links(hash_paths, show_links=True):
+    """Given the `hash_paths` data structure returned by collect_hash_paths(),
+    iterate through all files replacing duplicates with hard links to a
+    randomly selected master copy.
+
+    Returns bytes_saved
+    """
+    print("Cross-linking".center(30, "-"))
+    savings = 0
+    for key, ino_to_filepath in hash_paths.items():
+        sha1, size = key
+        if len(ino_to_filepath) > 1:
+            items = list(ino_to_filepath.items())
+            ino1, path1 = items[0]
+            path1 = path1[0]  # any others at ino1 are already hard linked
+            for ino2, paths2 in items[1:]:
+                for path2 in paths2:
+                    os.remove(path2)
+                    if show_links:
+                        print("Re-linking", path2, "-->", path1)
+                    os.link(path1, path2)
+                    savings += size
+    return savings
+
+
+def survey_paths(paths, title):
+    """Collect file info on all files under any of `paths`.   Print a banner
+    with `title` in it.
+
+    Return the `hash_paths` data structure.
+    """
+    print(title.center(30, "-"))
+    hash_paths = collect_hash_paths(paths)
+    print("-" * 60)
+    unsquashed, squashed = compute_squash_savings(hash_paths)
+    print(f"Unsquashed total: {unsquashed}   Squashed total: {squashed}")
+    return hash_paths
+
+
+def main(paths, link=False, dump_path_info=True, followup_check=False, show_links=True):
+    """Top level function to analyze a file system and hard link duplicate
+    copies of each file to the same master copy to save space.
+    """
+    print("Analyzing:", paths)
+    hash_paths = survey_paths(paths, "before squashing")
+    if dump_path_info:
+        pprint.pprint(hash_paths)
+    if link:
+        bytes_saved = replace_dups_with_links(hash_paths, show_links)
+        print("Bytes saved", human_format_number(bytes_saved))
+        if followup_check:
+            hash_paths = survey_paths(paths, "after squashing")
+            if dump_path_info:
+                pprint.pprint(hash_paths)
+
+
+def parse_cmdline():
+    parser = argparse.ArgumentParser(prog="crosslink")
+    parser.add_argument(
+        "paths", nargs="+", help="paths to analyze for hard link possibilities."
+    )
+    parser.add_argument(
+        "--link",
+        action="store_true",
+        help="replace duplicate copies of files with hard links.",
+    )
+    parser.add_argument(
+        "--show-links",
+        action="store_true",
+        help="print out hard links as they are made.",
+    )
+    parser.add_argument(
+        "--dump-path-info",
+        action="store_true",
+        help="print out the data structure recording file information.",
+    )
+    parser.add_argument(
+        "--followup-check", action="store_true", help="re-analyze for linking after"
+    )
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_cmdline()
+    main(
+        args.paths, args.link, args.dump_path_info, args.followup_check, args.show_links
+    )

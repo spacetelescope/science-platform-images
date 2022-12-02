@@ -1,0 +1,42 @@
+#! /bin/bash
+
+set -eu
+
+cd $IMAGE_DIR
+
+# Blow away old requirements in case any files were removed during this build
+rm -rf env-chilly
+
+for env in $(image-envs); do
+
+    # ----- chill basic conda env requirements.yml
+    frozen_yml=env-frozen/${env}/requirements.yml
+    chilly_yml=env-chilly/${env}/requirements.yml
+    mkdir -p env-chilly/${env}
+    cp  ${frozen_yml}  ${chilly_yml}
+    # replace conda requirements = with ~=.
+    # do not change pip requirements (line indent before -)
+    # do not change funky versions like 2022a
+    perl -pi -e 's/^(  -.*)=(\d+\.\d+\.\d+)/\1~=\2/g' ${chilly_yml}
+    perl -pi -e 's/^(    -.*)==(\d+\.\d+\.\d+)/\1~=\2/g' ${chilly_yml}
+
+    # ----- chill pip-tools pip requirements.txt
+    frozen_pip="env-frozen/${env}/requirements.txt"
+    chilly_pip="env-chilly/${env}/requirements.txt"
+    hints="environments/${env}/build-hints.pip"
+
+    # chilly builds include requirements from the build-hints file
+    # verbatim.  this enables specifying requirements which would
+    # otherwise be chilled in a way which would break the build; IOW,
+    # there are situations in which a dependency solution exists but
+    # pip cannot find it without hints.  Hints restrict floating updates
+    # as well as the chilly builds they exist to enable.  Hence they
+    # should be minimized and periodically revisited.
+    cp ${hints} ${frozen_pip} env-chilly/${env}
+
+    # Create chilly requirements by saving tweaked frozen
+    # requirements.  The pip requirements saved for future chilly
+    # builds include both ~= converted frozen requirements.txt and
+    # unmodified build-hints.pip
+    perl -pi -e 's/==(\d+\.\d+\.\d+)/~=\1/g' ${chilly_pip}
+done

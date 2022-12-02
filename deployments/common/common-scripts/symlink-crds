@@ -1,0 +1,13 @@
+#! /bin/bash
+
+set -u
+
+cd /home/shared/preloaded-crds
+
+for dir in `find . -type d`; do
+    mkdir -p /home/jovyan/crds_cache/${dir}
+done
+
+for f in `find . -type f | sed -e's%^./%%g'`; do
+    ln -fs  /home/shared/preloaded-crds/${f}   /home/jovyan/crds_cache/${f}
+done

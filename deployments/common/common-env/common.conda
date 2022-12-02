@@ -1,0 +1,6 @@
+pip
+pip-tools
+setuptools
+nodejs
+websockify
+jupyter-packaging

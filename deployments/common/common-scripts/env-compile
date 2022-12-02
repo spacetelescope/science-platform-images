@@ -1,0 +1,111 @@
+#! /bin/bash -eu
+
+if [ $# -eq 0 ]; then
+    cat <<EOF
+usage: env-compile  <environment>  [<extra .pip files> replace </opt/common-env/*.pip>]"
+
+Step 2 of the pip-tools workflow:  resolve pip versions from .pip package list files
+
+Nominal pip-tools workflow:
+
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
+    3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
+    4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
+    ...
+
+This script is used to compile the weakly constrained .pip package lists
+ found in each environment directory into fully pinned versions which are
+ output to /opt/env-frozen/<env>/requirements.txt.
+
+The requirements.txt file compiled here is later consumed by env-sync to
+  install fully pinned pip packages.
+
+If only <environment> is specified, it's assumed that common-env will
+ also be installed.  If additional package lists are specified, it's
+ assumed that they replace common-env/*.pip.  This is the opt-out
+ mechanism if there are conflicts with common-env.
+
+Packages which are not listed in the environment's .pip files or
+  common-env .pip files, with the exception of common-env overrides,
+  and which are not dependencies of specified packages... are removed
+  from requirements.txt.  Hence every pip package to be installed
+  needs to be specified in the call to env-compile in one or more of
+  the package lists. Unlike env-update (which it turns out is
+  unsound), env-compile has to resolve all dependencies and define
+  requirements.txt in one run.
+
+NOTE: it is possible to specify different versions of a package requirement
+  in different places, as long as the constraints are mutually satisfiable.
+  This approach can be used to first specify a package in the <env>.yml when
+  required,  and then later specify it in the env-compile lists so that it
+  is not automatically removed.
+
+NOTE: sometimes it is necessary to pin packages to particular versions (or
+approximate versions) in order to create a working build.  Basically, there are
+dependency solutions that pip/pip-tools will not ordinarily find w/o hints.
+When these tweaks are required, they should be added to the special file
+"build-hints.pip".  build-hints.pip is used to define pip constraints which are
+always honored verbatim, whether a build is floating, frozen, or chilly.  Only
+requirements absolutely needed to create a working build should be included in
+build-hints.pip since they will also be enforced, exactly, during chilly
+builds.
+
+EOF
+    exit 2
+fi
+
+env=$1
+shift;
+
+env_reqs="/opt/env-frozen/${env}/requirements.txt"
+
+echo "-------------------------------------------------------------------------------"
+source /opt/common-scripts/env-activate ${env}
+
+extra_pkgs=${*:-/opt/common-env/*.pip}
+env_pip="/opt/environments/${env}/*.pip"
+hints="/opt/environments/${env}/build-hints.pip"
+
+case ${USE_FROZEN} in
+
+    # Original floating requirements,  some of which may be tightly constrained:
+    # 1. From common-env (default) or the env-compile command line
+    # 2. From the environments directory for ${env}
+    # Stash the floating build-hints requirements needed for chilly builds here since these
+    # are the ones used to compute the frozen build.
+    0) all_constraints="${env_pip} ${extra_pkgs}"
+       rm -f /opt/env-chilly/${env}/*.pip
+       if [ -f ${hints} ]; then
+           cp ${hints}  /opt/env-chilly/${env}
+       else
+           echo >/opt/env-chilly/${env}/build-hints.pip
+       fi
+       ;;
+
+    # Only floating and chilly builds compute a new versions soluton,  the frozen
+    # build only re-installs saved requirements later in env-sync.
+    1) echo "===== Frozen requirements.txt has already been compiled."
+       exit 0
+       ;;
+
+    # The chilly build honors both the ~= fuzzed frozen requirements as well as the
+    # original floating requirements,  some of which may be stricter than ~=x.y.z
+    # and required to make the build work at all.
+    2) all_constraints=$(ls /opt/env-chilly/${env}/{requirements.txt,build-hints.pip})
+       ;;
+esac
+
+echo "===== Solving pip package versions for environment ${env}..."
+for pip in ${all_constraints}; do
+    echo ${pip}   # show one per line.
+done
+
+# If pip-compile finds an existing requirements.txt file that fulfills the
+# dependencies then no changes will be made, even if updates are available.
+rm -f ${env_reqs}  # ... hence this delete is REQUIRED
+
+# The real work of determining the version solution...  outputs FROZEN pip reqs
+pip-compile  -v  --output-file ${env_reqs} --pip-args "${PIP_SWITCHES}"  ${all_constraints}
+
+/opt/common-scripts/env-clean

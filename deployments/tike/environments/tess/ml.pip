@@ -1,0 +1,17 @@
+six
+tensorflow-cpu
+tensorflow-estimator
+tensorboard
+keras
+gast
+grpcio
+h5py
+torch
+jax
+jaxlib
+docutils
+packaging
+webencodings
+Theano-PyMC
+aesara
+#theano

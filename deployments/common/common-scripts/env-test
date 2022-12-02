@@ -1,0 +1,45 @@
+#! /bin/bash -eu
+#-*-sh-*-
+
+# Run tests for kernel $1 defined in the environment's "tests" subdirectory
+
+kernel=$1
+
+jobs=${NOTEBOOK_JOBS:-4}
+
+kernel_test_dir="/opt/environments/${kernel}/tests"
+
+echo "========================= Testing Environment ${kernel} =========================="
+if [[ -d ${kernel_test_dir} ]]; then
+
+    cd ${kernel_test_dir}
+
+    source /opt/common-scripts/env-activate ${kernel}
+
+    # Import every Python package listted in the "imports" file
+    if [[ -f ${kernel_test_dir}/imports ]]; then
+        echo "------------------------- Testing Imports ${kernel} --------------------------"
+        /opt/common-scripts/test-imports `cat ${kernel_test_dir}/imports`
+    fi
+
+    # Run every notebook path listed in "notebooks",  one per line
+    if [[ -f ${kernel_test_dir}/notebooks ]]; then
+        echo "------------------------- Testing Notebooks ${kernel} --------------------------"
+        /opt/common-scripts/test-notebooks  --jobs ${jobs}  $kernel  `cat  ${kernel_test_dir}/notebooks`
+    fi
+
+    # Run every notebook (*.ipynb) in the environment tests directory
+    /opt/common-scripts/test-notebooks  --jobs ${jobs}  $kernel  `find ${kernel_test_dir} -name '*.ipynb'`
+
+    # Run any executable (shell script) named "test" defined in the environments tests directory
+    if [[ -f ${kernel_test_dir}/test ]]; then
+        echo "------------------------- Running ${kernel} Test Script --------------------------"
+        cd ${kernel_test_dir}
+        ./test
+    fi
+
+    source /opt/common-scripts/env-deactivate ${kernel}
+
+else
+    echo "Skipping kernel ${kernel} with no 'tests' directory."
+fi
