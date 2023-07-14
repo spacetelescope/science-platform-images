@@ -34,11 +34,10 @@ Jinja2
 jmespath
 jplephem
 jsonschema
-jwst
 kiwisolver
 lxml
 MarkupSafe
-matplotlib>=3.5.0rc1
+matplotlib
 mccabe
 numpy
 numpydoc
@@ -95,3 +94,10 @@ urllib3
 zipp
 notebook==6.4.12
 git+https://github.com/astropy/astroquery.git
+ipympl
+specutils
+vtk
+tqdm
+jdaviz
+regions
+scikit-learn

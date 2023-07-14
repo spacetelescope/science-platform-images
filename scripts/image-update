@@ -5,21 +5,6 @@ set -eu
 # Update the configured deployment based on files stored in the commmon
 # deployment.
 
-cd ${IMAGE_DIR}
-
-# -------------------------------------------------------------------------
-# Update TLS cert in "common" image directory to CI-node's cert.  This cert
-# enables TLS/SSL to work inside the Docker build process which tunnels through
-# the host OS without decryption, but must be decrypted for the STScI firewall
-# to do packet inspection before continuing on to package distribution sites.
-#
-# This cert bundle should work anywhere enabling the same image to work inside
-# and outside AWS networks.
-
-if [ -f "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem" ]; then
-   cp -f /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem ../common
-fi
-
 # ------------------------------------------------------------------------ This
 # dynamically updates requirements for any kernel that defines an
 # update-requirements script.  CAL_VERSION depends on mission but is nominally
@@ -33,7 +18,7 @@ fi
 # installed requirements may/will be in the image but not the repo unless they
 # are explicitly committed after this script runs.  This is particularly true
 # for "latest" where requirements are nominally copied directly from
-# e.g. github whereas x.y.z versions generally have static requirements lists in
+# e.g. github whereas x.y.z vesions generally have static requirements lists in
 # github or artifactory once they exist.
 #
 # This approach enables a 1 kernel image to be built with either tagged
@@ -42,6 +27,8 @@ fi
 # requirements but then replaced below by latest.  Eventually,  both forms
 # should work dynamically from github.
 #
+cd ${IMAGE_DIR}
+
 if [[ ${CAL_VERSION} != none ]]; then
     for env in `image-envs`; do
         (
@@ -71,7 +58,8 @@ fi
 cd $IMAGE_DIR
 
 if [[ -f Dockerfile.custom ]]; then
-   cat Dockerfile.custom ../common/Dockerfile.trailer >Dockerfile
+   # Combine Dockerfile.custom with the common "trailer" to create Dockerfile
+   cat Dockerfile.custom ../../common/image/Dockerfile.trailer >Dockerfile
 fi
 
 # -------------------------------------------------------------------------

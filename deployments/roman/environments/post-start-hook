@@ -26,13 +26,13 @@ set -eu
 
 HUB_FLAG=${1:-"on-hub"}
 
-if [[ $HUB_FLAG == "on-hub" ]]; then   
+if [[ "$HUB_FLAG" == "on-hub" ]]; then   
     /opt/common-scripts/check-quota
 fi
 
 # .............................................................................................
 
-rsync -r  /etc/default-home-contents/ /home/jovyan
+/opt/common-scripts/copy-default-home
 
 # .............................................................................................
 
@@ -46,7 +46,3 @@ rsync -r  /etc/default-home-contents/ /home/jovyan
 # needs update from romancal_datamodels to new package arrangement
 # echo ${ROMANCAL_ALL_NOTEBOOKS} >/opt/environments/roman-cal/tests/notebooks
 
-# .............................................................................................
-# Remove VNC Desktop from Launcher
-rm -rf /home/jovyan/.user-dirs/Desktop
-rm -rf /home/jovyan/Desktop

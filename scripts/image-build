@@ -15,7 +15,7 @@ set -eu
 time (
 
 # ..................................................................................
-# Make automatic source adjustments including STScI cert update when on CI-nodes
+# Make automatic source adjustments
 image-update
 
 

@@ -1,0 +1,26 @@
+#! /bin/bash
+
+source /opt/tools/kernel-utils
+
+if [ $# -ne 1 ]; then
+    echo "usage:  source kernel-activate <env-name>"
+    
+else
+    ENVNAME=$1
+
+    if [ ! -d "${ENVROOT}" ]; then
+	echo "You must install at least one kernel or virtualenv before you can kernel-activate"
+    else
+	ENVDIR=`find ${ENVROOT} -name ${ENVNAME} -type d`
+	
+	if [[ ${ENVNAME} != "" ]]; then
+	    if echo ${ENVDIR} | grep -q ${ENVROOT}/venv; then
+		source ${ENVDIR}/bin/activate ${ENVDIR}
+	    elif echo ${ENVDIR} | grep -q ${ENVROOT}/conda; then
+		conda activate ${ENVDIR}
+	    else
+		/opt/conda/bin/activate ${ENVNAME}
+	    fi
+	fi
+    fi
+fi

@@ -1,4 +1,5 @@
-lightkurve
+git+https://github.com/jaytmiller/lightkurve@octarine-staging
+tglc
 emcee
 george
 celerite
@@ -10,11 +11,17 @@ astroML
 dynesty
 rebound
 ultranest
+pymultinest
+#pycuba
+zeus
 
 statsmodels
 
 tqdm
-git+https://github.com/spacetelescope/astrocut@s3-support
+
+# Still branched May 1, 2023  @s3-support,  but recent notebook failing
+git+https://github.com/spacetelescope/astrocut
+
 pixiedust
 tess-point
 transitleastsquares
@@ -23,7 +30,6 @@ EDIunplugged
 pyLIMA
 aas-timeseries
 
-tvguide
 
 # List add-on packages explicitly to remove google related packages from [all] install
 astrobase
@@ -34,9 +40,18 @@ corner
 transitleastsquares
 paramiko
 
+exoplanet
+starry
+
+healpy
+
+# New for hellouniverse
+git+https://github.com/afeinstein20/stella.git
+
 # Installed from source due to numpy ABI version issues
 #batman-package
 #radvel-installed
-#juliet-installed
+juliet
 #allesfitter
 #ellc
+#tvguide

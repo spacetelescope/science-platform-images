@@ -33,6 +33,7 @@ env_spec=/opt/environments/${env}/${env}.@(yml|explicit)
 
 env_frozen_yml=/opt/env-frozen/${env}/requirements.yml
 env_chilly_yml=/opt/env-chilly/${env}/requirements.yml
+hints=/opt/env-chilly/${env}/build-hints.conda
 
 . /etc/profile.d/conda.sh
 
@@ -57,6 +58,11 @@ case ${USE_FROZEN} in
        ;;
     2) echo "===== Creating conda environment ${env} from chilly constraints ${env_chilly_yml}"
        env_create ${env_chilly_yml}
+       # Only chilly needs build-hints.conda since frozen is an absolute pin and the floating build
+       # already incorporated build-hints.conda into requirements.yml and/or requirements.txt
+       if [ -e ${hints} ]; then
+           /opt/common-scripts/env-update ${env}  ${hints}
+       fi
        ;;
 esac
 
@@ -70,7 +76,5 @@ ${CONDA_VER} env export --no-build -n ${env} > ${env_frozen_yml}
 # env_create ${env_frozen_yml}
 
 source /opt/common-scripts/env-activate ${env}
-
-/opt/common-scripts/fix-conda-certs   # new env may install new certs
 
 /opt/common-scripts/env-clean

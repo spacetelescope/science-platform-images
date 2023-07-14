@@ -1,0 +1,20 @@
+#! /bin/bash -eu
+
+source `dirname $0`/kernel-utils
+
+usage "$# -lt 1" "<name> [<python-version>] [<jh-display-name>]"
+
+ENVNAME=$1
+PYVER=${2:-`python --version | cut -d' ' -f2`}
+DISPNAME=${3:-${ENVNAME}}
+
+ENVROOT="${HOME}/envs"
+ENVDIR="${ENVROOT}/conda/${ENVNAME}"
+
+banner "Creating kernel ${ENVNAME} with Python ${PYVER} at ${ENVDIR}"
+conda create --quiet --yes --prefix="${ENVDIR}" python=${PYVER} ipykernel
+conda init --quiet  bash
+
+echo "---------------------------------------------------------------"
+python -m ipykernel install --user --name="${ENVNAME}"  --display-name "${DISPNAME}"
+banner "Activate environment with:  source kernel-activate ${ENVNAME}"

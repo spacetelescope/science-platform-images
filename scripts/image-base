@@ -9,12 +9,13 @@ echo "========================= Building Base Image ========================"
 
 OWNER=stsci-jh
 
-cd ${JUPYTERHUB_DIR}/deployments/common
-docker build --progress plain --tag ${OWNER}/ubuntu-certs --file Dockerfile.certs \
+cd ${JUPYTERHUB_DIR}/deployments/common/image
+docker build --progress plain --tag ${OWNER}/ubuntu-base --file Dockerfile.base \
        --build-arg USE_FROZEN=${USE_FROZEN} \
        --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
        --build-arg CLEAR_PKG_CACHES="${CLEAR_PKG_CACHES}" \
        --build-arg CONDA_VER=${CONDA_VER} \
+       --build-arg ROOT_CONTAINER=ubuntu:${IMAGE_UBUNTU_NAME} \
        .
 
 cd ~
@@ -24,7 +25,8 @@ if [[ ! -d docker-stacks ]]; then
 else
     cd docker-stacks
     git fetch origin
-    git rebase origin/main
+    git stash
+    git checkout origin/main
 fi
 
 # checkout the appropriate docker-stacks revision if using frozen specs;
@@ -46,9 +48,9 @@ build_jh() {
     docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./${STACK} --build-arg OWNER=${OWNER} --progress plain $*
 }
 
-build_jh  docker-stacks-foundation     --build-arg ROOT_CONTAINER=${OWNER}/ubuntu-certs:latest
+build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=${OWNER}/ubuntu-base:latest
 
-build_jh  base-notebook     --build-arg BASE_CONTAINER=${OWNER}/docker-stacks-foundation:latest
+build_jh  base-notebook     --build-arg ROOT_CONTAINER=${OWNER}/docker-stacks-foundation:latest
 
 build_jh  minimal-notebook  --build-arg BASE_CONTAINER=${OWNER}/base-notebook:latest
 

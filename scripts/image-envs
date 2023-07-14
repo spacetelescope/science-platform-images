@@ -11,7 +11,7 @@ set -eu
 DEPLOYMENT=${1:-${DEPLOYMENT_NAME}}
 
 # cd $IMAGE_DIR
-cd ${JUPYTERHUB_DIR}/deployments/${DEPLOYMENT}
+cd ${JUPYTERHUB_DIR}/deployments/${DEPLOYMENT}/image
 
 # Get environment names,  exclude base
 echo $(find env-frozen -type d | grep env-frozen/ | grep -v /base | cut -d'/' -f2)

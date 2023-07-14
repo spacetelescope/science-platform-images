@@ -16,8 +16,6 @@ export USE_FROZEN=0                  # use 0 for loosely pinned package versions
 export FREEZE_CHILL=0                # capture new frozen and chilly requirements as
                                      # modified files in this git repo
 
-export ECR_ACCOUNT_ID=""             # needed on AWS only
-
 # Note that unscanned- tags are pushed, pulled, and scanned but
 # the unscanned- is dropped from images permitted on the hub by
 # virtue of passing ECR scanning.

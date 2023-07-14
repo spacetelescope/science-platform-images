@@ -1,4 +1,4 @@
-#! /bin/bash -eu
+#! /bin/bash -u
 
 export PATH=`pwd`/scripts:${PATH}
 
@@ -106,3 +106,5 @@ function where () {
     fi
     echo $info
 }
+
+alias glog="git log --graph --oneline --all --decorate --color --pretty=format:'%C(auto)%h%d (%cr) %cn <%ce> %s' | head -n 30"

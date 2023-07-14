@@ -8,13 +8,11 @@ set -eu
 # be performed both on AWS and standalone.  AWS-only functions should be included
 # directly in common.yaml or perhaps another script.
 
-rsync -r /etc/default-home-contents/ /home/jovyan
+/opt/common-scripts/copy-default-home
 
 /opt/environments/setup-notebooks
 
 /opt/common-scripts/symlink-crds 
-
-/opt/environments/remove-kernel jdaviz 
 
 # Remove VNC Desktop from Launcher
 rm -rf /home/jovyan/.user-dirs/Desktop

@@ -2,10 +2,12 @@
 
 # Search for files containing Python source code and print their names
 
-DIRS=${1:-"deployments hub tools fs-support datadog"}
+cd ${JUPYTERHUB_DIR}
+
+DIRS=${1:-"deployments hub tools pkgs"}
 
 # Find Python she-bang scripts w/o .py extension
 find ${DIRS}  -type f | xargs grep -l -E '#!\s*/usr/bin/env\s+python'
 
 # Find standard Python source code files
-find ${DIRS}  -name '*.py'
+find ${DIRS}  -name '*\.py'
