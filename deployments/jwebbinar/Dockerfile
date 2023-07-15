@@ -110,7 +110,7 @@ USER $NB_UID
 
 # Fix JS encoding issue that prevents widgets from displaying properly in notebook mode
 # See https://github.com/jupyter/notebook/issues/6033 for details
-RUN sed -i 's/data-base-url="{{base_url | urlencode}}"/data-base-url="{{base_url}}"/g' `ls -1 ${CONDA_DIR}/lib/python*/site-packages/notebook/templates/notebook.html`
+# RUN sed -i 's/data-base-url="{{base_url | urlencode}}"/data-base-url="{{base_url}}"/g' `ls -1 ${CONDA_DIR}/lib/python*/site-packages/notebook/templates/notebook.html`
 
 # ----------------------------------------------------------------------
 
@@ -156,11 +156,11 @@ USER root
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
 
 # Enable deletion of non-empty directories from lab GUI
-RUN echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+RUN echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+    echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py

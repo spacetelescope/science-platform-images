@@ -9,7 +9,7 @@ on:
 jobs:
   quality-scanning:
     name: "${{ matrix.DEPLOYMENT_NAME }}  -- Code Quality"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
       max-parallel: 5
@@ -30,7 +30,7 @@ jobs:
       - name: Set Up Environment
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }}
            pip install -r requirements.txt
            df -h
 
@@ -39,7 +39,7 @@ jobs:
         continue-on-error: false
         run: |
            source setup-env
-           scripts/sscan-yaml `find deployments tools -name '*.yaml' -o -name '*.yml'`
+           scripts/sscan-yaml `find deployments scripts -name '*.yaml' -o -name '*.yml'`
 
       - name: Flake8 Scan
         shell: bash

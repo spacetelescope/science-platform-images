@@ -1,4 +1,4 @@
-git+https://github.com/jaytmiller/lightkurve@octarine-staging
+lightkurve
 tglc
 emcee
 george
@@ -12,15 +12,13 @@ dynesty
 rebound
 ultranest
 pymultinest
-#pycuba
 zeus
 
 statsmodels
 
 tqdm
 
-# Still branched May 1, 2023  @s3-support,  but recent notebook failing
-git+https://github.com/spacetelescope/astrocut
+astrocut
 
 pixiedust
 tess-point
@@ -34,7 +32,6 @@ aas-timeseries
 # List add-on packages explicitly to remove google related packages from [all] install
 astrobase
 psycopg2-binary
-#emcee==3.0rc1
 h5py
 corner
 transitleastsquares
@@ -46,7 +43,7 @@ starry
 healpy
 
 # New for hellouniverse
-git+https://github.com/afeinstein20/stella.git
+stella
 
 # Installed from source due to numpy ABI version issues
 #batman-package

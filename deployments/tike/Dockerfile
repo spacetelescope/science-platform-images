@@ -28,8 +28,7 @@ RUN git clone https://github.com/JohannesBuchner/MultiNest &&\
     cd ../.. &&\
     rm -rf MultiNest
 
-RUN export CFLAGS=-fPIC &&\
-    git clone https://github.com/JohannesBuchner/cuba/ &&\
+RUN git clone https://github.com/JohannesBuchner/cuba/ &&\
     cd cuba &&\
     ./configure &&\
     ./makesharedlib.sh &&\
@@ -47,7 +46,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.* /opt/environments/
 RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- TESS -------------------------------------
@@ -55,6 +54,7 @@ RUN   /opt/common-scripts/install-common  base
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/tess/  /opt/env-frozen/tess/
 COPY --chown=${NB_UID}:${NB_GID} env-chilly/tess/  /opt/env-chilly/tess/
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.yml /opt/environments/tess/
+COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.conda /opt/environments/tess/
 RUN /opt/common-scripts/env-conda tess
 
 # For Stella
@@ -98,10 +98,6 @@ ENV TF_CPP_MIN_LOG_LEVEL=2
 # ========================= vvvvv Generic vvvvv  =========================
 
 USER $NB_UID
-
-# Fix JS encoding issue that prevents widgets from displaying properly in notebook mode
-# See https://github.com/jupyter/notebook/issues/6033 for details
-RUN sed -i 's/data-base-url="{{base_url | urlencode}}"/data-base-url="{{base_url}}"/g' `ls -1 ${CONDA_DIR}/lib/python*/site-packages/notebook/templates/notebook.html`
 
 # ----------------------------------------------------------------------
 
@@ -147,11 +143,11 @@ USER root
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
 
 # Enable deletion of non-empty directories from lab GUI
-RUN echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+RUN echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+    echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py

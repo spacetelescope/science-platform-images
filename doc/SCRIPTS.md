@@ -1,4 +1,4 @@
-# In the `tools` directory, there are a series of convenience scripts.
+# In the `scripts` directory, there are a series of convenience scripts.
 
 #### Dependencies
 
@@ -11,7 +11,7 @@ pip install --cert /etc/ssl/certs/ca-bundle.crt -r requirements.txt
 
 #### Image management scripts
 
-Scripts have been added to the *tools* directory to simplify image development:
+Scripts have been added to the *scripts* directory to simplify image development:
 
 - image-build   -- build the Docker image defined by setup-env
 - image-base    -- build base images with SSL certs + jupyter docker-stack / scipy-notebook
@@ -25,11 +25,20 @@ Automated testing:
 Run a JH image in local Docker for inspection, development, debug:
 
 - image-sh          -- start a container running an interactive bash shell for poking around
+- image-sh --dev    -- start a container and map in Docker sources and scripts r/w for interactive debug
 - image-exec        -- start a container and run an arbitrary command
-- image-dev         -- start a container and map in Docker sources r/w for incremental install debug
-- run-lab           -- start a JH server in Docker using the current image
+- run-lab [--dev]   -- start a JH server in Docker using the current image
 - image-graph-env   -- use pipdeptree and graphviz to produce version dependency graphs for an environment
 - image-build-all   -- build all missions/deployments to update frozen requirements and test framework, memory intensive (32G?)
+
+Env settings for run-lab, image-sh, image-exec:
+
+- IMAGE_RUN_PART -- initial parameters for Docker run,  also affected by:
+- SP_HOME        -- directory on Docker host computer to bind mount over /home/jovyan readwrite.
+- SP_USER        -- user id of container user Docker should run as,  affects SP_HOME on host?
+- SP_HUB_INIT    -- run the image /opt/environments/post-start-hook to e.g. checkout/update notebook clones to SP_HOME.
+- --dev swich    -- mounts key sub-directories of $JUPYTERHUB_DIR into corresponding container install locations readwrite.
+- --dev in particular enables live edits of scripts and packages w/o completely rebuilding entire image.
 
 Capture conda environment s/w versions (automatic w/ image-build):
 

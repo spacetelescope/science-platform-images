@@ -3,7 +3,7 @@
 # If the image (jupyter/scipy-notebook) exists locally it will be used,
 # otherwise the latest from https://hub.docker.com/_/buildpack-deps will be used
 
-ARG BASE_IMAGE=stsci-jh/scipy-notebook
+ARG BASE_IMAGE=spacetelescope/scipy-notebook
 FROM $BASE_IMAGE
 
 # ------------------------------------------------------------------------
@@ -17,15 +17,50 @@ ENV MKL_THREADING_LAYER="GNU"
 ENV CONDA_DIR=/opt/conda
 ENV SHELL=/bin/bash
 ENV PATH=${CONDA_DIR}/bin:${PATH}
-ENV CFLAGS="-fcommon"
+ENV CFLAGS="-fcommon -fpic"
 
 # ------------------------------------------------------------------------
 USER root
 
+ARG TZ='America/New_York'
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG USE_FROZEN=1
+ENV USE_FROZEN=$USE_FROZEN
+
+ARG PIP_SWITCHES="--no-cache-dir"
+ENV PIP_SWITCHES=$PIP_SWITCHES
+
+# Enable easy swap of conda with e.g. mamba
+ARG CONDA_VER=conda
+ENV CONDA_VER=${CONDA_VER}
+
+# Clearing caches at the end of each RUN saves image space
+# but seems to mess up dependency debug tools like pipdeptree.
+# NOT setting this is also a requirement of effective Docker
+# buildkit cache use.  ATM jupyter/docker-stacks will still wipe
+# out caches created prior to the common base image regardless.
+ARG CLEAR_PKG_CACHES="1"
+ENV CLEAR_PKG_CACHES=${CLEAR_PKG_CACHES}
+
+# These are duplicated in jupyter/docker-stacks so need to be changed
+# in both locations.  Better than hard coding in scripts though.
+ENV NB_UID=1000
+ENV NB_GID=100
+
 # Breaking into separate runs will build slower but also defines storage
 # consumption in docker history.
 #
-# COPY common-scripts/apt-install  /opt/common-scripts/apt-install
+COPY common-scripts/apt-install  /opt/common-scripts/apt-install
+RUN /opt/common-scripts/apt-install \
+    apt-utils \
+    tzdata \
+    ca-certificates \
+    openssl \
+    wget \
+    vim \
+    npm \
+    nodejs
 
 # Misc system tools
 RUN /opt/common-scripts/apt-install \

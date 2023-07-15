@@ -45,6 +45,9 @@ MN=/home/jovyan/mast_notebooks
 HU=/home/jovyan/hellouniverse
 /opt/common-scripts/git-sync   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
 
+PT=/home/jovyan/project-tikebook
+/opt/common-scripts/git-sync   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
+
 # .............................................................................................
 
 mkdir -p /opt/environments/tess/tests

@@ -1,8 +1,5 @@
 name:  Image Build, Test
 on:
-   push:
-      branches:
-        - main
    pull_request:
       branches:
         - main
@@ -10,19 +7,17 @@ on:
 jobs:
   docker:
     name: "${{ matrix.DEPLOYMENT_NAME }}  USE_FROZEN=${{ matrix.USE_FROZEN }} ${{ matrix.CAL_VERSION }} -- Image Build, Test"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
-      max-parallel: 4
+      max-parallel: 3
       fail-fast: false
       matrix:
         DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
-        USE_FROZEN: [ 0 ]
-        CAL_VERSION: [ latest ]
-        include:
-        - DEPLOYMENT_NAME: roman
-          USE_FROZEN: 0
-          CAL_VERSION: none
+        USE_FROZEN: [ 1 ]
+        CAL_VERSION: [ none ]
+        FREEZE_CHILL: [ 1 ]
+        OWNER: [ jupyter ]
 
     steps:
       - name: Checkout Code
@@ -51,7 +46,7 @@ jobs:
       - name: Set Up Environment
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }} 1  ${{ matrix.CAL_VERSION }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
            df -h
 
       - name: Image Build
@@ -67,7 +62,10 @@ jobs:
 
       - name: Git Diffs (Frozen Version Specs)
         shell: bash
-        run: git diff
+        run: |
+           source setup-env
+           scripts/image-freeze
+           git diff
 
       - name: Image Functional Tests
         shell: bash
@@ -81,6 +79,6 @@ jobs:
         uses: anchore/scan-action@v3
         with:
           fail-build: false
-          severity-cutoff: medium
+          severity-cutoff: high
           output-format: table
           image: notebook-${{ matrix.DEPLOYMENT_NAME }}

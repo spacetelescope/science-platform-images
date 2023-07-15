@@ -126,7 +126,7 @@ against the older installed numpy using `env-src-install`.
 ##### Dependency Maze
 
 A network of dependency constraints on 5-6 interrelated packages can be
-difficult to follow.  Fortunately, this is a common problem so tools have been
+difficult to follow.  Fortunately, this is a common problem so scripts have been
 developed that can help out, particularly `pipdeptree`.  In cooperation with
 `Graphviz`, `pipdeptree` can produce graphs of dependency relationships as .png
 files which are annotated with version constraints.  This makes it easier to
@@ -261,7 +261,7 @@ To update requirements automatically as part of GitHub actions,  `CAL_VERSION`  
 
 #### image-update
 
-The `tools-update` script iterates over each environment defined for a mission.  If `CAL_VERSION` is `none` the environment is skipped.   If `CAL_VERSION` is `latest` or `x.y.z`,  and an environment defines an `update-requirements` script,  the `update-requirements` script is called to define/update the floating requirements.  `image-update` is called by `image-build` automatically for this and other purposes.   `update-requirements` is one of a few exceptions where a script defined under `deployments` vs. `tools` executes outside Docker or a running notebook container.
+The `tools-update` script iterates over each environment defined for a mission.  If `CAL_VERSION` is `none` the environment is skipped.   If `CAL_VERSION` is `latest` or `x.y.z`,  and an environment defines an `update-requirements` script,  the `update-requirements` script is called to define/update the floating requirements.  `image-update` is called by `image-build` automatically for this and other purposes.   `update-requirements` is one of a few exceptions where a script defined under `deployments` vs. `scripts` executes outside Docker or a running notebook container.
 
 #### update-requirements
 

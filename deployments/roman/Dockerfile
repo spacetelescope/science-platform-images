@@ -25,7 +25,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID}environments/common-hints.pip /opt/environments/common-hints.pip
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # ----------------------------------------------------------------------
@@ -117,11 +117,11 @@ USER root
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
 
 # Enable deletion of non-empty directories from lab GUI
-RUN echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+RUN echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+    echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
       >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py

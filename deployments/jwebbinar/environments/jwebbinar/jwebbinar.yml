@@ -5,6 +5,8 @@ channels:
 dependencies:
     - freetds
     - fftw
+    - nomkl
     - openblas
     - python~=3.9.0
     - pip
+    - rust

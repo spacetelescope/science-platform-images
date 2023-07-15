@@ -2,6 +2,9 @@
 
 set -eu
 
+cd $JUPYTERHUB_DIR
+source setup-env
+
 # Build the combined deployment image,  including:
 # 1. Perform any required source code updates,  including updating SSL certs
 #    and regenerating any generated Dockerfiles from constituent parts.
@@ -21,20 +24,37 @@ image-update
 
 # ..................................................................................
 # Build base image, e.g. our version of scipy-notebook including cert handling
-image-base
-
+if [[ ${BASE_IMAGE} == "spacetelescope/scipy-notebook" ]]; then
+    image-base
+else
+    docker pull ${BASE_IMAGE}
+fi
 
 # ..................................................................................
 # Build STScI shared layer for all deployments
 cd ${COMMON_IMAGE_DIR}
 echo "========================= Building Common Image ========================"
-time docker build --progress plain --tag ${COMMON_ID} --tag notebook-common --build-arg BASE_IMAGE=stsci-jh/scipy-notebook .  --file Dockerfile
+time docker build --progress plain --tag ${COMMON_ID} --tag notebook-common \
+       --build-arg BASE_IMAGE=${BASE_IMAGE} \
+       --build-arg USE_FROZEN=${USE_FROZEN} \
+       --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
+       --build-arg CLEAR_PKG_CACHES="${CLEAR_PKG_CACHES}" \
+       --build-arg CONDA_VER=${CONDA_VER} \
+       --file Dockerfile \
+       .
+
+optional_docker_prune
 
 # ..................................................................................
 # Build custom layers for this deployment
 cd ${IMAGE_DIR}
 echo "========================= Building $IMAGE_ID USE_FROZEN=${USE_FROZEN} =========================="
-time docker build --progress plain --tag ${IMAGE_ID} --tag "notebook-${DEPLOYMENT_NAME}" --build-arg BASE_IMAGE=${COMMON_ID} . --file Dockerfile
+time docker build --progress plain --tag ${IMAGE_ID} --tag "notebook-${DEPLOYMENT_NAME}" \
+     --build-arg BASE_IMAGE=${COMMON_ID} \
+     --file Dockerfile \
+     .
+
+optional_docker_prune
 
 # ..................................................................................
 # Optionally update requirements used by frozen and chilly builds.

@@ -1,16 +1,91 @@
-#! /bin/bash -eu
+#! /usr/bin/env python
 
-# Used to create setup-env files for CI/CD runs based on the template and simple inputs
+import argparse
+import re
+import shutil
 
-USE_FROZEN=${1:-0}     # FLOATING=0,  FROZEN=1,  CHILLY=2
-perl -pi -e "s/USE_FROZEN=[\d]/USE_FROZEN=$USE_FROZEN/g" setup-env-ssm
 
-FREEZE_CHILL=${2:-1}   # boolean 0 or 1 to save newly frozen requirements, does not add/commit/pr/merge
-perl -pi -e "s/FREEZE_CHILL=[\d]/FREEZE_CHILL=$FREEZE_CHILL/g" setup-env-ssm
+def create_setup_env_file(
+    deployment_name, use_frozen, freeze_chill, cal_version, owner
+):
+    shutil.copy("setup-env.template", "setup-env")
 
-CAL_VERSION=${3:-latest}   # latest, literal version e.g. 0.9.0, or none to use last cm'ed mode.
-                           # last cm'ed mode enables "freezing" updated CAL package lists as
-                           # a dev w/access to VPN resources needed to fetch package lists
-perl -pi -e "s/CAL_VERSION=latest/CAL_VERSION=$CAL_VERSION/g" setup-env-ssm
+    use_frozen = {"floating": "0", "frozen": "1", "chilly": "2"}.get(
+        use_frozen, use_frozen
+    )
 
-# cat  setup-env-ssm
+    with open("setup-env", "r") as file:
+        content = file.read()
+
+        # Update DEPLOYMENT_NAME
+        content = re.sub(
+            r"DEPLOYMENT_NAME=cluster-name",
+            f"DEPLOYMENT_NAME={deployment_name}",
+            content,
+        )
+
+        # Update USE_FROZEN
+        content = re.sub(r"USE_FROZEN=[\d]", f"USE_FROZEN={use_frozen}", content)
+
+        # Update FREEZE_CHILL
+        content = re.sub(r"FREEZE_CHILL=[\d]", f"FREEZE_CHILL={freeze_chill}", content)
+
+        # Update CAL_VERSION
+        content = re.sub(r"CAL_VERSION=latest", f"CAL_VERSION={cal_version}", content)
+
+        # Update OWNER
+        content = re.sub(r"OWNER=spacetelescope", f"OWNER={owner}", content)
+
+    with open("setup-env", "w+") as file:
+        file.write(content)
+
+    print(content)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Create setup-env file to define image build properties."
+    )
+    parser.add_argument(
+        "deployment",
+        choices=["tike", "roman", "jwebbinar"],
+        help="The deployment name defining image contents.",
+    )
+    parser.add_argument(
+        "--use-frozen",
+        type=str,
+        choices=["0", "1", "2", "floating", "frozen", "chilly"],
+        default="floating",
+        help="Use floating (default: 0).",
+    )
+    parser.add_argument(
+        "--freeze-chill",
+        type=int,
+        default=0,
+        choices=[0, 1],
+        help="Don't freeze/chill requirements (default: 0).",
+    )
+    parser.add_argument(
+        "--cal-version",
+        default="latest",
+        help="Calibration s/w version when applicable (default: latest).",
+    )
+    parser.add_argument(
+        "--owner",
+        type=str,
+        default="spacetelescope",
+        help="Repo used to build or pull scipy-notebook image,  spacetelescope(build) or jupyter(pull)",
+    )
+    args = parser.parse_args()
+
+    create_setup_env_file(
+        args.deployment,
+        args.use_frozen,
+        args.freeze_chill,
+        args.cal_version,
+        args.owner,
+    )
+
+
+if __name__ == "__main__":
+    main()
