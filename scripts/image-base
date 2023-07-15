@@ -9,7 +9,7 @@ echo "========================= Building Base Image ========================"
 
 OWNER=stsci-jh
 
-cd ${JUPYTERHUB_DIR}/deployments/common/image
+cd ${JUPYTERHUB_DIR}/deployments/common
 docker build --progress plain --tag ${OWNER}/ubuntu-base --file Dockerfile.base \
        --build-arg USE_FROZEN=${USE_FROZEN} \
        --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \

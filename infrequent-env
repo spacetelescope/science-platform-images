@@ -60,20 +60,11 @@ export CLEAR_PKG_CACHES=1
 # env-update and env-compile/sync.
 
 export PIP_SWITCHES="--no-color --default-timeout 100"
-if [[ "${CLEAR_PKG_CACHES}" == "1" ]]; then
-    export PIP_SWITCHES="${PIP_SWITCHES} --no-cache-dir"
-fi
 
 # ----------------- vvvvvv derived inputs, nominally don't change vvvvvv --------------
 # automatically sourced into setup-env
 
-if [[ $ECR_ACCOUNT_ID == "" ]]; then
-    export ECR_REGISTRY=""
-else
-    export ECR_REGISTRY=${ECR_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
-fi
-
-export IMAGE_REPO=${DEPLOYMENT_NAME}
+export IMAGE_REPO=spacetelescope/science-platform-${DEPLOYMENT_NAME}
 export COMMON_REPO=${IMAGE_REPO}
 
 export JUPYTERHUB_DIR=`pwd`
@@ -82,8 +73,8 @@ export IMAGE_DIR=`pwd`/deployments/${DEPLOYMENT_NAME}
 
 export COMMON_IMAGE_DIR=`pwd`/deployments/common
 
-export COMMON_ID=${ECR_REGISTRY}${COMMON_REPO}:${COMMON_TAG}
-export IMAGE_ID=${ECR_REGISTRY}${IMAGE_REPO}:${IMAGE_TAG}
+export COMMON_ID=${COMMON_REPO}:${COMMON_TAG}
+export IMAGE_ID=${IMAGE_REPO}:${IMAGE_TAG}
 
 # --------------- vvvvv misc env settings vvvvv ---------------------------------
 

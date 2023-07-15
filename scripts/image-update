@@ -59,7 +59,7 @@ cd $IMAGE_DIR
 
 if [[ -f Dockerfile.custom ]]; then
    # Combine Dockerfile.custom with the common "trailer" to create Dockerfile
-   cat Dockerfile.custom ../../common/image/Dockerfile.trailer >Dockerfile
+   cat Dockerfile.custom ../common/Dockerfile.trailer >Dockerfile
 fi
 
 # -------------------------------------------------------------------------
