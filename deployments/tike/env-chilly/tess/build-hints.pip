@@ -30,7 +30,8 @@ scikit-learn>=0.0
 # protobuf==3.18.0 -> <4 due to "builder" import error with stella
 protobuf~=3.19.0   # https://stackoverflow.com/questions/71759248/importerror-cannot-import-name-builder-from-google-protobuf-internal
 
-git+https://github.com/afeinstein20/stella.git
+# Stella:  until scikit-learn is dealt with,  then switch back to afeinstein20 vs jaytmiller.
+git+https://github.com/jaytmiller/stella.git@scikit-learn-update
 
 # For juliet JUSI-1267 TIKE and Juliet, INC0191115 Incident
 dynesty~=1.2.3

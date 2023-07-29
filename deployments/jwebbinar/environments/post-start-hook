@@ -8,12 +8,19 @@ set -eu
 # be performed both on AWS and standalone.  AWS-only functions should be included
 # directly in common.yaml or perhaps another script.
 
+HUB_FLAG=${1:-"on-hub"}
+
 /opt/common-scripts/copy-default-home
 
 /opt/environments/setup-notebooks
 
-/opt/common-scripts/symlink-crds 
+
+if [[ $HUB_FLAG == "on-hub" ]]; then
+    /opt/common-scripts/symlink-crds
+fi
 
 # Remove VNC Desktop from Launcher
 rm -rf /home/jovyan/.user-dirs/Desktop
 rm -rf /home/jovyan/Desktop
+
+# ha

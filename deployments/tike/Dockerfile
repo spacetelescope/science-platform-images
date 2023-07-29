@@ -57,9 +57,6 @@ COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.yml /opt/environments/tess/
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.conda /opt/environments/tess/
 RUN /opt/common-scripts/env-conda tess
 
-# For Stella
-ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
-
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.pip /opt/environments/tess/
 RUN /opt/common-scripts/env-compile tess
 
@@ -109,7 +106,7 @@ RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 
 USER root
 
-RUN ( find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} ) || true
+RUN find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} || true
 
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.

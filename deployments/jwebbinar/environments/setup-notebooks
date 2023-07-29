@@ -4,13 +4,14 @@
 # notebook files using set-notebook-kernels.
 
 #/opt/common-scripts/git-sync https://github.com/gsnyder206/jwebbinar_prep main /home/jovyan/jwebbinar_prep_ceers
-/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep current_webbinar /home/jovyan/jwebbinar_prep
 
+/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep current_webbinar /home/jovyan/jwebbinar_prep
 /opt/common-scripts/git-sync https://github.com/astropy/astropy-workshop main /home/jovyan/astropy-workshop
 
-
+chmod -R +w /home/jovyan/astropy-workshop /home/jovyan/jwebbinar_prep
 
 #/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/WORKSHOP/*/*.ipynb || true
+
 /opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/jdaviz_2023/*.ipynb || true
 
 /opt/common-scripts/set-notebook-kernel jwebbinar astropy-workshop/**/*.ipynb || true
@@ -18,7 +19,9 @@
 #/opt/common-scripts/set-notebook-kernel webbpsf-workshop jwebbinar_prep/webbpsf-workshop2022/*.ipynb || true
 
 #/opt/common-scripts/set-notebook-kernel jdaviz jwebbinar_prep/mos_session/Mosviz_solutions.ipynb
-#/opt/common-scripts/set-notebook-kernel jwebbinar /home/$NB_USER/PDRs4All/*/*.ipynb || true 
+#/opt/common-scripts/set-notebook-kernel jwebbinar /home/$NB_USER/PDRs4All/*/*.ipynb || true
+
+chmod -R -w /home/jovyan/astropy-workshop /home/jovyan/jwebbinar_prep
 
 # --- mkdir -p /opt/environments/jwebbinar/tests
 # --- mkdir -p /opt/environments/jdaviz/tests

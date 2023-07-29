@@ -20,3 +20,7 @@ else
     echo "Skipping default config init,  $HOME already initialized."
 fi
 
+# Delete caches owned by root, immutable residue of Docker RUN cache
+# which will block actual user caching.  Fortunately $HOME is writable
+# so root owned caches can be removed to make way for user caching.
+find ${CACHE_DIRS} -user 0 | grep -v /var/cache | xargs rm -rvf

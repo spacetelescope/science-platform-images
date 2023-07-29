@@ -43,6 +43,7 @@ time docker build \
        --build-arg USE_FROZEN=${USE_FROZEN} \
        --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
        --build-arg CONDA_VER=${CONDA_VER} \
+       --build-arg CACHE_DIRS="${CACHE_DIRS}" \
        --file Dockerfile.cached  .
 rm Dockerfile.cached
 
@@ -68,7 +69,7 @@ if [[ "$FREEZE_CHILL" == "1" ]]; then
     # examination of diffs and manual updates to reject bad changes.
     if [[ "$USE_FROZEN" == "0" ]] || [[ "$USE_FROZEN" == "2" ]]; then
         echo "========================= Freezing Requirements =========================="
-        time image-freeze
+        image-freeze
     fi
 
     # Only chill for floating builds,  the first time frozen requirements are created since
@@ -77,7 +78,7 @@ if [[ "$FREEZE_CHILL" == "1" ]]; then
     # this every time.
     if [[ "$USE_FROZEN" == "0" ]]; then
         echo "========================= Chilling Requirements ========================="
-        time image-chill
+        image-chill
     fi
 fi
 

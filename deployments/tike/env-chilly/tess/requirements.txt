@@ -146,7 +146,7 @@ astunparse~=1.6.3
     #   tensorflow
 async-generator==1.10
     # via jupyterhub
-async-lru~=2.0.3
+async-lru~=2.0.4
     # via jupyterlab
 async-timeout~=4.0.2
     # via aiohttp
@@ -186,6 +186,7 @@ bleach~=6.0.0
 bokeh~=3.1.1
     # via
     #   -r /opt/environments/tess/basic.pip
+    #   jupyter-bokeh
     #   lightkurve
     #   panel
     #   pylima
@@ -336,8 +337,6 @@ docutils~=0.18.1
     #   nbsphinx
     #   sphinx
     #   sphinx-rtd-theme
-dpcpp-cpp-rt~=2023.2.0
-    # via mkl-fft
 dulwich~=0.21.5
     # via poetry
 dynesty~=1.2.3
@@ -401,7 +400,7 @@ filelock~=3.12.2
     #   torch
     #   triton
     #   virtualenv
-flake8~=6.0.0
+flake8~=6.1.0
     # via -r /opt/common-env/testing.pip
 flatbuffers~=23.5.26
     # via tensorflow
@@ -532,18 +531,6 @@ iniconfig~=2.0.0
     # via pytest
 installer~=0.7.0
     # via poetry
-intel-cmplr-lib-rt~=2023.2.0
-    # via dpcpp-cpp-rt
-intel-cmplr-lic-rt~=2023.2.0
-    # via
-    #   dpcpp-cpp-rt
-    #   intel-opencl-rt
-intel-opencl-rt~=2023.2.0
-    # via dpcpp-cpp-rt
-intel-openmp~=2023.2.0
-    # via
-    #   dpcpp-cpp-rt
-    #   mkl
 ipydatawidgets~=4.3.5
     # via
     #   -r /opt/common-env/jupyter.pip
@@ -615,6 +602,7 @@ ipywidgets~=8.0.7
     #   ipyvolume
     #   ipyvue
     #   jupyter-aas-timeseries
+    #   jupyter-bokeh
     #   pythreejs
     #   sidecar
 isoduration~=20.11.0
@@ -625,7 +613,7 @@ jax~=0.4.13
     # via -r /opt/environments/tess/ml.pip
 jaxlib~=0.4.13
     # via -r /opt/environments/tess/ml.pip
-jedi~=0.18.2
+jedi~=0.19.0
     # via ipython
 jeepney~=0.8.0
     # via
@@ -674,6 +662,8 @@ juliet~=2.2.1
     # via -r /opt/environments/tess/tess.pip
 jupyter-aas-timeseries~=0.1.7
     # via aas-timeseries
+jupyter-bokeh~=3.0.7
+    # via -r /opt/common-env/jupyter.pip
 jupyter-client~=8.3.0
     # via
     #   -r /opt/common-env/jupyter.pip
@@ -704,7 +694,7 @@ jupyter-lsp~=2.2.0
     # via jupyterlab
 jupyter-packaging~=0.12.3
     # via -r /opt/common-env/jupyter.pip
-jupyter-resource-usage~=0.7.2
+jupyter-resource-usage~=1.0.0
     # via -r /opt/common-env/jupyter.pip
 jupyter-server~=2.7.0
     # via
@@ -773,6 +763,7 @@ libclang~=16.0.6
 lightkurve @ git+https://github.com/jaytmiller/lightkurve@octarine-staging
     # via
     #   -r /opt/environments/tess/build-hints.pip
+    #   -r /opt/environments/tess/tess.pip
     #   stella
 linkify-it-py~=2.0.2
     # via panel
@@ -861,15 +852,6 @@ minikanren~=1.0.3
     # via aesara
 mistune~=3.0.1
     # via nbconvert
-mkl~=2023.2.0
-    # via
-    #   -r /opt/environments/tess/basic.pip
-    #   mkl-fft
-    #   mkl-service
-mkl-fft~=1.3.0
-    # via -r /opt/environments/tess/basic.pip
-mkl-service~=2.4.0
-    # via -r /opt/environments/tess/basic.pip
 ml-dtypes~=0.2.0
     # via
     #   jax
@@ -923,7 +905,7 @@ ndcube~=2.1.3
     # via specutils
 nersc-refresh-announcements @ git+https://github.com/spacetelescope/nersc-refresh-announcements@octarine-updates
     # via -r /opt/common-env/jupyter.pip
-nest-asyncio~=1.5.6
+nest-asyncio~=1.5.7
     # via ipykernel
 networkx==3.1
     # via
@@ -992,7 +974,6 @@ numpy~=1.21.6
     #   k2flix
     #   lightkurve
     #   matplotlib
-    #   mkl-fft
     #   ml-dtypes
     #   mpl-scatter-density
     #   ndcube
@@ -1147,7 +1128,7 @@ param~=1.13.0
     # via
     #   panel
     #   pyviz-comms
-paramiko~=3.2.0
+paramiko~=3.3.1
     # via -r /opt/environments/tess/tess.pip
 parsley==1.3
     # via crds
@@ -1155,7 +1136,7 @@ parso~=0.8.3
     # via jedi
 partd~=1.4.0
     # via dask
-pathspec~=0.11.1
+pathspec~=0.11.2
     # via black
 patsy~=0.5.3
     # via
@@ -1183,7 +1164,7 @@ pillow~=10.0.0
     #   sphinx-astropy
 pip-tools~=7.1.0
     # via -r /opt/common-env/common.pip
-pipdeptree~=2.11.0
+pipdeptree~=2.12.0
     # via -r /opt/common-env/common.pip
 pixiedust~=1.1.19
     # via -r /opt/environments/tess/tess.pip
@@ -1191,7 +1172,7 @@ pkginfo~=1.9.6
     # via poetry
 pkgutil-resolve-name~=1.3.10
     # via jsonschema
-platformdirs~=3.9.1
+platformdirs~=3.10.0
     # via
     #   black
     #   jupyter-core
@@ -1250,7 +1231,7 @@ pybind11~=2.11.1
     #   -r /opt/environments/tess/basic.pip
     #   stella
     #   vbbinarylensing
-pycodestyle~=2.10.0
+pycodestyle~=2.11.0
     # via flake8
 pycparser==2.21
     # via cffi
@@ -1262,7 +1243,7 @@ pyeebls~=0.1.6
     # via astrobase
 pyerfa~=2.0.0.3
     # via astropy
-pyflakes~=3.0.1
+pyflakes~=3.1.0
     # via flake8
 pygments~=2.15.1
     # via
@@ -1279,7 +1260,7 @@ pymc3~=3.11.4
     #   starry
 pymc3-ext~=0.1.1
     # via starry
-pymultinest==2.11
+pymultinest==2.12
     # via -r /opt/environments/tess/tess.pip
 pynacl~=1.5.0
     # via paramiko
@@ -1441,6 +1422,7 @@ scikit-learn~=1.3.0
     #   astrobase
     #   astroml
     #   lightkurve
+    #   stella
 scipy~=1.10.1
     # via
     #   -r /opt/environments/tess/basic.pip
@@ -1510,7 +1492,6 @@ six~=1.16.0
     #   google-pasta
     #   html5lib
     #   k2plr
-    #   mkl-service
     #   patsy
     #   pyastronomy
     #   pyds9
@@ -1520,8 +1501,6 @@ six~=1.16.0
     #   rfc3339-validator
     #   spectral-cube
     #   tensorflow
-sklearn==0.0.post7
-    # via stella
 sniffio~=1.3.0
     # via anyio
 snowballstemmer~=2.2.0
@@ -1587,16 +1566,14 @@ statsmodels~=0.14.0
     # via -r /opt/environments/tess/tess.pip
 stdlib-list~=0.9.0
     # via pydeps
-stella @ git+https://github.com/afeinstein20/stella.git
-    # via -r /opt/environments/tess/build-hints.pip
+stella @ git+https://github.com/jaytmiller/stella.git@scikit-learn-update
+    # via
+    #   -r /opt/environments/tess/build-hints.pip
+    #   -r /opt/environments/tess/tess.pip
 stsci-rtd-theme~=1.0.0
     # via -r /opt/common-env/docs.pip
 sympy==1.12
     # via torch
-tbb~=2021.10.0
-    # via
-    #   intel-opencl-rt
-    #   mkl
 tblib~=2.0.0
     # via distributed
 tenacity~=8.2.2
@@ -1656,7 +1633,7 @@ tomli~=2.0.1
     #   pyproject-hooks
     #   pytest
     #   setuptools-scm
-tomlkit~=0.11.8
+tomlkit~=0.12.1
     # via
     #   jupyter-packaging
     #   poetry

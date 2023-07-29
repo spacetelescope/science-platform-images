@@ -62,10 +62,7 @@ jobs:
 
       - name: Git Diffs (Frozen Version Specs)
         shell: bash
-        run: |
-           source setup-env
-           scripts/image-freeze
-           git diff
+        run: git diff
 
       - name: Image Functional Tests
         shell: bash

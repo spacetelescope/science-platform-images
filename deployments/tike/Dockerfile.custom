@@ -57,9 +57,6 @@ COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.yml /opt/environments/tess/
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.conda /opt/environments/tess/
 RUN /opt/common-scripts/env-conda tess
 
-# For Stella
-ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
-
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.pip /opt/environments/tess/
 RUN /opt/common-scripts/env-compile tess
 

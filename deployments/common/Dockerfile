@@ -35,18 +35,26 @@ ENV PIP_SWITCHES=$PIP_SWITCHES
 ARG CONDA_VER=conda
 ENV CONDA_VER=${CONDA_VER}
 
-# Clearing caches at the end of each RUN saves image space
-# but seems to mess up dependency debug tools like pipdeptree.
-# NOT setting this is also a requirement of effective Docker
-# buildkit cache use.  ATM jupyter/docker-stacks will still wipe
-# out caches created prior to the common base image regardless.
-ARG CLEAR_PKG_CACHES="1"
-ENV CLEAR_PKG_CACHES=${CLEAR_PKG_CACHES}
+# Directories used for Docker RUN caching
+ARG CACHE_DIRS=""
+ENV CACHE_DIRS=${CACHE_DIRS}
+
+# ----- # Clearing caches at the end of each RUN saves image space
+# ----- # but seems to mess up dependency debug tools like pipdeptree.
+# ----- # NOT setting this is also a requirement of effective Docker
+# ----- # buildkit cache use.  ATM jupyter/docker-stacks will still wipe
+# ----- # out caches created prior to the common base image regardless.
+# ----- ARG CLEAR_PKG_CACHES="1"
+# ----- ENV CLEAR_PKG_CACHES=${CLEAR_PKG_CACHES}
 
 # These are duplicated in jupyter/docker-stacks so need to be changed
 # in both locations.  Better than hard coding in scripts though.
 ENV NB_UID=1000
 ENV NB_GID=100
+
+RUN mkdir -p /home/jovyan/.cache && chown -R jovyan:users /home/jovyan/.cache
+RUN mkdir -p /home/jovyan/.conda/pkgs && chown -R jovyan:users /home/jovyan/.conda/pkgs
+RUN mkdir -p /opt/conda/pkgs &&  chown -R jovyan:users /opt/conda/pkgs
 
 # Breaking into separate runs will build slower but also defines storage
 # consumption in docker history.
@@ -99,6 +107,9 @@ RUN /opt/common-scripts/apt-install \
         python-setuptools \
         graphviz \
         libopenblas-dev
+
+# Install Rust language
+RUN /opt/common-scripts/apt-install cargo rustc
 
 # Libraries for FITS, DS9, ML
 RUN /opt/common-scripts/apt-install \

@@ -35,7 +35,7 @@ RUN   /opt/common-scripts/install-common  base
 # All copies below are factored to enable Docker idempotence / build caching
 # e.g. changing tests should not result in re-installing conda
 
-#COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
+COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environments/roman-cal/
 
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/

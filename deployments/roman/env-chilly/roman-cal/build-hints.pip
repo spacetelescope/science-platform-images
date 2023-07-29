@@ -1,4 +1,4 @@
-sphinx<6.0.0
+#sphinx<6.0.0
 #jupyterlab-server<2.17.0
 
 
@@ -6,4 +6,6 @@ sphinx<6.0.0
 #15 122.3     The user requested ipyvolume==0.5.2
 #15 122.3     glue-jupyter 0.15.0 depends on ipyvolume>=0.6.0a10; python_version >= "3.8"
 
-glue-jupyter<0.15.0
+#glue-jupyter<0.15.0
+
+git+https://github.com/pymssql/pymssql.git@v2.2.8

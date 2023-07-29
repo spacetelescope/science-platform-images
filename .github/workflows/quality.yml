@@ -39,7 +39,7 @@ jobs:
         continue-on-error: false
         run: |
            source setup-env
-           scripts/sscan-yaml `find deployments scripts -name '*.yaml' -o -name '*.yml'`
+           scripts/sscan-yaml `find deployments .github scripts -name '*.yaml' -o -name '*.yml'`
 
       - name: Flake8 Scan
         shell: bash
