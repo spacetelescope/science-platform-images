@@ -37,7 +37,8 @@ fi
 # Taken from the docker-stacks Makefile to enable adding --build-arg's again
 build_jh() {
     STACK=$1;  shift
-    docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./${STACK} --build-arg OWNER=${OWNER} --progress plain $*
+    add-caching ${STACK}/Dockerfile >${STACK}/Dockerfile.cached
+    docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./${STACK} --file ${STACK}/Dockerfile.cached --build-arg OWNER=${OWNER} --progress plain $*
 }
 
 build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=ubuntu:${UBUNTU_TAG}

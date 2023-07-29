@@ -34,27 +34,30 @@ fi
 # Build STScI shared layer for all deployments
 cd ${COMMON_IMAGE_DIR}
 echo "========================= Building Common Image ========================"
-time docker build --progress plain --tag ${COMMON_ID} --tag notebook-common \
+add-caching Dockerfile >Dockerfile.cached
+time docker build \
+       --progress plain \
+       --tag ${COMMON_ID} \
+       --tag notebook-common \
        --build-arg BASE_IMAGE=${BASE_IMAGE} \
        --build-arg USE_FROZEN=${USE_FROZEN} \
        --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
-       --build-arg CLEAR_PKG_CACHES="${CLEAR_PKG_CACHES}" \
        --build-arg CONDA_VER=${CONDA_VER} \
-       --file Dockerfile \
-       .
-
-optional_docker_prune
+       --file Dockerfile.cached  .
+rm Dockerfile.cached
 
 # ..................................................................................
 # Build custom layers for this deployment
 cd ${IMAGE_DIR}
 echo "========================= Building $IMAGE_ID USE_FROZEN=${USE_FROZEN} =========================="
-time docker build --progress plain --tag ${IMAGE_ID} --tag "notebook-${DEPLOYMENT_NAME}" \
+add-caching Dockerfile >Dockerfile.cached
+time docker build \
+     --progress plain \
+     --tag ${IMAGE_ID} \
+     --tag "notebook-${DEPLOYMENT_NAME}" \
      --build-arg BASE_IMAGE=${COMMON_ID} \
-     --file Dockerfile \
-     .
-
-optional_docker_prune
+     --file Dockerfile.cached .
+rm Dockerfile.cached
 
 # ..................................................................................
 # Optionally update requirements used by frozen and chilly builds.

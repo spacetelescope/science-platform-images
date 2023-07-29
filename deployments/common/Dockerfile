@@ -163,6 +163,8 @@ ENV BASH_ENV=/etc/bash.env
 USER ${NB_UID}
 COPY default-home-contents/   /etc/default-home-contents
 
+ENV  PIP_TOOLS_CACHE_DIR=/home/jovyan/.cache/pip
+
 # ----------------------------------------------------------------------
 # YYYY SEC
 

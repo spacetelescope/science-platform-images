@@ -8,9 +8,9 @@ Step 2 of the pip-tools workflow:  resolve pip versions from .pip package list f
 
 Nominal pip-tools workflow:
 
-    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    1. /opt/common-scripts/env-conda   <env>    # Create minimal conda environment.
     2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
-    3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
+    3. /opt/common-scripts/env-sync    <env>    # Install requirements.txt,  remove anything else
     4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
     ...
 
@@ -113,5 +113,3 @@ rm -f ${env_reqs}  # ... hence this delete is REQUIRED
 
 # The real work of determining the version solution...  outputs FROZEN pip reqs
 pip-compile  -v  --resolver=backtracking --output-file ${env_reqs} --pip-args "${PIP_SWITCHES}"  ${all_constraints}
-
-/opt/common-scripts/env-clean
