@@ -55,6 +55,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- Jwebbinar -------------------------------------
@@ -74,6 +75,7 @@ RUN /opt/common-scripts/env-sync jwebbinar
 
 # REMAINING ENV
 COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebbinar/
+
 
 # --------------------------- Jdaviz -------------------------------------
 
@@ -101,8 +103,10 @@ COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebb
 
 # This should NOT be necessary, but as of 24 May 2022 it was needed to get the
 # lab extension working for Jdaviz
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-sidecar
+#RUN jupyter labextension install @jupyter-widgets/jupyterlab-sidecar
 # ========================= vvvvv Generic vvvvv  =========================
+
+USER $NB_UID
 
 # Fix JS encoding issue that prevents widgets from displaying properly in notebook mode
 # See https://github.com/jupyter/notebook/issues/6033 for details
@@ -110,7 +114,6 @@ RUN sed -i 's/data-base-url="{{base_url | urlencode}}"/data-base-url="{{base_url
 
 # ----------------------------------------------------------------------
 
-USER $NB_UID
 RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 
 # ----------------------------------------------------------------------
@@ -119,7 +122,7 @@ RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 
 USER root
 
-RUN find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID}
+RUN ( find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} ) || true
 
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.
@@ -128,20 +131,22 @@ RUN  cp -r /home/jovyan/.local /etc/default-home-contents && \
      cp -r /home/jovyan/.jupyter /etc/default-home-contents
 COPY global_bashrc /home/jovyan
 RUN  cat /home/jovyan/global_bashrc >> /etc/bash.bashrc  && \
+     cat /home/jovyan/global_bashrc >> /etc/bash.env  && \
      rm /home/jovyan/global_bashrc
-
-# Fix certs in conda for application level SSL, e.g. pass image-test running on CI-node
-RUN /opt/common-scripts/fix-certs
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
+
+# ----------------------------------------------------------------------
+
+COPY --chown=${NB_UID}:${NB_GID}  MISSION_VERSION /opt
 
 # ----------------------------------------------------------------------
 # YYYY SEC
 
 USER root
 #RUN  /opt/common-scripts/npm-audit  /usr/share/npm/node_modules/socks-proxy-agent  fix  && \
-RUN   /opt/common-scripts/env-clean
+#RUN   /opt/common-scripts/env-clean
 
 #RUN  find /opt/conda -name yarn.lock | grep jupyterlab/staging | xargs rm -f || true
 
@@ -149,6 +154,16 @@ RUN   /opt/common-scripts/env-clean
 # For standalone operation outside JupyterHub,  note that  /etc also includes
 # common home directory files.   post-start-hook may not include everything required
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
+
+# Enable deletion of non-empty directories from lab GUI
+RUN echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+      >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+      >> /etc/jupyter/jupyter_server_config.py &&\
+    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
+    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
 USER $NB_USER
 WORKDIR /home/$NB_USER

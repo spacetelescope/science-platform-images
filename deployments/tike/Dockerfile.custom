@@ -10,11 +10,32 @@ RUN curl --silent --show-error https://www.astro.princeton.edu/~jhartman/vartool
    tar zxf vartools-1.38.tar.gz &&\
    cd vartools-1.38 &&\
    mkdir -p /usr/local &&\
-   ./configure --prefix=/use/local &&\
+   ./configure --prefix=/usr/local &&\
    make &&\
    make install &&\
    cd .. &&\
    rm -rf vartools-1.38 vartools-1.38.tar.gz
+
+# ----------------------------------------------------------------------
+# pymultinest and pycuba native libraries
+#
+
+RUN git clone https://github.com/JohannesBuchner/MultiNest &&\
+    cd MultiNest/build &&\
+    cmake .. &&\
+    make &&\
+    cp ../lib/libmultinest.so  /usr/local/lib &&\
+    cd ../.. &&\
+    rm -rf MultiNest
+
+RUN export CFLAGS=-fPIC &&\
+    git clone https://github.com/JohannesBuchner/cuba/ &&\
+    cd cuba &&\
+    ./configure &&\
+    ./makesharedlib.sh &&\
+    cp libcuba.so /usr/local/lib &&\
+    cd .. &&\
+    rm -rf cuba
 
 # ----------------------------------------------------------------------
 # Install environments
@@ -26,6 +47,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- TESS -------------------------------------
@@ -34,6 +56,9 @@ COPY --chown=${NB_UID}:${NB_GID} env-frozen/tess/  /opt/env-frozen/tess/
 COPY --chown=${NB_UID}:${NB_GID} env-chilly/tess/  /opt/env-chilly/tess/
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.yml /opt/environments/tess/
 RUN /opt/common-scripts/env-conda tess
+
+# For Stella
+ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
 
 COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.pip /opt/environments/tess/
 RUN /opt/common-scripts/env-compile tess
@@ -51,7 +76,7 @@ RUN /opt/common-scripts/env-src-install  tess  batman-package
 
 RUN /opt/common-scripts/env-src-install  tess  radvel
 
-RUN /opt/common-scripts/env-src-install  tess  juliet
+# RUN /opt/common-scripts/env-src-install  tess  juliet
 
 RUN /opt/common-scripts/env-src-install  tess  tvguide
 
@@ -65,5 +90,8 @@ RUN /opt/common-scripts/env-src-install  tess  allesfitter
 USER $NB_USER
 RUN  /opt/common-scripts/npm-audit  /opt/conda/envs/tess/lib/python3.8/site-packages/panel  fix  && \
      /opt/common-scripts/env-clean
+
+# Suppress tensorflow warnings by default, ERROR and up only
+ENV TF_CPP_MIN_LOG_LEVEL=2
 
 # ========================= ^^^^^ Custom  ^^^^^ =========================

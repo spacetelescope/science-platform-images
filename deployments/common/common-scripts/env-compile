@@ -66,6 +66,7 @@ source /opt/common-scripts/env-activate ${env}
 extra_pkgs=${*:-/opt/common-env/*.pip}
 env_pip="/opt/environments/${env}/*.pip"
 hints="/opt/environments/${env}/build-hints.pip"
+common_hints="/opt/environments/common-hints.pip"
 
 case ${USE_FROZEN} in
 
@@ -74,12 +75,17 @@ case ${USE_FROZEN} in
     # 2. From the environments directory for ${env}
     # Stash the floating build-hints requirements needed for chilly builds here since these
     # are the ones used to compute the frozen build.
-    0) all_constraints="${env_pip} ${extra_pkgs}"
+    0) all_constraints="${env_pip} ${extra_pkgs} ${common_hints}"
        rm -f /opt/env-chilly/${env}/*.pip
        if [ -f ${hints} ]; then
            cp ${hints}  /opt/env-chilly/${env}
        else
            echo >/opt/env-chilly/${env}/build-hints.pip
+       fi
+       if [ -f ${common_hints} ]; then
+           cp ${common_hints}  /opt/env-chilly/${env}
+       else
+           echo >/opt/env-chilly/common-hints.pip
        fi
        ;;
 
@@ -92,7 +98,7 @@ case ${USE_FROZEN} in
     # The chilly build honors both the ~= fuzzed frozen requirements as well as the
     # original floating requirements,  some of which may be stricter than ~=x.y.z
     # and required to make the build work at all.
-    2) all_constraints=$(ls /opt/env-chilly/${env}/{requirements.txt,build-hints.pip})
+    2) all_constraints="$(ls /opt/env-chilly/${env}/{requirements.txt,build-hints.pip,common-hints.pip})"
        ;;
 esac
 
@@ -106,6 +112,6 @@ done
 rm -f ${env_reqs}  # ... hence this delete is REQUIRED
 
 # The real work of determining the version solution...  outputs FROZEN pip reqs
-pip-compile  -v  --output-file ${env_reqs} --pip-args "${PIP_SWITCHES}"  ${all_constraints}
+pip-compile  -v  --resolver=backtracking --output-file ${env_reqs} --pip-args "${PIP_SWITCHES}"  ${all_constraints}
 
 /opt/common-scripts/env-clean

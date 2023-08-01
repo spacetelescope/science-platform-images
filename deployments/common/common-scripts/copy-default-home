@@ -1,0 +1,22 @@
+#! /bin/bash -e
+
+# This script conditionally initializes user $HOME,  once.
+# To re-init you must rm ${HOME}/.sp-initialized
+
+if [ ! -f ${HOME}/.sp-initialized ]; then
+    echo "Initializing $HOME with config defaults."
+    #echo "Deleting initial config directories to remove user added files."
+    #( cd /etc/default-home-contents/; find . -type d ) | xargs rm -rf || true
+    echo "Copying initial config files."
+    rsync -r  /etc/default-home-contents/ ${HOME}
+    cat > ${HOME}/.sp-initialized  <<EOF
+Remove this file to re-initialize default configuration. The only
+configuration which will be affected can be seen in
+/etc/default-home-contents/, so you may need to remove custom
+configuration files yourself, if you've added any. Our policy is not
+to delete anything from your home directory.
+EOF
+else
+    echo "Skipping default config init,  $HOME already initialized."
+fi
+

@@ -55,6 +55,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- Jwebbinar -------------------------------------
@@ -74,6 +75,7 @@ RUN /opt/common-scripts/env-sync jwebbinar
 
 # REMAINING ENV
 COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebbinar/
+
 
 # --------------------------- Jdaviz -------------------------------------
 
@@ -101,4 +103,4 @@ COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebb
 
 # This should NOT be necessary, but as of 24 May 2022 it was needed to get the
 # lab extension working for Jdaviz
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-sidecar
+#RUN jupyter labextension install @jupyter-widgets/jupyterlab-sidecar

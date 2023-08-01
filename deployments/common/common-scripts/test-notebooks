@@ -13,6 +13,7 @@ Run notebooks preceded by "!" serially,  as in !<notebookpath> with no spaces.
 
 import sys
 import os.path
+import stat
 import subprocess
 import shutil
 import tempfile
@@ -23,9 +24,11 @@ import datetime
 from concurrent.futures import ProcessPoolExecutor
 
 
-def test_notebooks(kernel, notebooks, jobs=1):
+def test_notebooks(kernel, notebooks, jobs=1, timeout=30 * 60):
     """Run all the notebooks specified by globbing `notebook_globs` using `kernel`,
     running `jobs` notebooks in parallel subprocesses.
+
+    Notebooks running for longer than `timeout` seconds are termimated.
 
     Return   count of failed notebooks
     """
@@ -37,7 +40,10 @@ def test_notebooks(kernel, notebooks, jobs=1):
     failing_notebooks = []
     with ProcessPoolExecutor(max_workers=jobs) as e:
         for (failed, notebook, output) in e.map(
-            test_notebook, [kernel] * len(notebooks), notebooks
+            test_notebook,
+            [kernel] * len(notebooks),
+            notebooks,
+            [timeout] * len(notebooks),
         ):
             sys.stdout.write(output)
             sys.stdout.flush()
@@ -54,15 +60,18 @@ def divider(title, char="*", width=100):
 # Because test_notebook chdir's,  it needs to be run serially or as a true subprocess.
 
 
-def test_notebook(kernel, notebook):
+def test_notebook(kernel, notebook, timeout=30 * 60):
     """Run one `notebook` on JupyterHub `kernel` with temporary output."""
 
     if notebook.startswith("#"):
-        return (0, divider(f"Skipping {notebook}"))
+        return (0, divider(f"Skipping {notebook}"), " ")
 
     base_nb = os.path.basename(notebook)
 
     start = datetime.datetime.now()
+
+    # print(divider(f"Starting test of {notebook} on {kernel}"))
+    # sys.stdout.flush()
 
     output = divider(f"Testing {base_nb} on kernel {kernel}")
 
@@ -75,6 +84,7 @@ def test_notebook(kernel, notebook):
         test_dir = temp_dir + "/notebook-test"
         shutil.copytree(source_path, test_dir)
         os.chdir(test_dir)
+        os.chmod(test_dir, stat.S_IRWXU)
 
         if notebook.endswith(".ipynb"):
             cmd = f"papermill --no-progress-bar {os.path.basename(notebook)} test.ipynb -k {kernel}"
@@ -84,7 +94,11 @@ def test_notebook(kernel, notebook):
             raise ValueError(f"Unhandled test file extension for: {notebook}")
 
         result = subprocess.run(
-            cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+            cmd.split(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            timeout=timeout,
         )  # maybe succeeds
 
         err = result.returncode
@@ -107,6 +121,12 @@ def main():
     parser.add_argument(
         "--jobs", type=int, default=1, help="Number of notebooks to run in parallel."
     )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=30 * 60,
+        help="Max runtime of any particular notebook.",
+    )
     args = parser.parse_args()
 
     # Sometimes application file caching causes collisions making parallel jobs infeasible
@@ -116,12 +136,14 @@ def main():
     parallel_notebooks = [
         notebook for notebook in args.notebooks if not notebook.startswith("!")
     ]
-    parallel_errs = test_notebooks(args.kernel, parallel_notebooks, args.jobs)
+    parallel_errs = test_notebooks(
+        args.kernel, parallel_notebooks, args.jobs, args.timeout
+    )
 
     serial_notebooks = [
         notebook[1:] for notebook in args.notebooks if notebook.startswith("!")
     ]
-    serial_errs = test_notebooks(args.kernel, serial_notebooks, 1)
+    serial_errs = test_notebooks(args.kernel, serial_notebooks, 1, args.timeout)
 
     if parallel_notebooks or serial_notebooks:
         errs = parallel_errs + serial_errs

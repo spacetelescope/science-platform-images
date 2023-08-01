@@ -9,8 +9,9 @@ set -eu
 
 PATH_TO_EXPORT=$1
 WHERE_TO_PUT_IT=${2:-`pwd`}
+ACTUAL_IMAGE=${3:-${IMAGE_ID}}
 
-CONTAINER=$(docker run -d ${IMAGE_ID} /bin/bash)
+CONTAINER=$(docker run -d ${ACTUAL_IMAGE} /bin/bash)
 
 docker cp ${CONTAINER}:${PATH_TO_EXPORT}  ${WHERE_TO_PUT_IT}
 

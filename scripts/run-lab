@@ -4,4 +4,6 @@
 
 export IMAGE_RUN_PARS="$IMAGE_RUN_PARS -p 8888:8888"
 
-exec image-exec  $*
+source image-dev-pars
+
+exec image-exec

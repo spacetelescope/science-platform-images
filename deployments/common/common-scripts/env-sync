@@ -27,6 +27,4 @@ echo "===== Installing required pip packages for environment ${env}..."
 
 pip-sync --verbose --pip-args "${PIP_SWITCHES}" --python-executable `which python`   /opt/env-frozen/${env}/requirements.txt
 
-/opt/common-scripts/fix-conda-certs   # new env may install new certs
-
 /opt/common-scripts/env-clean

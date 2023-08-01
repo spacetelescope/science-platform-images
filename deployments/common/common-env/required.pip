@@ -1,0 +1,7 @@
+# packages required for the framework to work
+
+# needed to install a kernel
+ipykernel
+
+# needed to run headless notebook tests
+papermill

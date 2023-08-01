@@ -10,9 +10,10 @@ if [[ "${CLEAR_PKG_CACHES}" == "1" ]]; then
     ${CONDA_VER} clean -fya
     # ${CONDA_VER} build purge-all
     rm -rf $HOME/.cache/pip
+    rm -rf $HOME/.cache/pip-tools
     echo "===== Clearing jupyterlab and npm caches..."
     jupyter lab clean -y
     npm cache clean --force
     yarn cache clean --force
-    rm -rf "/home/${NB_USER}/.node-gyp"
+    rm -rf $HOME/.node-gyp
 fi

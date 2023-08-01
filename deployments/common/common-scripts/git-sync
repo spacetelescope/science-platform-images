@@ -1,141 +1,43 @@
-#!/usr/bin/env python
+#! /bin/bash -eu
 
-# Inspired by https://github.com/jupyterhub/nbgitpuller
+if [ $# -ne 3 ]; then
+  echo "usage:  git-sync <url> <branch> <where>"
+  exit 2
+fi
 
-import os
-import shutil
-import subprocess
-import logging
-import argparse
-import datetime
+URL=$1
+BRANCH=$2
+WHERE=$3
 
+ARCHIVE=${HOME}/.git-sync-archive
+CLONEARC=${ARCHIVE}/`basename $WHERE`
 
-def run(cmd, check=False):
-    cmd = cmd.split() if isinstance(cmd, str) else cmd
-    return subprocess.run(tuple(cmd), check=check).returncode
-
-
-def out(cmd, cwd=None, check=False):
-    cmd = cmd.split() if isinstance(cmd, str) else cmd
-    return subprocess.run(tuple(cmd), capture_output=True, text=True, check=check, cwd=cwd).stdout
-
-
-class GitSync(object):
-
-    def __init__(self, git_url, branch_name, repo_dir):
-        self.git_url = git_url
-        self.branch_name = branch_name
-        self.repo_dir = repo_dir
-
-        logging.basicConfig(
-            format='[%(asctime)s] %(levelname)s -- %(message)s',
-            level=logging.DEBUG
-        )
-
-        self.sync()
-
-    def restore_deleted_files(self):
-        files = out('git ls-files --deleted -z', cwd=self.repo_dir, check=True).split('\0')
-        for f in files:
-            if f:  # why is this here? there was a reason...
-                run(f'git checkout origin/{self.branch_name} --'.split() + [f])
-                logging.info(f'Restored {f}')
-
-    def move_files(self, files):
-        for f in files:
-            if os.path.exists(f):
-                # if there's a file extension, put the timestamp before it
-                ts = datetime.datetime.now().strftime('__%Y-%m-%d-%H-%M')
-                path_head, path_tail = os.path.split(f)
-                path_tail = ts.join(os.path.splitext(path_tail))
-                new_file_name = os.path.join(path_head, path_tail)
-                shutil.move(f, new_file_name)
-                logging.info(f'Moved {f} to {new_file_name} to avoid conflict with upstream')
-
-    def find_untracked_local_files(self):
-        ignore = ['.gitignore', 'README.md', '']
-
-        untracked = [f for f in out('git ls-files').split('\n') if f not in ignore]
-        for f in [u for u in untracked if u in self.find_upstream_updates(['A', 'M'])]:
-            logging.debug('Found untracked local file: {}'.format(f))
-
-        return untracked
-
-    def find_modified_local_files(self):
-        files = [f for f in out(f'git ls-tree -r {self.branch_name} --name-only').split('\n') if len(f) > 0]
-
-        modified = []
-        for f in files:
-            retcode = run('git diff -w --exit-code'.split() + [f])
-            if retcode != 0:
-                modified.append(f)
-
-        return modified
-
-    def find_upstream_updates(self, modes):
-        files = []
-        for line in out(f'git log ..origin/{self.branch_name} --oneline --name-status',
-                        cwd=self.repo_dir).split('\n'):
-            for m in modes:
-                if line.startswith(m):
-                    f = os.path.relpath(line.split('\t', 1)[1], self.repo_dir)
-                    logging.debug(f'Upstream file [{m}]: {f}')
-                    files.append(f)
-                    break
-
-        return files
-
-    def merge(self):
-        logging.info(f'Merging {self.branch_name} into local clone...')
-        user_email = 'archive@stsci.edu'
-        user_name = 'git-sync'
-        run(f'git -c user.email={user_email} -c user.name={user_name} merge -Xours --no-edit origin/{self.branch_name}')
-
-    def prepare_clone(self):
-        modified_upstream_files = self.find_upstream_updates(['A'])
-        modified_local_files = self.find_modified_local_files()
-        untracked_local_files = self.find_untracked_local_files()
-
-        # move certain files to avoid conflicts with upstream
-        # - tracked local files that have been modified
-        # - untracked local files that have been created, where upstream
-        #   files of the same names have also been created or modified
-        files_to_move = modified_local_files + modified_upstream_files
-        files_to_move.extend([f for f in untracked_local_files if modified_upstream_files])
-
-        # BUG/TODO: if a local file has been removed via "git rm", check it out before moving files
-        self.move_files(files_to_move)
-
-        # if local files have been removed, but still exist upstream, restore them
-        self.restore_deleted_files()
-
-    def update_remotes(self):
-        logging.info(f'Fetching remotes from {self.git_url}...')
-        run("git fetch")
-
-    def init_repo(self):
-        logging.info(f'Repo {self.repo_dir} doesn\'t exist. Cloning...')
-        run(f'git clone --filter=blob:none  --branch {self.branch_name} {self.git_url} {self.repo_dir}')
-        logging.info(f'Repo {self.repo_dir} initialized')
-
-    def sync(self):
-        if not os.path.exists(self.repo_dir):
-            self.init_repo()
-        else:
-            os.chdir(self.repo_dir)
-            self.update_remotes()
-            self.prepare_clone()
-            self.merge()
-        logging.info('Done.')
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Synchronizes a github repository with a local repository.'
-    )
-    parser.add_argument('git_url', help='Url of the repo to sync')
-    parser.add_argument('branch_name', default='main', help='Branch of repo to sync', nargs='?')
-    parser.add_argument('repo_dir', default='.', help='Path to clone repo under', nargs='?')
-    args = parser.parse_args()
-
-    GitSync(args.git_url, args.branch_name, args.repo_dir)
+if [ -d ${CLONEARC} ]; then   # URL's repo is already archived
+    echo "Archive found for ${URL} at ${CLONEARC}."
+    if [ -d ${WHERE} ]; then  # URL has already been re-cloned
+        echo "Updating ${WHERE} from ${URL} at branch ${BRANCH}"
+        cd ${WHERE}
+        chmod +w -R .
+        git config --global --add safe.directory ${WHERE}
+        git pull origin ${BRANCH}
+    else  # URL needs first clone after archiving
+        echo "Cloning ${WHERE} from ${URL} at branch ${BRANCH}"
+        cd ${HOME}
+        git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+    fi
+else  # URL's archive dir does not exist
+    echo "No archive found for ${URL} at ${CLONEARC}."
+    mkdir -p ${ARCHIVE}
+    if [ -d ${WHERE} ]; then  # URL's original clone does exist.
+        echo "Archiving old repo ${WHERE} at ${CLONEARC}."
+        chmod +w -R ${WHERE}
+        mv ${WHERE} ${ARCHIVE}
+    else # URL was never downloaded pre-archiving
+        echo "Faking archive for ${URL} since no clone found at ${WHERE}."
+        mkdir -p ${CLONEARC}  # make a fake archive
+    fi
+    echo "Cloning ${WHERE} from ${URL} at branch ${BRANCH} after archving."
+    cd ${HOME}
+    git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+fi
+chmod -w -R ${WHERE}

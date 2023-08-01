@@ -1,0 +1,19 @@
+#! /bin/bash -eu
+
+source `dirname $0`/kernel-utils
+
+usage "$# -lt 1" "<name> [<jh-display-name>]"
+
+ENVNAME=$1
+DISPNAME=${2:-${ENVNAME}}
+
+ENVDIR=${ENVROOT}/venv/${ENVNAME}
+
+banner "Creating virtual environment ${ENVNAME} at ${ENVDIR}"
+python -m venv ${ENVDIR}
+source kernel-activate ${ENVNAME}
+pip install --upgrade ipykernel pip
+
+echo "---------------------------------------------------------------"
+python -m ipykernel install --user --name=${ENVNAME}  --display-name "${DISPNAME}"
+banner "Activate virtual environment with: 'source kernel-activate ${ENVNAME}'"

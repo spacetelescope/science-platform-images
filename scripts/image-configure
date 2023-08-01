@@ -2,18 +2,15 @@
 
 # Used to create setup-env files for CI/CD runs based on the template and simple inputs
 
-cp   setup-env.template   setup-env
+USE_FROZEN=${1:-0}     # FLOATING=0,  FROZEN=1,  CHILLY=2
+perl -pi -e "s/USE_FROZEN=[\d]/USE_FROZEN=$USE_FROZEN/g" setup-env-ssm
 
-DEPLOYMENT_NAME=$1
-perl -pi -e "s/DEPLOYMENT_NAME=cluster-name/DEPLOYMENT_NAME=$DEPLOYMENT_NAME/g" setup-env
+FREEZE_CHILL=${2:-1}   # boolean 0 or 1 to save newly frozen requirements, does not add/commit/pr/merge
+perl -pi -e "s/FREEZE_CHILL=[\d]/FREEZE_CHILL=$FREEZE_CHILL/g" setup-env-ssm
 
-USE_FROZEN=${2:-0}
-perl -pi -e "s/USE_FROZEN=[\d]/USE_FROZEN=$USE_FROZEN/g" setup-env
+CAL_VERSION=${3:-latest}   # latest, literal version e.g. 0.9.0, or none to use last cm'ed mode.
+                           # last cm'ed mode enables "freezing" updated CAL package lists as
+                           # a dev w/access to VPN resources needed to fetch package lists
+perl -pi -e "s/CAL_VERSION=latest/CAL_VERSION=$CAL_VERSION/g" setup-env-ssm
 
-FREEZE_CHILL=${3:-1}
-perl -pi -e "s/FREEZE_CHILL=[\d]/FREEZE_CHILL=$FREEZE_CHILL/g" setup-env
-
-CAL_VERSION=${4:-latest}
-perl -pi -e "s/CAL_VERSION=latest/CAL_VERSION=$CAL_VERSION/g" setup-env
-
-cat  setup-env
+# cat  setup-env-ssm

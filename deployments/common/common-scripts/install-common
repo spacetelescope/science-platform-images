@@ -13,7 +13,7 @@ source /opt/common-scripts/env-activate ${env}
 /opt/common-scripts/env-update $env `find /opt/common-env -name '*.conda' | sort`
 
 #  Install pip packages defined in all of *.pip
-/opt/common-scripts/env-update $env `find /opt/common-env -name '*.pip' | sort`
+/opt/common-scripts/env-update $env `find /opt/common-env -name '*.pip' | sort` /opt/environments/common-hints.pip
 
 # Save fully pinned requirements for base,  copy out of image to git later.
 ${CONDA_VER} env export --no-build -n base >/opt/env-frozen/base/requirements.yml

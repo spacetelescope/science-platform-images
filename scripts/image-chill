@@ -23,7 +23,7 @@ for env in $(image-envs); do
     # ----- chill pip-tools pip requirements.txt
     frozen_pip="env-frozen/${env}/requirements.txt"
     chilly_pip="env-chilly/${env}/requirements.txt"
-    hints="environments/${env}/build-hints.pip"
+    hints="environments/${env}/build-hints.*"
 
     # chilly builds include requirements from the build-hints file
     # verbatim.  this enables specifying requirements which would

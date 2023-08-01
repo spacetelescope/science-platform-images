@@ -1,7 +1,6 @@
 name: jwebbinar
 channels:
     - conda-forge
-    - https://ssb.stsci.edu/astroconda
     - defaults
 dependencies:
     - freetds

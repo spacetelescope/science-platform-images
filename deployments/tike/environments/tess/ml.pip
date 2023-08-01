@@ -1,5 +1,6 @@
 six
-tensorflow-cpu
+#tensorflow-cpu now in conda install as tensorflow
+tensorflow
 tensorflow-estimator
 tensorboard
 keras

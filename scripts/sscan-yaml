@@ -13,7 +13,7 @@ errors = 0
 for filepath in sys.argv[1:]:
     with open(filepath) as file:
         try:
-            yaml.safe_load(file)
+            yaml.safe_load_all(file)
         except Exception as exc:
             errors += 1
             print("ERROR loading", repr(filepath), ":", repr(str(exc)))

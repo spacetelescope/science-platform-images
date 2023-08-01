@@ -25,6 +25,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
+COPY --chown=${NB_UID}:${NB_GID}environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # ----------------------------------------------------------------------
@@ -37,9 +38,6 @@ RUN   /opt/common-scripts/install-common  base
 #COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environments/roman-cal/
 
-# roman-cal currently needs to pin pip<21.3 due to issue with git clone --filter=blob:none
-# and pip-compile when installing git+https://github.com style requirements.  This potentially
-# should be a generic hint.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/roman-cal/  /opt/env-frozen/roman-cal/
@@ -54,7 +52,8 @@ RUN /opt/common-scripts/env-conda roman-cal
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.pip  /opt/environments/roman-cal/
 
 # ----  Compile romcan-cal pip requirements to dependency solution
-RUN /opt/common-scripts/env-compile roman-cal
+# ----  Specifies required.pip as an override/alternative to the normal common-env packages.
+RUN /opt/common-scripts/env-compile roman-cal  /opt/common-env/required.pip
 
 # ----- Install compiled roman-cal pip dependency solution
 RUN /opt/common-scripts/env-sync roman-cal
@@ -65,14 +64,10 @@ RUN /opt/common-scripts/env-sync roman-cal
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
 
-# ----- COPY --chown=${NB_UID}:${NB_GID} nersc-refresh-announcements/ nersc-refresh-announcements/
-# ----- RUN cd nersc-refresh-announcements && \
-# -----     pip install . && \
-# -----     cd .. && \
-# -----     rm -rf nersc-refresh-announcements
-
 # ========================= ^^^^^ Custom  ^^^^^ =========================
 # ========================= vvvvv Generic vvvvv  =========================
+
+USER $NB_UID
 
 # Fix JS encoding issue that prevents widgets from displaying properly in notebook mode
 # See https://github.com/jupyter/notebook/issues/6033 for details
@@ -80,7 +75,6 @@ RUN sed -i 's/data-base-url="{{base_url | urlencode}}"/data-base-url="{{base_url
 
 # ----------------------------------------------------------------------
 
-USER $NB_UID
 RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 
 # ----------------------------------------------------------------------
@@ -89,7 +83,7 @@ RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 
 USER root
 
-RUN find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID}
+RUN ( find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} ) || true
 
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.
@@ -98,20 +92,22 @@ RUN  cp -r /home/jovyan/.local /etc/default-home-contents && \
      cp -r /home/jovyan/.jupyter /etc/default-home-contents
 COPY global_bashrc /home/jovyan
 RUN  cat /home/jovyan/global_bashrc >> /etc/bash.bashrc  && \
+     cat /home/jovyan/global_bashrc >> /etc/bash.env  && \
      rm /home/jovyan/global_bashrc
-
-# Fix certs in conda for application level SSL, e.g. pass image-test running on CI-node
-RUN /opt/common-scripts/fix-certs
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
+
+# ----------------------------------------------------------------------
+
+COPY --chown=${NB_UID}:${NB_GID}  MISSION_VERSION /opt
 
 # ----------------------------------------------------------------------
 # YYYY SEC
 
 USER root
 #RUN  /opt/common-scripts/npm-audit  /usr/share/npm/node_modules/socks-proxy-agent  fix  && \
-RUN   /opt/common-scripts/env-clean
+#RUN   /opt/common-scripts/env-clean
 
 #RUN  find /opt/conda -name yarn.lock | grep jupyterlab/staging | xargs rm -f || true
 
@@ -119,6 +115,16 @@ RUN   /opt/common-scripts/env-clean
 # For standalone operation outside JupyterHub,  note that  /etc also includes
 # common home directory files.   post-start-hook may not include everything required
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
+
+# Enable deletion of non-empty directories from lab GUI
+RUN echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+      >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
+    echo "-------------------------------- STSCI Config Overwrites --------------------------------" \
+      >> /etc/jupyter/jupyter_server_config.py &&\
+    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
+    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
 USER $NB_USER
 WORKDIR /home/$NB_USER

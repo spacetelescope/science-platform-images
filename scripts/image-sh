@@ -1,10 +1,18 @@
 #! /bin/bash -eu
 
-# Run a bash shell in the last tagged mission container.  This will lag
-# behind any partially built container with newer image layers.
+HELP=${1:-""}
 
-export IMAGE_RUN_PARS="$IMAGE_RUN_PARS -it"
+if [[ ${HELP}  == "--help" ]]; then
+    echo "usage: `basename $0` [--dev] [<image-tag-or-hash>]"
+    exit 2
+fi
 
+source image-dev-pars
+
+# If no image is specified, run the last tagged mission container.
 export IMAGE_ID=${1:-`docker image ls -q | head -1`}
+
+# Both normal and --dev mode are interactive
+export IMAGE_RUN_PARS="$IMAGE_RUN_PARS -it"
 
 image-exec /bin/bash --rcfile /etc/bash.bashrc

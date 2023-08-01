@@ -1,0 +1,17 @@
+#!/bin/bash
+
+ENVROOT=${ENVROOT:-${HOME}/envs}
+
+function usage() {
+   if `eval [[ $1 ]]`; then
+      shift
+      echo "usage: `basename $0` $*"
+      exit 2
+   fi
+}
+
+function banner() {
+    echo "---------------------------------------------------------------"
+    echo $*
+    echo "---------------------------------------------------------------"
+}

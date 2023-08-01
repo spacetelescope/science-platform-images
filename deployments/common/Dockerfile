@@ -40,7 +40,7 @@ RUN /opt/common-scripts/apt-install \
         sysstat \
         net-tools \
         rename
-	#        libexpat1
+        #        libexpat1
 
 # S/W Development Tools
 RUN /opt/common-scripts/apt-install \
@@ -49,6 +49,7 @@ RUN /opt/common-scripts/apt-install \
         automake \
         libtool \
         make \
+        cmake \
         vim \
         emacs-nox \
         fftw3-dev \
@@ -88,10 +89,6 @@ RUN /opt/common-scripts/apt-install \
 #    apt autoremove --yes
 
 # ------------------------------------------------------------------------
-# This must be run after conda installs
-RUN /opt/common-scripts/fix-certs
-
-# ------------------------------------------------------------------------
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     ./aws/install && \
@@ -112,7 +109,13 @@ USER root
 
 COPY --chown=${NB_UID}:${NB_GID}  common-scripts/ /opt/common-scripts
 COPY --chown=${NB_UID}:${NB_GID}  common-env/ /opt/common-env
-RUN cat /opt/common-scripts/global_bashrc >> /etc/bash.bashrc
+
+COPY bash.bashrc /tmp
+RUN cat /tmp/bash.bashrc >> /etc/bash.bashrc
+
+# For ENV_BASH definition for non-login shells
+COPY bash.env /etc/bash.env
+ENV BASH_ENV=/etc/bash.env
 
 # ----------------------------------------------------------------------
 # Common conda environments
@@ -128,11 +131,11 @@ COPY default-home-contents/   /etc/default-home-contents
 # ----------------------------------------------------------------------
 # YYYY SEC
 
-RUN npm set config set cafile /etc/ssl/certs/stsci-tls-ca-bundle.pem
-
 RUN npm install -g --prod yarn             && \
     npm install -g --prod yarn-audit-fix   && \
     npm install -g minimist                && \
-    yarn config set cafile /etc/ssl/certs/stsci-tls-ca-bundle.pem && \
     npm cache clean --force && \
     yarn cache clean --force
+
+COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
+COPY --chown=${NB_UID}:${NB_GID} VERSION /opt

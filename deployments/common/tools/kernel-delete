@@ -1,0 +1,32 @@
+#! /bin/bash  -eu
+
+source `dirname $0`/kernel-utils
+
+usage "$# -ne 1" "kernel-delete <env-name>"
+
+ENVNAME=$1
+ENVROOT=${HOME}/envs
+ENVDIR=`find ${ENVROOT} -name ${ENVNAME} -type d`
+if [[ "${ENVDIR}" == "" ]];  then
+    banner "No environment ${ENVNAME} found under ${ENVROOT}."
+    exit 2
+fi
+
+if [[ ${ENVNAME} != "" ]]; then
+    banner "Removing kernel ${ENVNAME} at ${ENVDIR}"
+    jupyter kernelspec remove -f ${ENVNAME} || true
+    if echo ${ENVDIR} | grep -q ${ENVROOT}/venv; then
+	banner "Removing virtual env ${ENVNAME} at ${ENVDIR}"
+	rm -rf ${ENVDIR}
+    elif echo ${ENVDIR} | grep -q ${ENVROOT}/conda; then
+	banner "Removing conda env ${ENVNAME} at ${ENVDIR}"
+	conda env remove --prefix ${ENVDIR} --yes --quiet
+    else
+	banner "No env ${ENVNAME} found at ${ENVDIR}"
+	exit 2
+    fi
+fi
+
+exit 0
+
+
