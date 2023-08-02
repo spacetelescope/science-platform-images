@@ -24,11 +24,14 @@ if [[ ${CAL_VERSION} != "latest" ]]; then  # formal release
     SOURCE=https://bytesalad.stsci.edu/artifactory/roman-pipeline-results/v${CAL_VERSION}
     curl -s ${SOURCE}/conda_python_stable-deps.txt >roman-cal.explicit
     curl -s ${SOURCE}/reqs_stable-deps.txt >roman-cal.pip
+    git mv -k roman-cal.yml roman-cal.yml.disabled
 else
     # no conda env defined on github yet,  let the last roman-cal.explicit ride
     SOURCE=https://raw.githubusercontent.com/spacetelescope/romancal/main
     curl -s ${SOURCE}/requirements-dev.txt >roman-cal.pip
+    git rm --ignore-unmatch roman-cal.explicit
+    git mv -k roman-cal.yml.disabled roman-cal.yml
 fi
 
 echo ${CAL_VERSION} >CAL_VERSION
-echo "Roman Calibration ${CAL_VERSION}"  >kernel.name
+echo "Roman Calibration ${CAL_VERSION} (`date --iso`)"  >kernel.name

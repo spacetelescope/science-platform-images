@@ -8,7 +8,7 @@ on:
 jobs:
   security-scanning:
     name: "${{ matrix.DEPLOYMENT_NAME }}  -- Security"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
       max-parallel: 5
@@ -29,7 +29,7 @@ jobs:
       - name: Set Up Environment
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  ${{ matrix.USE_FROZEN }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }}
            pip install -r requirements.txt
            df -h
 
@@ -44,6 +44,6 @@ jobs:
         uses: anchore/scan-action@v3
         with:
           fail-build: true
-          severity-cutoff: critical
+          severity-cutoff: high
           output-format: table
-          path: "."
+          path: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen

@@ -7,3 +7,5 @@
 #15 122.3     glue-jupyter 0.15.0 depends on ipyvolume>=0.6.0a10; python_version >= "3.8"
 
 #glue-jupyter<0.15.0
+
+git+https://github.com/pymssql/pymssql.git@v2.2.8

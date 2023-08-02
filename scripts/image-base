@@ -7,17 +7,6 @@ echo "========================= Building Base Image ========================"
 # These build-args are added to the image environment and will be available in
 #   all subsequent builds based on this image.
 
-OWNER=stsci-jh
-
-cd ${JUPYTERHUB_DIR}/deployments/common
-docker build --progress plain --tag ${OWNER}/ubuntu-base --file Dockerfile.base \
-       --build-arg USE_FROZEN=${USE_FROZEN} \
-       --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
-       --build-arg CLEAR_PKG_CACHES="${CLEAR_PKG_CACHES}" \
-       --build-arg CONDA_VER=${CONDA_VER} \
-       --build-arg ROOT_CONTAINER=ubuntu:${IMAGE_UBUNTU_NAME} \
-       .
-
 cd ~
 if [[ ! -d docker-stacks ]]; then
     git clone https://github.com/jupyter/docker-stacks.git
@@ -25,8 +14,11 @@ if [[ ! -d docker-stacks ]]; then
 else
     cd docker-stacks
     git fetch origin
+    set +e
     git stash
     git checkout origin/main
+    git stash pop
+    set -e
 fi
 
 # checkout the appropriate docker-stacks revision if using frozen specs;
@@ -45,12 +37,13 @@ fi
 # Taken from the docker-stacks Makefile to enable adding --build-arg's again
 build_jh() {
     STACK=$1;  shift
-    docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./${STACK} --build-arg OWNER=${OWNER} --progress plain $*
+    add-caching ${STACK}/Dockerfile >${STACK}/Dockerfile.cached
+    docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./${STACK} --file ${STACK}/Dockerfile.cached --build-arg OWNER=${OWNER} --progress plain $*
 }
 
-build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=${OWNER}/ubuntu-base:latest
+build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=ubuntu:${UBUNTU_TAG}
 
-build_jh  base-notebook     --build-arg ROOT_CONTAINER=${OWNER}/docker-stacks-foundation:latest
+build_jh  base-notebook     --build-arg BASE_CONTAINER=${OWNER}/docker-stacks-foundation:latest
 
 build_jh  minimal-notebook  --build-arg BASE_CONTAINER=${OWNER}/base-notebook:latest
 

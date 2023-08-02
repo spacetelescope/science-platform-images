@@ -25,7 +25,7 @@ USER ${NB_UID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID}environments/common-hints.pip /opt/environments/common-hints.pip
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
 # ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ RUN   /opt/common-scripts/install-common  base
 # All copies below are factored to enable Docker idempotence / build caching
 # e.g. changing tests should not result in re-installing conda
 
-#COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
+COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environments/roman-cal/
 
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/

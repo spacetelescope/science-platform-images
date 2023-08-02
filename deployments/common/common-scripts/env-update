@@ -48,8 +48,3 @@ for filepath in $*; do
 done
 
 source /opt/common-scripts/env-deactivate ${env}
-
-
-# ----------------------------------------------------------------------
-
-/opt/common-scripts/env-clean

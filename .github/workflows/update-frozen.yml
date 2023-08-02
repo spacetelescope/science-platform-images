@@ -8,14 +8,17 @@ on:
 jobs:
   docker:
     name: "${{ matrix.DEPLOYMENT_NAME }} -- Image Build, Test"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
         DEPLOYMENT_NAME: [ tike, jwebbinar, roman ]
-        USE_FROZEN: [ 2 ]
+        USE_FROZEN: [ chilly ]
+        FREEZE_CHILL: [ 1 ]
+        OWNER: [ jupyter ]
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -45,7 +48,7 @@ jobs:
       - name: Set Up Environment
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }} ${{ matrix.USE_FROZEN }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }} --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --owner ${{ matrix.OWNER }}
            df -h
 
       - name: Image Build

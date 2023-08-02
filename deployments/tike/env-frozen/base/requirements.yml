@@ -10,8 +10,9 @@ dependencies:
   - aom=3.5.0
   - argon2-cffi=21.3.0
   - argon2-cffi-bindings=21.2.0
+  - arrow=1.2.3
   - asttokens=2.2.1
-  - async-lru=2.0.3
+  - async-lru=2.0.4
   - async-timeout=4.0.2
   - async_generator=1.10
   - attrs=23.1.0
@@ -38,7 +39,7 @@ dependencies:
   - bleach=6.0.0
   - blinker=1.6.2
   - blosc=1.21.4
-  - bokeh=3.2.0
+  - bokeh=3.2.1
   - boltons=23.0.0
   - bottleneck=1.3.7
   - brotli=1.0.9
@@ -48,20 +49,19 @@ dependencies:
   - bzip2=1.0.8
   - c-ares=1.19.1
   - c-blosc2=2.10.0
-  - ca-certificates=2023.5.7
+  - ca-certificates=2023.7.22
   - cached-property=1.5.2
   - cached_property=1.5.2
-  - certifi=2023.5.7
+  - certifi=2023.7.22
   - certipy=0.1.3
   - cffi=1.15.1
-  - cfitsio=4.2.0
   - charls=2.4.2
   - charset-normalizer=3.2.0
-  - click=8.1.4
+  - click=8.1.6
   - cloudpickle=2.2.1
   - colorama=0.4.6
   - comm=0.1.3
-  - conda=23.5.0
+  - conda=23.7.2
   - conda-package-handling=2.0.2
   - conda-package-streaming=0.8.0
   - configurable-http-proxy=4.5.4
@@ -69,24 +69,25 @@ dependencies:
   - cryptography=41.0.2
   - cycler=0.11.0
   - cython=0.29.36
-  - cytoolz=0.12.0
-  - dask=2023.7.0
-  - dask-core=2023.7.0
+  - cytoolz=0.12.2
+  - dask=2023.7.1
+  - dask-core=2023.7.1
   - dav1d=1.2.1
   - debugpy=1.6.7
   - decorator=5.1.1
   - defusedxml=0.7.1
   - deprecated=1.2.14
   - deprecation=2.1.0
-  - dill=0.3.6
-  - distributed=2023.7.0
+  - dill=0.3.7
+  - distributed=2023.7.1
   - entrypoints=0.4
   - et_xmlfile=1.1.0
   - exceptiongroup=1.1.2
   - executing=1.2.0
   - flit-core=3.9.0
   - fmt=9.1.0
-  - fonttools=4.40.0
+  - fonttools=4.41.1
+  - fqdn=1.5.1
   - freetype=2.12.1
   - fsspec=2023.6.0
   - gflags=2.2.2
@@ -101,23 +102,25 @@ dependencies:
   - hdf5=1.14.1
   - icu=72.1
   - idna=3.4
-  - imagecodecs=2023.1.23
+  - imagecodecs=2023.7.10
   - imageio=2.31.1
   - importlib-metadata=6.8.0
   - importlib_metadata=6.8.0
   - importlib_resources=6.0.0
-  - ipykernel=6.24.0
+  - ipykernel=6.25.0
   - ipympl=0.9.3
   - ipython=8.14.0
   - ipython_genutils=0.2.0
   - ipywidgets=8.0.7
+  - isoduration=20.11.0
   - jedi=0.18.2
   - jinja2=3.1.2
   - joblib=1.3.0
   - json5=0.9.14
   - jsonpatch=1.32
   - jsonpointer=2.0
-  - jsonschema-specifications=2023.6.1
+  - jsonschema-specifications=2023.7.1
+  - jsonschema-with-format-nongpl=4.18.4
   - jupyter-lsp=2.2.0
   - jupyter-packaging=0.12.3
   - jupyter-server-mathjax=0.2.6
@@ -129,15 +132,16 @@ dependencies:
   - jupyter_telemetry=0.1.0
   - jupyterhub=4.0.1
   - jupyterhub-base=4.0.1
+  - jupyterlab=4.0.3
   - jupyterlab-git=0.41.0
   - jupyterlab_pygments=0.2.2
-  - jupyterlab_server=2.23.0
+  - jupyterlab_server=2.24.0
   - jupyterlab_widgets=3.0.8
   - jwcrypto=1.5.0
   - jxrlib=1.1
   - keyutils=1.6.1
   - kiwisolver=1.4.4
-  - krb5=1.20.1
+  - krb5=1.21.1
   - lazy_loader=0.2
   - lcms2=2.15
   - ld_impl_linux-64=2.40
@@ -153,7 +157,7 @@ dependencies:
   - libbrotlienc=1.0.9
   - libcblas=3.9.0
   - libcrc32c=1.1.2
-  - libcurl=8.1.2
+  - libcurl=8.2.1
   - libdeflate=1.18
   - libedit=3.1.20191231
   - libev=4.33
@@ -165,14 +169,14 @@ dependencies:
   - libgfortran5=13.1.0
   - libgomp=13.1.0
   - libgoogle-cloud=2.12.0
-  - libgrpc=1.56.1
+  - libgrpc=1.56.2
   - libiconv=1.17
   - libjpeg-turbo=2.1.5.1
   - liblapack=3.9.0
   - liblapacke=3.9.0
   - libllvm14=14.0.6
-  - libmamba=1.4.7
-  - libmambapy=1.4.7
+  - libmamba=1.4.9
+  - libmambapy=1.4.9
   - libnghttp2=1.52.0
   - libnsl=2.0.0
   - libnuma=2.0.16
@@ -201,7 +205,7 @@ dependencies:
   - lz4-c=1.9.4
   - lzo=2.10
   - mako=1.2.4
-  - mamba=1.4.7
+  - mamba=1.4.9
   - markupsafe=2.1.3
   - matplotlib-base=3.7.2
   - matplotlib-inline=0.1.6
@@ -213,9 +217,9 @@ dependencies:
   - munkres=1.1.4
   - nbclassic=1.0.0
   - nbclient=0.8.0
-  - nbconvert=7.6.0
-  - nbconvert-core=7.6.0
-  - nbconvert-pandoc=7.6.0
+  - nbconvert=7.7.3
+  - nbconvert-core=7.7.3
+  - nbconvert-pandoc=7.7.3
   - nbdime=3.2.1
   - nbformat=5.9.1
   - ncurses=6.4
@@ -223,7 +227,7 @@ dependencies:
   - networkx=3.1
   - nodejs=18.16.1
   - nomkl=1.0
-  - notebook=6.5.4
+  - notebook=7.0.0
   - notebook-shim=0.2.3
   - numba=0.57.1
   - numexpr=2.8.4
@@ -246,10 +250,10 @@ dependencies:
   - pexpect=4.8.0
   - pickleshare=0.7.5
   - pillow=10.0.0
-  - pip=23.1.2
-  - pip-tools=6.14.0
+  - pip=23.2.1
+  - pip-tools=7.1.0
   - pkgutil-resolve-name=1.3.10
-  - platformdirs=3.8.1
+  - platformdirs=3.9.1
   - pluggy=1.2.0
   - pooch=1.7.0
   - prometheus_client=0.17.1
@@ -267,7 +271,7 @@ dependencies:
   - pycparser=2.21
   - pycurl=7.45.1
   - pygments=2.15.1
-  - pyjwt=2.7.0
+  - pyjwt=2.8.0
   - pyopenssl=23.2.0
   - pyparsing=3.0.9
   - pyproject_hooks=1.0.0
@@ -276,7 +280,7 @@ dependencies:
   - python=3.11.4
   - python-build=0.10.0
   - python-dateutil=2.8.2
-  - python-fastjsonschema=2.17.1
+  - python-fastjsonschema=2.18.0
   - python-json-logger=2.0.7
   - python-tzdata=2023.3
   - python_abi=3.11
@@ -288,13 +292,13 @@ dependencies:
   - re2=2023.03.02
   - readline=8.2
   - redis-py=4.6.0
-  - referencing=0.29.1
+  - referencing=0.30.0
   - reproc=14.2.4
   - reproc-cpp=14.2.4
   - requests=2.31.0
   - rfc3339-validator=0.1.4
   - rfc3986-validator=0.1.1
-  - rpds-py=0.8.10
+  - rpds-py=0.9.2
   - ruamel.yaml=0.17.32
   - ruamel.yaml.clib=0.2.7
   - s2n=1.3.46
@@ -312,18 +316,18 @@ dependencies:
   - sniffio=1.3.0
   - sortedcontainers=2.4.0
   - soupsieve=2.3.2.post1
-  - sqlalchemy=2.0.18
+  - sqlalchemy=2.0.19
   - stack_data=0.6.2
   - statsmodels=0.14.0
   - sympy=1.12
   - tblib=1.7.0
   - terminado=0.17.1
-  - threadpoolctl=3.1.0
-  - tifffile=2023.7.10
+  - threadpoolctl=3.2.0
+  - tifffile=2023.7.18
   - tinycss2=1.2.1
   - tk=8.6.12
   - tomli=2.0.1
-  - tomlkit=0.11.8
+  - tomlkit=0.12.1
   - toolz=0.12.0
   - tornado=6.3.2
   - tqdm=4.65.0
@@ -333,36 +337,36 @@ dependencies:
   - typing_utils=0.1.0
   - tzdata=2023c
   - ucx=1.14.1
+  - uri-template=1.3.0
   - wcwidth=0.2.6
+  - webcolors=1.13
   - webencodings=0.5.1
   - websocket-client=1.6.1
   - websockify=0.11.0
-  - wheel=0.40.0
+  - wheel=0.41.0
   - widgetsnbextension=4.0.8
   - wrapt=1.15.0
   - xlrd=2.0.1
   - xorg-libxau=1.0.11
   - xorg-libxdmcp=1.1.3
-  - xyzservices=2023.5.0
+  - xyzservices=2023.7.0
   - xz=5.2.6
   - yaml=0.2.5
   - yaml-cpp=0.7.0
   - zeromq=4.3.4
   - zfp=1.0.0
   - zict=3.0.0
-  - zipp=3.16.0
+  - zipp=3.16.2
   - zlib=1.2.13
   - zlib-ng=2.0.7
   - zstandard=0.19.0
   - zstd=1.5.2
   - pip:
-      - aiofiles==22.1.0
-      - aiohttp==3.8.4
+      - aiohttp==3.8.5
       - aiosignal==1.3.1
       - aiosqlite==0.19.0
       - alabaster==0.7.13
       - ansiwrap==0.8.4
-      - arrow==1.2.3
       - asdf==2.15.0
       - asdf-standard==1.0.3
       - asdf-transform-schemas==0.3.0
@@ -370,22 +374,21 @@ dependencies:
       - astropy==5.3.1
       - astropy-sphinx-theme==1.1
       - black==23.7.0
-      - boto3==1.28.2
-      - botocore==1.31.2
+      - boto3==1.28.15
+      - botocore==1.31.15
       - bqplot==0.12.40
       - bqplot-image-gl==1.4.11
       - casa-formats-io==0.2.1
       - ci-watson==0.6.1
       - crds==11.17.2
-      - distlib==0.3.6
+      - distlib==0.3.7
       - docutils==0.18.1
       - echo==0.8.0
       - fast-histogram==0.11
       - filelock==3.12.2
-      - flake8==6.0.0
-      - fqdn==1.5.1
+      - flake8==6.1.0
       - freetype-py==2.4.0
-      - frozenlist==1.3.3
+      - frozenlist==1.4.0
       - glue-core==1.12.0
       - glue-jupyter==0.17.0
       - glue-vispy-viewers==1.0.7
@@ -400,15 +403,14 @@ dependencies:
       - ipyvue==1.9.2
       - ipyvuetify==1.8.10
       - ipywebrtc==0.6.0
-      - isoduration==20.11.0
       - jmespath==1.0.1
       - jsonschema==4.17.3
-      - jupyter-resource-usage==0.7.2
+      - jupyter-bokeh==3.0.7
+      - jupyter-collaboration==1.0.1
+      - jupyter-resource-usage==1.0.0
       - jupyter-server-fileid==0.9.0
       - jupyter-server-proxy==4.0.0
-      - jupyter-server-ydoc==0.8.0
-      - jupyter-ydoc==0.2.4
-      - jupyterlab==3.6.5
+      - jupyter-ydoc==1.0.2
       - mccabe==0.7.0
       - mpl-scatter-density==0.7
       - multidict==6.0.4
@@ -419,14 +421,14 @@ dependencies:
       - numpydoc==1.5.0
       - papermill==2.4.0
       - parsley==1.3
-      - pathspec==0.11.1
-      - pipdeptree==2.9.5
+      - pathspec==0.11.2
+      - pipdeptree==2.12.0
       - pvextractor==0.3
-      - pycodestyle==2.10.0
-      - pydeps==1.12.12
+      - pycodestyle==2.11.0
+      - pydeps==1.12.13
       - pyds9==1.8.1
       - pyerfa==2.0.0.3
-      - pyflakes==3.0.1
+      - pyflakes==3.1.0
       - pyopengl==3.1.7
       - pyrsistent==0.19.3
       - pytest==7.4.0
@@ -439,7 +441,7 @@ dependencies:
       - requests-mock==1.11.0
       - s3transfer==0.6.1
       - semantic-version==2.10.0
-      - sidecar==0.5.2
+      - sidecar==0.3.0
       - simpervisor==1.0.0
       - snowballstemmer==2.2.0
       - spectral-cube==0.6.2
@@ -460,11 +462,9 @@ dependencies:
       - tenacity==8.2.2
       - textwrap3==0.9.2
       - traittypes==0.2.1
-      - uri-template==1.3.0
       - urllib3==1.26.16
       - vispy==0.13.0
-      - webcolors==1.13
-      - y-py==0.5.9
+      - y-py==0.6.0
       - yarl==1.9.2
-      - ypy-websocket==0.8.2
+      - ypy-websocket==0.12.1
 prefix: /opt/conda

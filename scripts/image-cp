@@ -15,4 +15,6 @@ CONTAINER=$(docker run -d ${ACTUAL_IMAGE} /bin/bash)
 
 docker cp ${CONTAINER}:${PATH_TO_EXPORT}  ${WHERE_TO_PUT_IT}
 
-docker container rm ${CONTAINER}  >& /dev/null
+docker stop ${CONTAINER}  > /dev/null
+
+docker container rm ${CONTAINER}  > /dev/null

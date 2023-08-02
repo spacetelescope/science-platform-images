@@ -1,17 +1,5 @@
-# ----- #jupyter-client==7.4.8
-# ----- #jupyter-server==2.0.1
-# ----- #jupyterhub==3.0.0
-
-# ----- #boto3==1.24.59
-# ----- aiobotocore<2.5.0
-# ----- s3fs<2023.4.0
-# ----- aioboto3<11.0.0
-
-# ----- mkl-fft<1.3.1
-
-# ----- #jupyter-packaging<0.12
-
-#tensorflow-cpu~=2.11.1
+scipy~=1.10.0
+tensorflow~=2.11.0
 
 # Needed for exoplanet import error:
 # AttributeError: module 'numpy.distutils.__config__' has no attribute 'blas_opt_info'
@@ -20,38 +8,36 @@ numpy<1.22
 
 # notebook packages_priority2 "everest" package pyplot fails because of an interface change
 matplotlib<3.6
-
-# LightkurveError: Download of
-#  http://archive.stsci.edu/missions/kepler/lightcurves/0074/007461601/kplr007461601_lc_Q111111111111111100.tar
-#  failed. MAST returns ERROR: HTTPError: 403 Client Error: Forbidden for url:
-#  https://mast.stsci.edu/api/v0.1/Download/file?uri=mast:KEPLER/url/missions/kepler/target_pixel_files/0074/007461601/kplr007461601-2011271113734_lpd-targ.fits.gz
-lightkurve<2.4.0
-
-#  import pyvo
-#  AttributeError: module 'numpy.distutils.__config__' has no attribute 'blas_opt_info'
-# aesara<=2.8.10
-# pyvo<1.4.1
+matplotlib>=3.5.1
 
 # From hellouniverse
 astropy>=5.0.2
 keras>=2.8.0
-lightkurve>=2.1.0
-matplotlib>=3.5.1
-#numpy>=1.22.3
+
+# A PR to github lightkurve/lightkurve was submitted from jaytmiller/lightkurve to fix
+# the CORS/proxy issue preventing operation on github:
+#
+#      https://github.com/lightkurve/lightkurve/pull/1349
+#
+#      JIRA JUSI-1227 lightkurve .interact() method fails
+#
+# If/when the PR is accepted, lightkurve should be switched back to either the upstream
+# repo or pypi (preferred).  In the meantime, use @jaytmiller's branch:
+git+https://github.com/jaytmiller/lightkurve@octarine-staging
+
 scikit-learn>=0.0
-tensorflow>=2.8.0
-protobuf==3.18
-git+https://github.com/afeinstein20/stella.git
 
+# protobuf==3.18.0 -> <4 due to "builder" import error with stella
+protobuf~=3.19.0   # https://stackoverflow.com/questions/71759248/importerror-cannot-import-name-builder-from-google-protobuf-internal
 
+# Stella:  until scikit-learn is dealt with,  then switch back to afeinstein20 vs jaytmiller.
+git+https://github.com/jaytmiller/stella.git@scikit-learn-update
 
-# ----- # causes scipy 1.8+ when others need under
-# ----- arviz<0.13
+# For juliet JUSI-1267 TIKE and Juliet, INC0191115 Incident
+dynesty~=1.2.3
 
-# ----- # from jwebbinar
-# ----- #jupyterlab-widgets==1.1.1
-# ----- #ipywidgets==7.7.2
-# ----- #glue-jupyter~=0.14.2
-# ----- sphinx~=5.3.0
-# ----- sphinx-rtd-theme~=1.0.0
-# ----- asdf==2.14.3
+# Install working cython same as tess.yml to prevent pip-tools override
+cython==0.29.36
+
+# Still branched May 1, 2023  @s3-support,  but recent notebook failing
+git+https://github.com/spacetelescope/astrocut

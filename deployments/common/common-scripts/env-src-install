@@ -29,6 +29,6 @@ PKG=$2
 
 source /opt/common-scripts/env-activate $ENV
 
-pip install --verbose --no-deps --no-cache --no-binary :all: --force-reinstall --no-build-isolation ${PKG}
+pip install --verbose --no-deps --no-cache --no-binary ${PKG} --force-reinstall --no-build-isolation ${PKG}
 
 /opt/common-scripts/env-clean

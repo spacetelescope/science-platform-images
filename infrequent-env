@@ -9,15 +9,15 @@ export FREEZE_CHILL=${FREEZE_CHILL:-0}
 #
 
 # Select "conda" tool used to install conda package and environments: conda or mamba
-#   mamba is largely a drop-in replacement for mamba with improved dependency resolution,
+#   mamba is largely a drop-in replacement for conda with improved dependency resolution,
 #   parallel downloads, and C++ implementation.
-export CONDA_VER=mamba
+export CONDA_VER=conda  # switch to conda while "mamba env export" in install-common is broken
 
 # Additional parameters for image-exec Docker run command, e.g. add mounts here
 export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes"
 
 # Image scanning,  report Ubuntu status for this version of Ubuntu
-export IMAGE_UBUNTU_NAME="focal"
+export UBUNTU_TAG="22.04"
 
 # Image scanning,  report CVE's at this severity level and  higher
 export IMAGE_VULNERABILITY_LEVEL="medium"
@@ -38,28 +38,13 @@ export DOCKER_BUILDKIT=1
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000   # bytes
 export BUILDKIT_STEP_LOG_MAX_SPEED=10000000
 
-# ----------------------------------------------------------------------------
-
-# Set CLEAR_PKG_CACHES to 0 to turn off *our* package cache clearing code
-# during image builds so that they persist in Docker caches outside the image
-# to avoid repeat downloads.  (apt, conda, pip, npm)
-
-# Note that jupyter/docker-stacks doesn't honor CLEAR_PKG_CACHES so cache
-# persistence is generally negated for that and prior images.
-
-# Set CLEAR_PKG_CACHES=0 when the package caches may be needed for debug with
-# e.g. pipdeptree or conda-tree dependency tools.  development
-
-# Set CLEAR_PKG_CACHES=1 to prevent growth in image size due to package
-# downloads.  This is classic behavior.  production
-
-export CLEAR_PKG_CACHES=1
+export CACHE_DIRS="/var/cache/apt /home/jovyan/.cache /opt/conda/pkgs /home/jovyan/.conda/pkgs"
 
 # ----------------------------------------------------------------------------
 # PIP_SWITCHES are passed through to pip by Docker and the pip install scripts
 # env-update and env-compile/sync.
 
-export PIP_SWITCHES="--no-color --default-timeout 100"
+export PIP_SWITCHES='--no-color --default-timeout 100'
 
 # ----------------- vvvvvv derived inputs, nominally don't change vvvvvv --------------
 # automatically sourced into setup-env
@@ -77,7 +62,6 @@ export COMMON_ID=${COMMON_REPO}:${COMMON_TAG}
 export IMAGE_ID=${IMAGE_REPO}:${IMAGE_TAG}
 
 # --------------- vvvvv misc env settings vvvvv ---------------------------------
-
 
 function where () {
     info="${DEPLOYMENT_NAME}-${ENVIRONMENT}"

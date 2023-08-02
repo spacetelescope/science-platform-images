@@ -3,15 +3,17 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python~=3.8.0    # ~=3.8.0
+  - python~=3.8.0
   - pip
   - freetds
   - fftw
   - mpi
+  - nomkl
+  - openblas
   - pip:
     - numpy   # <1.22
     - pyfftw
-    - cython
+    - cython==0.29.36
 
 #  - mkl_fft
 #  - mkl
