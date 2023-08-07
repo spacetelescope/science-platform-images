@@ -7,7 +7,7 @@
 # ----------------- basic inputs,  must set for deployment --------------
 
 export DEPLOYMENT_NAME=cluster-name  # roman, jwebbinar, tike
-export ENVIRONMENT=sandbox           # sandbox, dev, test, or prod
+export ENVIRONMENT=sandbox           # sandbox, dev, test, prod, int
 export CAL_VERSION=latest            # e.g. roman or jwst x.y.z CAL release, latest, or none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
