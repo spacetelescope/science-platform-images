@@ -6,7 +6,7 @@ import shutil
 
 
 def create_setup_env_file(
-    deployment_name, use_frozen, freeze_chill, cal_version, owner
+    deployment_name, environment, use_frozen, freeze_chill, cal_version, owner
 ):
     shutil.copy("setup-env.template", "setup-env")
 
@@ -17,23 +17,24 @@ def create_setup_env_file(
     with open("setup-env", "r") as file:
         content = file.read()
 
-        # Update DEPLOYMENT_NAME
         content = re.sub(
             r"DEPLOYMENT_NAME=cluster-name",
             f"DEPLOYMENT_NAME={deployment_name}",
             content,
         )
 
-        # Update USE_FROZEN
+        content = re.sub(
+            r"ENVIRONMENT=sandbox",
+            f"ENVIRONMENT={environment}",
+            content,
+        )
+
         content = re.sub(r"USE_FROZEN=[\d]", f"USE_FROZEN={use_frozen}", content)
 
-        # Update FREEZE_CHILL
         content = re.sub(r"FREEZE_CHILL=[\d]", f"FREEZE_CHILL={freeze_chill}", content)
 
-        # Update CAL_VERSION
         content = re.sub(r"CAL_VERSION=latest", f"CAL_VERSION={cal_version}", content)
 
-        # Update OWNER
         content = re.sub(r"OWNER=spacetelescope", f"OWNER={owner}", content)
 
     with open("setup-env", "w+") as file:
@@ -52,6 +53,12 @@ def main():
         help="The deployment name defining image contents.",
     )
     parser.add_argument(
+        "--environment",
+        choices=["sandox", "dev", "test", "prod", "int"],
+        default="sandbox",
+        help="The deployment name defining image contents.",
+    )
+    parser.add_argument(
         "--use-frozen",
         type=str,
         choices=["0", "1", "2", "floating", "frozen", "chilly"],
@@ -67,8 +74,8 @@ def main():
     )
     parser.add_argument(
         "--cal-version",
-        default="latest",
-        help="Calibration s/w version when applicable (default: latest).",
+        default="none",
+        help="Calibration s/w version when applicable (default: none).",
     )
     parser.add_argument(
         "--owner",
@@ -80,6 +87,7 @@ def main():
 
     create_setup_env_file(
         args.deployment,
+        args.environment,
         args.use_frozen,
         args.freeze_chill,
         args.cal_version,
