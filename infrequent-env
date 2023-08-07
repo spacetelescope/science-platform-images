@@ -17,7 +17,7 @@ export CONDA_VER=conda  # switch to conda while "mamba env export" in install-co
 export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes"
 
 # Image scanning,  report Ubuntu status for this version of Ubuntu
-export UBUNTU_TAG="22.04"
+export UBUNTU_TAG="20.04"
 
 # Image scanning,  report CVE's at this severity level and  higher
 export IMAGE_VULNERABILITY_LEVEL="medium"
