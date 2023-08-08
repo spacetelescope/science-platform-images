@@ -22,11 +22,8 @@ export OWNER=spacetelescope          # jupyter or spacetelescope base image repo
 
 export BASE_IMAGE=${OWNER}/scipy-notebook
 
-# Note that unscanned- tags are pushed, pulled, and scanned but
-# the unscanned- is dropped from images permitted on the hub by
-# virtue of passing ECR scanning.
-export IMAGE_TAG=unscanned-latest-${ENVIRONMENT}
-export COMMON_TAG=unscanned-common-latest-${ENVIRONMENT}
+export IMAGE_TAG=latest
+export COMMON_TAG=latest
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 

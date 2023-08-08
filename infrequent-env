@@ -38,7 +38,10 @@ export DOCKER_BUILDKIT=1
 export BUILDKIT_STEP_LOG_MAX_SIZE=10000000   # bytes
 export BUILDKIT_STEP_LOG_MAX_SPEED=10000000
 
-export CACHE_DIRS="/var/cache/apt /home/jovyan/.cache /opt/conda/pkgs /home/jovyan/.conda/pkgs"
+
+export USER_CACHE_DIRS="/home/jovyan/.cache /opt/conda/pkgs /home/jovyan/.conda/pkgs"
+export SYSTEM_CACHE_DIRS="/var/cache/apt"
+export CACHE_DIRS="${USER_CACHE_DIRS} ${SYSTEM_CACHE_DIRS}"
 
 # ----------------------------------------------------------------------------
 # PIP_SWITCHES are passed through to pip by Docker and the pip install scripts

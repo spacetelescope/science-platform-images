@@ -1,0 +1,12 @@
+ARG BASE_CONTAINER
+FROM $BASE_CONTAINER
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+USER root
+
+# Now that RUN caching is not being used,  these cache dirs are just dirs, not
+# mount points owned by root.  Give them back to the user.
+RUN for DIR in ${USER_CACHE_DIRS};  do mkdir -p ${DIR}; chown -R $NB_UID:$NB_GID ${DIR}; done
+
+USER $NB_USER

@@ -37,28 +37,42 @@ echo "========================= Building Common Image ========================"
 add-caching Dockerfile >Dockerfile.cached
 time docker build \
        --progress plain \
-       --tag ${COMMON_ID} \
        --tag notebook-common \
        --build-arg BASE_IMAGE=${BASE_IMAGE} \
        --build-arg USE_FROZEN=${USE_FROZEN} \
        --build-arg PIP_SWITCHES="${PIP_SWITCHES}" \
        --build-arg CONDA_VER=${CONDA_VER} \
-       --build-arg CACHE_DIRS="${CACHE_DIRS}" \
+       --build-arg USER_CACHE_DIRS="${USER_CACHE_DIRS}" \
        --file Dockerfile.cached  .
 rm Dockerfile.cached
 
 # ..................................................................................
-# Build custom layers for this deployment
+# Build custom layers for this deployment, RUN caching leaves behind cache
+# mount points owned by root which must be corrected later so users can still
+# use their caches,  hence the tag has a -dirty suffix.
+
 cd ${IMAGE_DIR}
 echo "========================= Building $IMAGE_ID USE_FROZEN=${USE_FROZEN} =========================="
 add-caching Dockerfile >Dockerfile.cached
 time docker build \
      --progress plain \
-     --tag ${IMAGE_ID} \
-     --tag "notebook-${DEPLOYMENT_NAME}" \
-     --build-arg BASE_IMAGE=${COMMON_ID} \
+     --tag "notebook-${DEPLOYMENT_NAME}-dirty" \
+     --build-arg BASE_IMAGE=notebook-common \
      --file Dockerfile.cached .
 rm Dockerfile.cached
+
+# ..................................................................................
+# In a Dockerfile which is not using RUN cache, touch up all the cache
+# directory mount points so they are appropriately owned and writable vs. being
+# universally owned by root and unwritable by jovyan / the user.
+
+cd $COMMON_IMAGE_DIR
+docker build \
+       --progress plain \
+       --tag "notebook-${DEPLOYMENT_NAME}" \
+       --build-arg BASE_CONTAINER="notebook-${DEPLOYMENT_NAME}-dirty" \
+       --build-arg USER_CACHE_DIRS="${USER_CACHE_DIRS}" \
+       --file Dockerfile.cache .
 
 # ..................................................................................
 # Optionally update requirements used by frozen and chilly builds.
