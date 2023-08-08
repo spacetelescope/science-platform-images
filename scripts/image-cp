@@ -9,7 +9,7 @@ set -eu
 
 PATH_TO_EXPORT=$1
 WHERE_TO_PUT_IT=${2:-`pwd`}
-ACTUAL_IMAGE=${3:-${IMAGE_ID}}
+ACTUAL_IMAGE=${3:-${NOTEBOOK_ID}}
 
 CONTAINER=$(docker run -d ${ACTUAL_IMAGE} /bin/bash)
 

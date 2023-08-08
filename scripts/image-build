@@ -52,7 +52,7 @@ rm Dockerfile.cached
 # use their caches,  hence the tag has a -dirty suffix.
 
 cd ${IMAGE_DIR}
-echo "========================= Building $IMAGE_ID USE_FROZEN=${USE_FROZEN} =========================="
+echo "========================= Building $NOTEBOOK_ID USE_FROZEN=${USE_FROZEN} =========================="
 add-caching Dockerfile >Dockerfile.cached
 time docker build \
      --progress plain \
@@ -69,10 +69,13 @@ rm Dockerfile.cached
 cd $COMMON_IMAGE_DIR
 docker build \
        --progress plain \
-       --tag "notebook-${DEPLOYMENT_NAME}" \
+       --tag $NOTEBOOK_ID \
        --build-arg BASE_CONTAINER="notebook-${DEPLOYMENT_NAME}-dirty" \
        --build-arg USER_CACHE_DIRS="${USER_CACHE_DIRS}" \
        --file Dockerfile.cache .
+
+# Once touched up we can discard this to reduce confusion
+docker rmi "notebook-${DEPLOYMENT_NAME}-dirty"
 
 # ..................................................................................
 # Optionally update requirements used by frozen and chilly builds.

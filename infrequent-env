@@ -52,17 +52,11 @@ export PIP_SWITCHES='--no-color --default-timeout 100'
 # ----------------- vvvvvv derived inputs, nominally don't change vvvvvv --------------
 # automatically sourced into setup-env
 
-export IMAGE_REPO=spacetelescope/science-platform-${DEPLOYMENT_NAME}
-export COMMON_REPO=${IMAGE_REPO}
-
 export JUPYTERHUB_DIR=`pwd`
 
 export IMAGE_DIR=`pwd`/deployments/${DEPLOYMENT_NAME}
 
 export COMMON_IMAGE_DIR=`pwd`/deployments/common
-
-export COMMON_ID=${COMMON_REPO}:${COMMON_TAG}
-export IMAGE_ID=${IMAGE_REPO}:${IMAGE_TAG}
 
 # --------------- vvvvv misc env settings vvvvv ---------------------------------
 

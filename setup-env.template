@@ -20,10 +20,10 @@ export OWNER=spacetelescope          # jupyter or spacetelescope base image repo
                                      # jupyter will be pulled from DockerHub
                                      # spacetelescope will be built from source code
 
-export BASE_IMAGE=${OWNER}/scipy-notebook
+export BASE_IMAGE=${OWNER}/scipy-notebook   # from jupyter/docker-stacks
 
-export IMAGE_TAG=latest
-export COMMON_TAG=latest
+export NOTEBOOK_TAG=latest
+export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
