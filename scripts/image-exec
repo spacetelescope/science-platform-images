@@ -1,11 +1,13 @@
 #! /bin/bash -eu
 
-# Run an arbitrary command using the image specified by IMAGE_ID,
+# Run an arbitrary command using the image specified by NOTEBOOK_ID,
 # which normally defaults to the notebook image but can be overridden.
 #
 # Customize Docker parameters specified using env var IMAGE_RUN_PARS.
 #
 cd $IMAGE_DIR
+
+export EXEC_ID=${EXEC_ID:-${NOTEBOOK_ID}}
 
 SP_HOME=${SP_HOME:-""}               # host dir to mount as rw /home/jovyan
 SP_HUB_INIT=${SP_HUB_INIT:-""}       # run hub's post-start-hook to init account
@@ -19,7 +21,7 @@ fi
 
 if [ ${SP_HUB_INIT} ]; then
     echo "Running post-start-hook to create/update user environment."
-    docker run $IMAGE_RUN_PARS  $IMAGE_ID  /opt/environments/post-start-hook off-hub
+    docker run $IMAGE_RUN_PARS  $EXEC_ID  /opt/environments/post-start-hook off-hub
 fi
 
 if [[ ${SP_USER} ]]; then
@@ -28,4 +30,4 @@ if [[ ${SP_USER} ]]; then
     IMAGE_RUN_PARS="$IMAGE_RUN_PARS --user ${SP_USER} --group-add users"
 fi
 
-docker run $IMAGE_RUN_PARS  $IMAGE_ID $*
+docker run $IMAGE_RUN_PARS  $EXEC_ID $*

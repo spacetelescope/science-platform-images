@@ -10,7 +10,7 @@ fi
 source image-dev-pars
 
 # If no image is specified, run the last tagged mission container.
-export IMAGE_ID=${1:-`docker image ls -q | head -1`}
+export EXEC_ID=${1:-`docker image ls -q | head -1`}
 
 # Both normal and --dev mode are interactive
 export IMAGE_RUN_PARS="$IMAGE_RUN_PARS -it"

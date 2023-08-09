@@ -16,8 +16,7 @@ for USE_FROZEN in $FREEZE_MODES; do
         image-configure ${DEPLOYMENT_NAME} ${USE_FROZEN}
         source setup-env
         # tags for tracking here only, not intended for push, not valid for e.g. running on hub
-        export IMAGE_ID=${IMAGE_ID}-${USE_FROZEN}
-        export COMMON_ID=${COMMON_ID}-${USE_FROZEN}
+        export NOTEBOOK_ID=${NOTEBOOK_ID}-${USE_FROZEN}
         image-build 2>&1 >${id}.log
     done
 done

@@ -19,43 +19,35 @@ ENV SHELL=/bin/bash
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 ENV CFLAGS="-fcommon -fpic"
 
-# ------------------------------------------------------------------------
-USER root
-
 ARG TZ='America/New_York'
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG USE_FROZEN=1
 ENV USE_FROZEN=$USE_FROZEN
 
-ARG PIP_SWITCHES="--no-cache-dir"
+ARG PIP_SWITCHES=""
 ENV PIP_SWITCHES=$PIP_SWITCHES
 
 # Enable easy swap of conda with e.g. mamba
 ARG CONDA_VER=conda
 ENV CONDA_VER=${CONDA_VER}
 
-# Directories used for Docker RUN caching
-ARG CACHE_DIRS=""
-ENV CACHE_DIRS=${CACHE_DIRS}
-
-# ----- # Clearing caches at the end of each RUN saves image space
-# ----- # but seems to mess up dependency debug tools like pipdeptree.
-# ----- # NOT setting this is also a requirement of effective Docker
-# ----- # buildkit cache use.  ATM jupyter/docker-stacks will still wipe
-# ----- # out caches created prior to the common base image regardless.
-# ----- ARG CLEAR_PKG_CACHES="1"
-# ----- ENV CLEAR_PKG_CACHES=${CLEAR_PKG_CACHES}
+ARG USER_CACHE_DIRS=""
+ENV USER_CACHE_DIRS=${USER_CACHE_DIRS}
 
 # These are duplicated in jupyter/docker-stacks so need to be changed
 # in both locations.  Better than hard coding in scripts though.
 ENV NB_UID=1000
 ENV NB_GID=100
 
-RUN mkdir -p /home/jovyan/.cache && chown -R jovyan:users /home/jovyan/.cache
-RUN mkdir -p /home/jovyan/.conda/pkgs && chown -R jovyan:users /home/jovyan/.conda/pkgs
-RUN mkdir -p /opt/conda/pkgs &&  chown -R jovyan:users /opt/conda/pkgs
+# ------------------------------------------------------------------------
+# Make sure user cache directories exist before RUN caching uses then as mount points
 
+USER root
+
+RUN for DIR in ${USER_CACHE_DIRS};  do mkdir -p ${DIR}; chown -R $NB_UID:$NB_GID ${DIR}; done
+
+# ------------------------------------------------------------------------
 # Breaking into separate runs will build slower but also defines storage
 # consumption in docker history.
 #
