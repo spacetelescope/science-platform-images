@@ -52,7 +52,13 @@ RUN /opt/common-scripts/env-conda roman-cal
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.pip  /opt/environments/roman-cal/
 
 # ----  Compile romcan-cal pip requirements to dependency solution
-# ----  Specifies required.pip as an override/alternative to the normal common-env packages.
+#       Normally this includes *.pip from common/common-env automatically.
+# RUN /opt/common-scripts/env-compile roman-cal
+
+# ----  If common-env causes conflicts,  it can be omitted and/or reduced if necessary
+#       by specifying alternate package lists such as /opt/common-env/required.pip
+#       which should be the minimum installed to avoid breaking our framework in places,
+#       particularly for testing.
 RUN /opt/common-scripts/env-compile roman-cal  /opt/common-env/required.pip
 
 # ----- Install compiled roman-cal pip dependency solution

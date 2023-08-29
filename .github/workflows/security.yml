@@ -40,16 +40,15 @@ jobs:
            source setup-env
            scripts/sscan-bandit
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner on file system
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           ignore-unfixed: true
           format: table
           vuln-type: os,library
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
           scan-ref: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen
-
 
       # - name: Anchore Scan
       #   uses: anchore/scan-action@v3

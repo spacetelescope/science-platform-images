@@ -72,10 +72,21 @@ jobs:
            scripts/image-test
            df -h
 
-      - name: Scan image
-        uses: anchore/scan-action@v3
+      - name: Run Trivy vulnerability scanner on image
+        uses: aquasecurity/trivy-action@master
         with:
-          fail-build: false
-          severity-cutoff: high
-          output-format: table
-          image: notebook-${{ matrix.DEPLOYMENT_NAME }}
+          scan-type: image
+          image-ref: notebook-${{ matrix.DEPLOYMENT_NAME }}
+          ignore-unfixed: true
+          format: table
+          vuln-type: os,library
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+
+      # ----- - name: Scan image
+      # -----   uses: anchore/scan-action@v3
+      # -----   with:
+      # -----     fail-build: false
+      # -----     severity-cutoff: high
+      # -----     output-format: table
+      # -----     image: notebook-${{ matrix.DEPLOYMENT_NAME }}
