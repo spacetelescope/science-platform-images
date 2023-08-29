@@ -113,3 +113,5 @@ hub/charts/
 deployments/*/secrets/*
 
 deployments/jwebbinar/image/default-home-contents/.jdaviz-example-data/*
+
+*.cached
