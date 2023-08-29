@@ -9,4 +9,14 @@ dependencies:
     - nomkl
     - openblas
     - python~=3.11.0
+    - wheel
+    - freetds
+    - sqlite
+    - unixodbc
+    - krb5
+    - tk
+    - zlib
+    - readline
+    - libedit
+    - bzip2
     - pip
