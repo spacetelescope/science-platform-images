@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
@@ -40,10 +40,21 @@ jobs:
            source setup-env
            scripts/sscan-bandit
 
-      - name: Anchore Scan
-        uses: anchore/scan-action@v3
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          fail-build: true
-          severity-cutoff: high
-          output-format: table
-          path: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen
+          scan-type: fs
+          ignore-unfixed: true
+          format: table
+          vuln-type: os,library
+          severity: 'CRITICAL,HIGH'
+          scan-ref: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen
+
+
+      # - name: Anchore Scan
+      #   uses: anchore/scan-action@v3
+      #   with:
+      #     fail-build: true
+      #     severity-cutoff: high
+      #     output-format: table
+      #     path: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen
