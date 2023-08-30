@@ -43,7 +43,6 @@ erfa
 pygments
 pymssql
 pyproject_hooks
-pyrsistent
 dateutil
 yaml
 zmq
