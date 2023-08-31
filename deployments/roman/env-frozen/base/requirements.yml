@@ -374,12 +374,12 @@ dependencies:
       - astropy==5.3.2
       - astropy-sphinx-theme==1.1
       - black==23.7.0
-      - boto3==1.28.36
-      - botocore==1.31.36
+      - boto3==1.28.38
+      - botocore==1.31.38
       - bqplot==0.12.40
       - bqplot-image-gl==1.4.11
       - casa-formats-io==0.2.1
-      - ci-watson==0.6.1
+      - ci-watson==0.6.2
       - crds==11.17.3
       - distlib==0.3.7
       - docutils==0.18.1
@@ -401,12 +401,12 @@ dependencies:
       - ipygoldenlayout==0.4.0
       - ipysplitpanes==0.2.0
       - ipyvolume==0.6.3
-      - ipyvue==1.9.2
+      - ipyvue==1.10.0
       - ipyvuetify==1.8.10
       - ipywebrtc==0.6.0
       - jmespath==1.0.1
       - jupyter-bokeh==3.0.7
-      - jupyter-resource-usage==1.0.0
+      - jupyter-resource-usage==1.0.1
       - jupyter-server-proxy==4.0.0
       - mccabe==0.7.0
       - mpl-scatter-density==0.7
@@ -432,16 +432,16 @@ dependencies:
       - pytest-openfiles==0.5.0
       - pythreejs==2.4.2
       - qtconsole==5.4.3
-      - qtpy==2.3.1
+      - qtpy==2.4.0
       - radio-beam==0.3.4
       - requests-mock==1.11.0
       - s3transfer==0.6.2
       - semantic-version==2.10.0
-      - sidecar==0.3.0
+      - sidecar==0.7.0
       - simpervisor==1.0.0
       - snowballstemmer==2.2.0
       - spectral-cube==0.6.2
-      - sphinx==7.2.4
+      - sphinx==7.2.5
       - sphinx-astropy==1.9.1
       - sphinx-automodapi==0.16.0
       - sphinx-gallery==0.14.0
@@ -462,5 +462,5 @@ dependencies:
       - vispy==0.13.0
       - y-py==0.6.0
       - yarl==1.9.2
-      - ypy-websocket==0.12.1
+      - ypy-websocket==0.12.2
 prefix: /opt/conda
