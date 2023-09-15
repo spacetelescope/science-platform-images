@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # This is a standard entry-point used to set up notebooks for this
 # Docker image.   It is nominally used to pull notebook repos using
 # nbgitpuller and then update the default kernels specified in the
@@ -12,7 +14,9 @@ chmod -R +w /home/jovyan/astropy-workshop /home/jovyan/jwebbinar_prep
 
 #/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/WORKSHOP/*/*.ipynb || true
 
-/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/jdaviz_2023/*.ipynb || true
+#/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/jdaviz_2023/*.ipynb || true
+
+/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
 
 /opt/common-scripts/set-notebook-kernel jwebbinar astropy-workshop/**/*.ipynb || true
 
