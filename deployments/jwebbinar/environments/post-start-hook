@@ -14,7 +14,7 @@ HUB_FLAG=${1:-"on-hub"}
 
 TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
 mkdir -p ~/archive/$TIMESTAMP/
-mv ~/jwebb_prep/ ~/archive/$TIMESTAMP/ || true
+mv ~/jwebbinar_prep/ ~/archive/$TIMESTAMP/ || true
 
 git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
 /opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
