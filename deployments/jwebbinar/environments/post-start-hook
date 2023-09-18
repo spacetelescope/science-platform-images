@@ -12,8 +12,12 @@ HUB_FLAG=${1:-"on-hub"}
 
 /opt/common-scripts/copy-default-home
 
-/opt/environments/setup-notebooks
+TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
+mkdir -p ~/archive/$TIMESTAMP/
+mv ~/jwebb_prep/ ~/archive/$TIMESTAMP/ || true
 
+git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
+/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
 
 if [[ $HUB_FLAG == "on-hub" ]]; then
     /opt/common-scripts/symlink-crds
@@ -22,5 +26,3 @@ fi
 # Remove VNC Desktop from Launcher
 rm -rf /home/jovyan/.user-dirs/Desktop
 rm -rf /home/jovyan/Desktop
-
-# ha
