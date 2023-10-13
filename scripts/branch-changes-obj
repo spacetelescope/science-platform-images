@@ -1,0 +1,89 @@
+#! /bin/bash
+
+set -eu -o pipefail
+
+if  [ $# -eq 0 ] || [ $1 == "--help" ]; then
+    cat <<END_USAGE
+
+usage: `basename $0` <branch-to-check>|current  <baseline-branch>  <objs-to-check...>
+
+Given <objs-to-check> from <branch-to-check>, determine if any changes occurred
+relative to <baseline-branch>.  This supports doing conditional CI/CD functions
+on a multi-purpose repo depending on which code is changing.
+
+branch-to-check:  branch of the current clone that may have changed something relative to <baseline-branch>.
+                  use 'current' to use the clone on the current branch.
+
+baseline-branch: branch defining the baseline content against which to check for changes.
+                 should be specified as <remote>/<branch> if <remote> already exists.
+                 should be specified as <git-uri>@<branch> if no <remote> exists yet for <git-uri>.
+                 defaults to origin/main.
+
+objs-to-check:   the directory and file paths to search for changes.
+                 note that "." should always be true.
+
+Print "changed" and exit 0 if changes are detected.
+Print "no changes" and exit 1 if changes are not detected.
+Print "ERROR: msg" and exit non-zero for other errors.
+
+END_USAGE
+exit 2
+fi
+
+BRANCH_TO_CHECK=${1}  # or use current
+shift;
+
+BASELINE_BRANCH=${1}  # or use origin/main
+shift;
+
+OBJS_TO_CHECK=$*
+
+REMOTE_ADDED=0
+
+function exit_with_msg() {
+    exit_code=$1;  shift;
+    maybe_remove_remote
+    echo $*
+    exit $exit_code
+}
+
+BCO_REMOTE=bco-upstream
+function maybe_remove_remote() {
+    git remote remove ${BCO_REMOTE} >& /dev/null || true
+}
+
+if [ ! -d .git ]; then
+    exit_with_msg 3 "ERROR: This script must be run from the root of a git clone."
+fi
+
+if ! ( git status --untracked-files=no 2>&1 | grep -q "nothing to commit" ); then
+    exit_with_msg 4 "ERROR: There are unsaved changes in the source repo.  Commit them or stash them before continuing."
+fi
+
+if [[ "${BRANCH_TO_CHECK}" != "current" ]]; then
+    if ! git checkout ${BRANCH_TO_CHECK} >& /dev/null; then
+        git checkout ${BRANCH_TO_CHECK}  # repeat to see error
+        exit_with_msg 5 "ERROR:  checking out BRANCH_TO_CHECK failed. cannot continue."
+    fi
+fi
+
+if echo ${BASELINE_BRANCH} | grep -q '@'; then
+    URI=$(echo ${BASELINE_BRANCH} | cut -d '@' -f1)
+    BRANCH=$(echo ${BASELINE_BRANCH} | cut -d '@' -f2)
+    maybe_remove_remote
+    git remote add ${BCO_REMOTE} ${URI}
+    COMPARE_TO=${BCO_REMOTE}/${BRANCH}
+    git fetch ${BCO_REMOTE} >& /dev/null
+else
+    REMOTE=$(echo ${BASELINE_BRANCH} | cut -d'/' -f1)
+    COMPARE_TO=${BASELINE_BRANCH}
+    git fetch ${REMOTE} >& /dev/null
+fi
+
+for OBJ in ${OBJS_TO_CHECK}; do
+    if ! git diff --quiet HEAD ${COMPARE_TO} -- ${OBJ}; then
+        exit_with_msg 0 "changed"
+    fi
+done
+
+exit_with_msg 1 "unchanged"
