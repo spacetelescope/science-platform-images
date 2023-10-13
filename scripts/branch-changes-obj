@@ -1,0 +1,52 @@
+#! /bin/bash
+
+set -eu -o pipefail
+
+if  [ $# -eq 0 ] || [ $1 == "--help" ]; then
+    cat <<END_USAGE
+
+usage: `basename $0` <obj-to-check> [<branch-to-check> | current]  [<baseline-branch> | main]
+
+obj-to-check:    the directory to search for changes,  must be specified
+branch-to-check: the branch that may have changed something relative to <baseline-branch>,  defaulting to the current checkout
+baseline-branch: the branch defining the baseline content against which to check for changes
+
+Given <obj-to-check> from <branch-to-check>,  determine if any changes occurred
+relative to <obj-to-check> in the <baseline-branch>.  This supports doing conditional
+CI/CD functions on a multi-purpose repo depending on which code is changing.
+
+Echo "changed" and exit 0 if changes are detected.
+Echo "no changes" and exit 1 if changes are not detected.
+Echo "ERROR: msg" and exit 3 for errors.
+
+END_USAGE
+exit 2
+fi
+
+OBJ_TO_CHECK=${1}
+BRANCH_TO_CHECK=${2:-current}
+BASELINE_BRANCH=${3:-origin/main}
+
+function pop_and_exit() {
+    exit_code=$1;  shift;
+    git stash pop 2>&1 >/dev/null
+    echo $*
+    exit $exit_code
+}
+
+
+git stash  2>&1 >/dev/null
+
+
+if [[ "${BRANCH_TO_CHECK}" != "current" ]]; then
+    if ! git checkout ${BRANCH_TO_CHECK} 2>&1 >/dev/null; then
+       pop_and_exit 3 "ERROR:  checking out BRANCH_TO_CHECK failed. cannot continue."
+    fi
+fi
+
+
+if git diff --quiet HEAD $BASELINE_BRANCH -- $OBJ_TO_CHECK 2>&1 >/dev/null; then
+    pop_and_exit 1 "no changes"
+else
+    pop_and_exit 0 "changed"
+fi
