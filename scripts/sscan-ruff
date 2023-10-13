@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+# Run code quality tool Ruff on all python sources which can be found
+
+cd $JUPYTERHUB_DIR
+
+echo "ruff version:"  `ruff --version`
+ruff check --line-length 120    `sscan-find-python-files`

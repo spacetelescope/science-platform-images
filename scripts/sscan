@@ -23,6 +23,12 @@ sscan-flake8
 flake8_status=$?
 
 echo "====================================================="
+echo "Scanning source code for quality with ruff           "
+echo "====================================================="
+sscan-ruff
+ruff_status=$?
+
+echo "====================================================="
 echo "Scanning source code for vulnerabilities using bandit"
 echo "====================================================="
 sscan-bandit
@@ -43,11 +49,17 @@ else
     echo "OK - Flake8 Python code quality checks."
 fi
 
+if [[ "$ruff_status" == "1" ]]; then
+    echo "ERROR - Ruff Python code quality checks failed."
+else
+    echo "OK - Ruff Python code quality checks."
+fi
+
 if [[ "$bandit_status" == "1" ]]; then
     echo "ERROR - Bandit source code security scanning found vulnerabilities."
 else
     echo "OK - Bandit source code security scanning."
 fi
 
-fail=`expr $yaml_status + $flake8_status + $bandit_status `
+fail=`expr $yaml_status + $flake8_status + $ruff_status + $bandit_status`
 exit $fail

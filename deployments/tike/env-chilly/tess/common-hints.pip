@@ -1,0 +1,11 @@
+# This file defines hints to resolve version conflicts based on the
+# multi-mission packages defined under deployments/common/image/common-env.
+# Similar to build-hints.pip and every kernel,  hints to fix common
+# conflicts should be added here instead of in the common-env .pip
+# file which only declares the unconstrained basic need of the package,
+# not any particular version which can cause inter-mission conflicts.
+
+# ---- jupyter-client==7.4.1
+# ---- jupyter-server==1.23.5
+# ---- y-py==0.5.4
+# ---- ypy-websocket==0.8.2
