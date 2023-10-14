@@ -19,6 +19,10 @@ jobs:
         FREEZE_CHILL: [ 1 ]
         OWNER: [ jupyter ]
 
+    env: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      actions: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -46,9 +50,6 @@ jobs:
                 gh run cancel ${{ github.run_id }}
                 gh run wratch ${{ github.run_id }}
             fi
-        env: ${{ secrets.GITHUB_TOKEN }}
-        permissions:
-          actions: write
 
       - name: Free Disk Space,  Enlarge Swapfile
         shell: bash
