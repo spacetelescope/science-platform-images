@@ -23,6 +23,33 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
+           df -h
+
+      - name: Early exit for unaffected builds
+        shell: bash
+        run: |
+            source setup-env
+
+            branch_changes_obj deployments/common
+            common_changes=$?
+
+            branch_changes_obj deployments/${{ matrix.DEPLOYMENT_NAME }}
+            deployment_changes=$?
+
+            if [[ ${common_changes} == "0" || ${deployment_changes} == "0" ]]; then
+            else
+                echo "This build deployment is nominally unaffected by the changes in this PR."
+                gh run cancel ${{ github.run_id }}
+                gh run wratch ${{ github.run_id }}
+            fi
+        env: ${{ secrets.GITHUB_TOKEN }}
+        permissions:
+          actions: write
+
       - name: Free Disk Space,  Enlarge Swapfile
         shell: bash
         run: |
@@ -42,12 +69,6 @@ jobs:
              sudo swapon /swapfile
              cat /proc/meminfo
              df -h
-
-      - name: Set Up Environment
-        shell: bash
-        run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
-           df -h
 
       - name: Image Build
         shell: bash
