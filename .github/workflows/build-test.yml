@@ -19,7 +19,8 @@ jobs:
         FREEZE_CHILL: [ 1 ]
         OWNER: [ jupyter ]
 
-    env: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       actions: write
 
