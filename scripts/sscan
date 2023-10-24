@@ -37,25 +37,25 @@ bandit_status=$?
 echo
 echo "----------------------------- sscan overall summary ----------------------------"
 
-if [[ "$yaml_status" == "1" ]]; then
+if [[ "$yaml_status" != "0" ]]; then
     echo "ERROR - YAML parsing checks failed."
 else
     echo "OK - YAML parsing"
 fi
 
-if [[ "$flake8_status" == "1" ]]; then
+if [[ "$flake8_status" != "0" ]]; then
     echo "ERROR - Flake8 Python code quality checks failed."
 else
     echo "OK - Flake8 Python code quality checks."
 fi
 
-if [[ "$ruff_status" == "1" ]]; then
+if [[ "$ruff_status" != "0" ]]; then
     echo "ERROR - Ruff Python code quality checks failed."
 else
     echo "OK - Ruff Python code quality checks."
 fi
 
-if [[ "$bandit_status" == "1" ]]; then
+if [[ "$bandit_status" != "0" ]]; then
     echo "ERROR - Bandit source code security scanning found vulnerabilities."
 else
     echo "OK - Bandit source code security scanning."

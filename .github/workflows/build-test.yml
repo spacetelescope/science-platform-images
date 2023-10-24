@@ -15,7 +15,7 @@ jobs:
       max-parallel: 3
       fail-fast: false
       matrix:
-        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike ]
         USE_FROZEN: [ 1 ]
         CAL_VERSION: [ none ]
         FREEZE_CHILL: [ 1 ]
