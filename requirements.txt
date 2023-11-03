@@ -3,11 +3,12 @@ requests
 beautifulsoup4
 lxml
 pyyaml
-#safety
 bandit
 boto3
 flake8
 black
+checkov
+ruff
 colorama
 keyring
 tqdm
@@ -16,3 +17,5 @@ webencodings
 filelock
 pytest
 pytest-coverage
+pandas
+openpyxl
