@@ -48,11 +48,12 @@ if [ -d ${WHERE} ]; then  # Already re-cloned
     find ${WHERE} -type f -exec chmod 644 {} +  # make files writable for user
     git config --global --add safe.directory ${WHERE}
     cd ${WHERE}
-    git pull origin ${BRANCH}
+    git fetch origin
+    git checkout origin/${BRANCH}
 else  # First clone after archiving
     echo "No existing clone found.  Cloning ${WHERE} from ${URL} at branch ${BRANCH}."
     cd ${HOME}
     git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
 fi
 
-find ${WHERE} -type f -exec chmod 444 -R {} +   # make files (but not dirs) readonly
+find ${WHERE} -type f -exec chmod 444 {} +   # make files (but not dirs) readonly
