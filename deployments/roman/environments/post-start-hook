@@ -26,7 +26,7 @@ set -eu
 
 HUB_FLAG=${1:-"on-hub"}
 
-if [[ "$HUB_FLAG" == "on-hub" ]]; then   
+if [[ "$HUB_FLAG" == "on-hub" ]]; then
     /opt/common-scripts/check-quota
 fi
 
@@ -36,7 +36,7 @@ fi
 
 # .............................................................................................
 
-/opt/common-scripts/git-sync https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/romancal-notebooks
+/opt/common-scripts/git-sync-v3 https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/romancal-notebooks
 
 # ROMANCAL_ALL_NOTEBOOKS=`find /home/jovyan/romancal-notebooks -name '*.ipynb' | xargs ls -1`
 
@@ -45,4 +45,3 @@ fi
 
 # needs update from romancal_datamodels to new package arrangement
 # echo ${ROMANCAL_ALL_NOTEBOOKS} >/opt/environments/roman-cal/tests/notebooks
-

@@ -1,0 +1,43 @@
+#! /bin/bash -eu
+
+if [ $# -ne 3 ]; then
+  echo "usage:  git-sync <url> <branch> <where>"
+  exit 2
+fi
+
+URL=$1
+BRANCH=$2
+WHERE=$3
+
+ARCHIVE=${HOME}/.git-sync-archive
+CLONEARC=${ARCHIVE}/`basename $WHERE`
+
+if [ -d ${CLONEARC} ]; then   # URL's repo is already archived
+    echo "Archive found for ${URL} at ${CLONEARC}."
+    if [ -d ${WHERE} ]; then  # URL has already been re-cloned
+        echo "Updating ${WHERE} from ${URL} at branch ${BRANCH}"
+        cd ${WHERE}
+        chmod +w -R .
+        git config --global --add safe.directory ${WHERE}
+        git pull origin ${BRANCH}
+    else  # URL needs first clone after archiving
+        echo "Cloning ${WHERE} from ${URL} at branch ${BRANCH}"
+        cd ${HOME}
+        git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+    fi
+else  # URL's archive dir does not exist
+    echo "No archive found for ${URL} at ${CLONEARC}."
+    mkdir -p ${ARCHIVE}
+    if [ -d ${WHERE} ]; then  # URL's original clone does exist.
+        echo "Archiving old repo ${WHERE} at ${CLONEARC}."
+        chmod +w -R ${WHERE}
+        mv ${WHERE} ${ARCHIVE}
+    else # URL was never downloaded pre-archiving
+        echo "Faking archive for ${URL} since no clone found at ${WHERE}."
+        mkdir -p ${CLONEARC}  # make a fake archive
+    fi
+    echo "Cloning ${WHERE} from ${URL} at branch ${BRANCH} after archving."
+    cd ${HOME}
+    git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+fi
+chmod -w -R ${WHERE}
