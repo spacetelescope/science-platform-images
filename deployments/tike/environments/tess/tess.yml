@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python~=3.8.0
+  - python==3.11
   - pip
   - freetds
   - fftw
@@ -11,9 +11,25 @@ dependencies:
   - nomkl
   - openblas
   - pip:
-    - numpy   # <1.22
+    - setuptools
     - pyfftw
-    - cython==0.29.36
+    - cython
+    - astropy
+    - astroquery 
+    - batman_package 
+    - bokeh 
+    - boto3
+    - dask
+    - h5py 
+    - juliet
+    - lightkurve 
+    - matplotlib 
+    - numpy 
+    - pandas 
+    - Requests 
+    - s3fs 
+    - scipy
+
 
 #  - mkl_fft
 #  - mkl
