@@ -14,20 +14,7 @@ dependencies:
     - setuptools
     - pyfftw
     - cython
-    - astropy
-    - astroquery 
-    - batman_package 
-    - bokeh 
-    - boto3
-    - dask
-    - h5py 
-    - juliet
-    - lightkurve 
-    - matplotlib 
     - numpy 
-    - pandas 
-    - Requests 
-    - s3fs 
     - scipy
 
 

@@ -53,9 +53,7 @@ PT=/home/jovyan/project-tikebook
 mkdir -p /opt/environments/tess/tests
 
 cat <<EOF >/opt/environments/tess/tests/notebooks
-    ${TC}/code/test_notebooks/packages_priority1.ipynb
-    ${TC}/code/test_notebooks/packages_priority2.ipynb
-    ${TC}/code/test_notebooks/packages_priority3.ipynb
+    ${TC}/code/test_notebooks/lts-kernel-testing.ipynb
     ${TC}/code/test-cloud-lightkurve.py
 
     ${MN}/notebooks/astroquery/large_downloads/large_downloads.ipynb
@@ -114,11 +112,8 @@ cat <<EOF >/opt/environments/tess/tests/notebooks
     #${MN}/notebooks/JWST/SI_keyword_exoplanet_search/SI_keyword_exoplanet_search.ipynb
     #${MN}y/notebooks/JWST/download_by_program_id/download_by_program_id.ipynb
     ${MN}/notebooks/K2/removing_instrumental_noise_using_pld/removing_instrumental_noise_using_pld.ipynb
-
     ${HU}/notebooks.ipynb
-    ${HU}/notebooks/hello-universe/Classifying_JWST-HST_galaxy_mergers_with_CNNs/Classifying_JWST-HST_galaxy_mergers_with_CNNs.ipynb
     ${HU}/notebooks/hello-universe/Classifying_PanSTARRS_sources_with_unsupervised_learning/Classifying_PanSTARRS_sources_with_unsupervised_learning.ipynb
-    ${HU}/notebooks/hello-universe/Classifying_TESS_flares_with_CNNs/Classifying_TESS_flares_with_CNNs.ipynb
     ${HU}/notebooks/hello-universe/Regressing_3D-HST_galaxy_redshift_with_decision_trees/Regressing_3D-HST_galaxy_redshift_with_decision_trees.ipynb
 
 EOF
@@ -143,6 +138,14 @@ EOF
 # This runs for e.g. 30 min
 cat <<EOF >/opt/environments/tess/tests/long-notebooks-failing
     ${MN}/notebooks/TESS/interm_tesscut_dss_overlay/interm_tesscut_dss_overlay.ipynb
+EOF
+
+# .............................................................................................
+
+# Disabled notebooks after priority packages due to not available libraries
+cat <<EOF >/opt/environments/tess/tests/notebooks-with-no-required-libraries
+    ${HU}/notebooks/hello-universe/Classifying_JWST-HST_galaxy_mergers_with_CNNs/Classifying_JWST-HST_galaxy_mergers_with_CNNs.ipynb
+    ${HU}/notebooks/hello-universe/Classifying_TESS_flares_with_CNNs/Classifying_TESS_flares_with_CNNs.ipynb
 EOF
 
 # .............................................................................................
