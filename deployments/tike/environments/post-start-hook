@@ -37,16 +37,16 @@ fi
 # .............................................................................................
 
 TC=/home/jovyan/tike_content
-/opt/common-scripts/git-sync  https://github.com/spacetelescope/tike_content.git  main  ${TC}
+/opt/common-scripts/git-sync-v3  https://github.com/spacetelescope/tike_content.git  main  ${TC}
 
 MN=/home/jovyan/mast_notebooks
-/opt/common-scripts/git-sync   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
+/opt/common-scripts/git-sync-v3   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
 
 HU=/home/jovyan/hellouniverse
-/opt/common-scripts/git-sync   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
+/opt/common-scripts/git-sync-v3   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
 
 PT=/home/jovyan/project-tikebook
-/opt/common-scripts/git-sync   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
+/opt/common-scripts/git-sync-v3   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
 
 # .............................................................................................
 

@@ -1,0 +1,59 @@
+#! /bin/bash -eu
+
+if [ $# -ne 3 ]; then
+  echo "usage:  git-sync <url> <branch> <where>"
+  exit 2
+fi
+
+URL=$1
+BRANCH=$2
+WHERE=$3
+
+ARCHIVE=${HOME}/.git-sync-archive
+CLONEARC=${ARCHIVE}/`basename $WHERE`
+OFF_FILE=${HOME}/.git-sync-off
+
+if [ -f ${OFF_FILE} ]; then
+    echo "Git sync has been turned off by creating ${OFF_FILE}.  Delete it to resume syncs."
+    exit 0
+fi
+
+if [ ! -d ${ARCHIVE} ]; then
+    echo "No archive directory found at ${ARCHIVE}.  Creating."
+    mkdir -p ${ARCHIVE}
+fi
+
+if [ ! -L ${HOME}/notebook-archive ]; then
+    ln -s ${ARCHIVE} ${HOME}/notebook-archive
+fi
+
+if [ ! -d ${CLONEARC} ]; then  # not archived
+    if [ -d ${WHERE} ]; then # clone exists
+        echo "Archiving old repo ${WHERE} at ${CLONEARC}."
+        mv ${WHERE} ${ARCHIVE}
+    else # URL was never downloaded,  fake an archive
+        echo "Faking archive for ${URL} since no clone found at ${WHERE}."
+        mkdir -p ${CLONEARC}  # make a fake archive
+    fi
+else
+    echo "Existing archive found for ${URL} at ${CLONEARC}."
+fi
+
+if [ -d ${WHERE} ]; then  # Already re-cloned
+    echo "Updating existing clone ${WHERE} from ${URL} at branch ${BRANCH}."
+    if [ ! -w ${WHERE} ]; then  # first time run after v2 readonly dirs
+        echo "First time v2 -> v3 conversion to writable directories."
+        find ${WHERE} -type d -exec chmod 755 {} +  # make dirs writable for user
+    fi
+    find ${WHERE} -type f -exec chmod 644 {} +  # make files writable for user
+    git config --global --add safe.directory ${WHERE}
+    cd ${WHERE}
+    git fetch origin
+    git checkout origin/${BRANCH}
+else  # First clone after archiving
+    echo "No existing clone found.  Cloning ${WHERE} from ${URL} at branch ${BRANCH}."
+    cd ${HOME}
+    git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+fi
+
+find ${WHERE} -type f -exec chmod 444 {} +   # make files (but not dirs) readonly

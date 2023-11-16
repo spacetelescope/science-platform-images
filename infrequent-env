@@ -71,11 +71,6 @@ function where () {
     else
         info="${info}-ERROR"
     fi
-    if [[ "${CLEAR_PKG_CACHES}" == "1" ]]; then
-        info="${info}-clearpkgs"
-    else
-        info="${info}-keeppkgs"
-    fi
     echo $info
 }
 
