@@ -1,5 +1,5 @@
 env:
-  GH_TOKEN: ${{ github.token }}
+  GITHUB_TOKEN: ${{ github.token }}
 name:  Image Build, Test
 on:
    pull_request:
@@ -34,25 +34,28 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Set Up Environment
+      - name: Configure
         shell: bash
         run: |
            scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
-           pip install -r requirements.txt
 
       - name: Early exit for unaffected builds
         shell: bash
         run: |
             source setup-env
-
             if ! branch-changes-obj current  https://github.com/spacetelescope/science-platform-images@main \
                                     deployments/common deployments/${{ matrix.DEPLOYMENT_NAME }};
             then
                 echo "This build deployment is nominally unaffected by the changes in this PR."
-                gh run cancel ${{ github.run_id }}
-                # gh run watch ${{ github.run_id }}
+                gh run cancel ${{ github.run_id }} || true
+                gh run watch ${{ github.run_id }} || true
                 exit 0
             fi
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+           pip install -r requirements.txt
 
       - name: Free Disk Space,  Enlarge Swapfile
         shell: bash
