@@ -1,54 +1,18 @@
-lightkurve
-tglc
-emcee
-george
-celerite
-k2flix
-everest-pipeline
-reproject
-astroML
-
-dynesty
-rebound
-ultranest
-pymultinest
-zeus
-
-statsmodels
-
-tqdm
-
-astrocut
-
-pixiedust
-tess-point
-transitleastsquares
-wotan
-EDIunplugged
-pyLIMA
-aas-timeseries
-
-
-# List add-on packages explicitly to remove google related packages from [all] install
-astrobase
-psycopg2-binary
-h5py
-corner
-transitleastsquares
-paramiko
-
-exoplanet
-starry
-
-healpy
-
-# New for hellouniverse
-stella
-
-# Installed from source due to numpy ABI version issues
-#batman-package
-#radvel-installed
-juliet
-#allesfitter
-#ellc
-#tvguide
+astropy 
+astroquery >= 0.4.6
+batman_package 
+bokeh 
+boto3 
+dask 
+h5py >= 3.10.0		
+juliet >= 2.2.1
+lightkurve >= 2.4.2
+matplotlib 
+numpy >= 1.26.1 	
+pandas >= 2.1.2
+Requests >= 2.31.0
+s3fs
+s3fs >= 23.10.0
+scikit_learn >= 1.3.2
+scipy >= 1.11.3		
+tess_point >= 0.8.0

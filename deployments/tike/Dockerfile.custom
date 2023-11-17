@@ -75,7 +75,8 @@ RUN /opt/common-scripts/env-src-install  tess  radvel
 
 # RUN /opt/common-scripts/env-src-install  tess  juliet
 
-RUN /opt/common-scripts/env-src-install  tess  tvguide
+#RUN /opt/common-scripts/env-src-install  tess  tvguide
+
 
 # ellc is a dependency of allesfitter
 RUN /opt/common-scripts/env-src-install  tess  ellc
