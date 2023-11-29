@@ -1,4 +1,4 @@
-#! /bin/bash -eu
+#! /bin/bash -u
 
 if [ $# -ne 3 ]; then
   echo "usage:  git-sync <url> <branch> <where>"
@@ -9,12 +9,12 @@ URL=$1
 BRANCH=$2
 WHERE=$3
 
-ARCHIVE=${HOME}/.git-sync-archive
+ARCHIVE=${HOME}/.git-sync-archive-3
 CLONEARC=${ARCHIVE}/`basename $WHERE`
-OFF_FILE=${HOME}/.git-sync-off
+CONFIG=${HOME}/.git-sync-config
 
-if [ -f ${OFF_FILE} ]; then
-    echo "Git sync has been turned off by creating ${OFF_FILE}.  Delete it to resume syncs."
+if [ if grep 'AUTO_UPDATE=off' ${CONFIG} ]; then
+    echo "Git sync has been turned off in ${CONFIG}. Exiting."
     exit 0
 fi
 
@@ -45,10 +45,12 @@ if [ -d ${WHERE} ]; then  # Already re-cloned
         echo "First time v2 -> v3 conversion to writable directories."
         find ${WHERE} -type d -exec chmod 755 {} +  # make dirs writable for user
     fi
-    find ${WHERE} -type f -exec chmod 644 {} +  # make files writable for user
+    find ${WHERE} -type f -exec chmod 644 {} +  # make files writable for git
     git config --global --add safe.directory ${WHERE}
     cd ${WHERE}
     git fetch origin
+    git reset HEAD
+    git checkout -- .
     git checkout origin/${BRANCH}
 else  # First clone after archiving
     echo "No existing clone found.  Cloning ${WHERE} from ${URL} at branch ${BRANCH}."
@@ -57,3 +59,17 @@ else  # First clone after archiving
 fi
 
 find ${WHERE} -type f -exec chmod 444 {} +   # make files (but not dirs) readonly
+
+mkdir -p $HOME/.tmp
+
+cd $WHERE
+find . -type f | sort >$HOME/.tmp/all_files
+find . -type d | sort >$HOME/.tmp/all_dirs
+
+git status --porcelain | grep '^??' | cut -c4- | sort >$HOME/.tmp/user_added_things
+
+git status --porcelain | grep '^??' | cut -c4- | grep '/$' | xargs find | grep -v '/$' >$HOME/.tmp/user_added_files
+
+find /dir -name '*.gz' | sort >everything_sorted
+sort skip_files >skip_files_sorted
+comm -23 everything_sorted skip_files_sorted | xargs . . . etc
