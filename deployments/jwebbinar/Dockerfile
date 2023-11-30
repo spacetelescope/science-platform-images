@@ -58,52 +58,25 @@ COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
-# --------------------------- Jwebbinar -------------------------------------
+# --------------------------- Masterclass -------------------------------------
+
+ENV JH_DEFAULT_KERNEL=masterclass
 
 # BASE
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar/ /opt/env-frozen/jwebbinar/
-COPY --chown=${NB_UID}:${NB_GID} env-chilly/jwebbinar/ /opt/env-chilly/jwebbinar/
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.yml /opt/environments/jwebbinar/
-RUN /opt/common-scripts/env-conda jwebbinar
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/masterclass/ /opt/env-frozen/masterclass/
+COPY --chown=${NB_UID}:${NB_GID} env-chilly/masterclass/ /opt/env-chilly/masterclass/
+COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/*.yml /opt/environments/masterclass/
+RUN /opt/common-scripts/env-conda masterclass
 
 # COMPILE ALL
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.pip /opt/environments/jwebbinar/
-RUN /opt/common-scripts/env-compile jwebbinar
+COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/*.pip /opt/environments/masterclass/
+RUN /opt/common-scripts/env-compile masterclass
 
 # SYNC ALL
-RUN /opt/common-scripts/env-sync jwebbinar
+RUN /opt/common-scripts/env-sync masterclass
 
 # REMAINING ENV
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebbinar/
-
-
-# --------------------------- Jdaviz -------------------------------------
-
-# BASE
-#COPY --chown=${NB_UID}:${NB_GID} env-frozen/jdaviz/ /opt/env-frozen/jdaviz/
-#COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.yml /opt/environments/jdaviz/
-#RUN /opt/common-scripts/env-conda jdaviz
-
-# COMPILE ALL
-#COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.pip /opt/environments/jdaviz/
-#RUN /opt/common-scripts/env-compile jdaviz
-
-# SYNC ALL
-#RUN /opt/common-scripts/env-sync jdaviz
-
-# REMAINING ENV
-#COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/ /opt/environments/jdaviz/
-
-
-# Needed for cleaning up existing/obsolete kernel (also now used for Mirisim)
-#COPY --chown=${NB_UID}:${NB_GID} environments/remove-kernel /opt/environments/
-
-
-# ----------
-
-# This should NOT be necessary, but as of 24 May 2022 it was needed to get the
-# lab extension working for Jdaviz
-#RUN jupyter labextension install @jupyter-widgets/jupyterlab-sidecar
+COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/ /opt/environments/masterclass/
 # ========================= vvvvv Generic vvvvv  =========================
 
 USER $NB_UID

@@ -72,8 +72,15 @@ fi
 cd $IMAGE_DIR
 
 if [[ $USE_FROZEN == "0" ]]; then
-  # echo "Clearing frozen image specs to avoid Docker cache busting."
-  # echo "Add or commit them to git prior to unfrozen builds to avoid this clear."
-  git checkout -- env-frozen
-  git checkout -- env-chilly
+  cat <<EOF
+Clearing frozen image specs to avoid Docker cache busting.
+Add, commit, or revert them yourself to/in git prior to floating build
+to avoid this message, or just ignore the message.
+Seeing follow-on errors here from git about non-existent directories
+is normal under some circumstances,  particularly when adding new kernels,
+so as long as the build starts ignore them.
+
+EOF
+  git checkout -- env-frozen || true
+  git checkout -- env-chilly || true
 fi
