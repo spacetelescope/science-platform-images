@@ -1,0 +1,12 @@
+>>> from git_sync_v4 import run, run_lines
+
+>>> run("echo hello world!")
+'hello world!\n'
+
+>>> run_lines("""# +NORMALIZE_WHITESPACE
+... echo hello world!
+... echo hello world2!
+... """
+hello world!
+hello world2!
+
