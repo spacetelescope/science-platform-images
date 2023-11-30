@@ -1,0 +1,233 @@
+#! /usr/bin/env python
+"""
+GIT_ANOMALIES=$(git status --porcelain)
+USER_FILES=$(echo ${GIT_ANOMALIES} | grep '^??' | cut -c4- | grep -v '/$' | sort | uniq)
+USER_DIRS=$(echo ${GIT_ANOMALIES} | grep '^??' | cut -c4- | grep '/$' | sort | uniq)
+find . -type f | grep -v '^.git' | sort | uniq > $HOME/.tmp/every-file.gs
+find . -type d | grep -v '^.git' | sort | uniq > $HOME/.tmp/every-dir.gs
+GIT_FILES=$(echo $USER_FILES | comm -34 $HOME/.tmp/every-file.gs -)
+GIT_DIRS=$(echo $HOME/.tmp/every-dir.gs
+
+echo "Updating existing clone ${WHERE} from ${URL} at branch ${BRANCH}."
+if [ ! -w ${WHERE} ]; then  # first time run after v2 readonly dirs
+    echo "First time v2 -> v3 conversion to writable directories."
+    find ${WHERE} -type d -exec chmod 755 {} +  # make dirs writable for user
+fi
+find ${WHERE} -type f -exec chmod 644 {} +  # make files writable for git
+"""
+import os
+import sys
+import subprocess
+import argparse
+
+
+# ===========================================================================================
+
+def run(cmd, cwd=".", timeout=10):
+    """Run subprocess `cmd` in dir `cwd` failing if not completed within `timeout` seconds
+    of if `cmd` returns a non-zero exit status.
+
+    Returns both stdout+stderr from `cmd`.  (untested, verify manually if in doubt)
+    """
+    result = subprocess.run(
+        cmd.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+        cwd=cwd,
+        timeout=timeout,
+    )  # maybe succeeds
+    return result.stdout
+
+
+def run_lines(script, cwd=".", timeout=10):
+    """Run a multi-line block of commands in series and return a string
+    containing the commands themselved prefixed by '%% ' as well as the
+    stderr and stdout with eac
+    """
+    output = []
+    for line in script.splitlines():
+        output.append("% " + line + run(line, cwd, timeout))
+    return "\n\n".join(output)
+
+# ===========================================================================================
+
+
+def all_files(repo_dir, suffix="", type="f"):
+    return [ line.strip()+suffix for line in run(f"find {repo_dir} -type {type}").splitlines() ]
+
+
+def all_dirs(repo_dir):
+    return all_files(repo_dir, suffix="/", type="d")
+
+
+class Classifications:
+    """Return value for git_classify() below."""
+    def __init__(self, repo_dir):
+        self.git_status = ""
+        self.user_files = []
+        self.user_dirs = []
+        self.git_files = []
+        self.git_dirs = []
+        self.all_fles = []
+        self.all_dirs = []
+
+
+def git_classify(repo_dir):
+    """Based on git status, classify files and directories in the clone directory as
+    either belonging to the user or belonging to the git repo so they can be handled
+    differently during locking and unlocking,  enabling the preservation of user
+    files, directories, and where reasonable their permission modes.
+
+    Added/extra files and directories are the primary issue,  but the general intent
+    of git-sync-lock is never to mess with user owned artifacts at all... except where
+    they are fundamentally at odds with the automatic syncing process.
+
+    Lists of unclassified files and directories are determined using 'find' or the
+    Python equivalent to exhaustively enumrate them without regard to git.  Except
+    to exclude the .git directory or effectively make it user owned.
+
+    Lists of git owned files are determined using what is essentially set arithmetic
+    based on "all of a thing" and "things the user owns" where "thing" is a file or
+    directory,  which of course require different permissions.
+
+    Locking and unlocking will basically work as:
+
+    1. Git owned files and dirs will be chmodded between r/o (locked) and r/w (unlocked).
+    2. User owned files and dirs will be ignored during locking/unlocking.
+    3. Modified files will be given dated backups and then reverted to git's version
+       and treated as a git owned file for locking and unlocking.  The dated backup
+       will be treated as a user owned file.
+
+    returns  (git_files, git_dirs, user_files, user_dirs, modified_files)
+    """
+    classifications = Classifications(repo_dir)
+    classifications.git_status = run("git status --porcelain", cwd=repo_dir)
+    for i, line in enumerate(classifications.git_status.read().splitlines()):
+        mode, thing = parse_git_status_line(line)
+        if mode == "??":
+            if line.endswith("/"):
+                classifications.git_dirs.add(line[3:-1])
+            else:
+                classifications.git_files.add(line[3:])
+        elif mode in ["D"]:
+            continue # ignore deleted files and permit restoration by sync after reversion
+        elif mode == ["M", "U"]:
+            backup = backup_modified_file(repo_dir, thing)
+            classifications.user_files.add(backup)
+            classifications.git_files.add(thing)
+        elif mode in ["A", "C", "R"]:
+            classifications.git_files.add(thing)
+        else:
+            print(git_status)
+            raise RuntimeError("Unknown git status on line {i}: {line}.")
+
+
+def parse_git_status_line(line):
+    """Process one line of git status output into the code identifying the kind of
+    anomalous thing it is,  and the thing itself.
+
+    The status check identifies files and directories belonging to or affected in
+    some way by the user using git status which has codes.  For instance,  a status line
+    which looks like:
+
+       ?? the thing
+
+    is interpreted using the following table:
+
+        ?? means the file is untracked - it is not currently under version control in the git repository.
+        A means the file is newly added to the staging area - it will be included in the next commit.
+        M means the file is modified - it has changes from the version in the repository, but has not
+          been staged yet.
+        D means the file is deleted - it has been removed from the working tree and staging area,
+          but the deletion still needs to be committed.
+        R means the file is renamed - it has been renamed and the rename needs to be committed.
+        C means the file is copied - it is a copy of another file that needs to be committed.
+        U means the file is updated - it is not staged but was merged/rebased with changes.
+
+    as an untracked file 'the thing' the user has added to the clone directory.  Note the embedded space
+    which is going to have to be quoted somehow everywhere 'the thing' is interpreted by a shell.
+
+    Meanwhile the following:
+
+        ?? the_dir/
+
+    is interepted as a directory 'the_dir/' added by the user... with undefined contents.  Here
+    the "directory" property is determined by the trailing slash.
+
+    returns  (code,  file_or_dir)
+    """
+    line = line.strip()
+    if line.startswith("??"):
+        mode = "??"
+        file_or_dir = line[3:]
+    else:
+        mode = line[0]
+        file_or_dir = line[2:]
+    return mode, file_or_dir
+
+def lock_repo(classifications):
+    pass
+
+def unlock_repo(classifications):
+    pass
+
+def revert_and_update_repo(classification):
+    pass
+
+# ========================================================================================
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(
+        description="Intelligently update a pre-installed science platform repo clone."
+    )
+    parser.add_argument(
+        "--repo-dir",
+        dest="repo_dir",
+        type=str,
+        help="The path to the clone which is being locked or unlocked.  Required.",
+    )
+    parser.add_argument(
+        "--mode",
+        dest="mode",
+        choices=["lock", "unlock", "update"],
+        type=str,
+        help="Set clone file and dir modes either for readonly user reference mode (locked) or git updates (unlocked).  Required.",
+    )
+    return parser.parse_args(argv)
+
+
+def update_repo(repo_dir):
+    """ git config --global --add safe.directory ${WHERE}
+        git fetch origin
+        git reset HEAD
+        git checkout -- .
+        git checkout origin/${BRANCH}
+    """
+    pass
+
+
+def main(argv):
+    """Parse command line arguments and run the test spec.
+
+    Return the number of failing tests or 0 if all tests pass.
+    """
+    args = parse_args(argv)
+
+    classifications = git_classify(args.repo_dir)
+
+    if args.mode == "lock":
+        lock_repo(classifications)
+    elif args.mode == "unlock":
+        unlock_repo(classifications)
+    elif args.mode == "update":
+        update_repo(classifications)
+    else:
+        raise ValueError(f"Unhandled program mode {args.mode}.")
+
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
