@@ -1,0 +1,57 @@
+name: masterclass
+channels:
+  - defaults
+  - conda-forge
+  # - http://ssb.stsci.edu/astroconda
+dependencies:
+  - astropy=5.3.4
+  - beautifulsoup4=4.12.2
+  - blas=2.119=openblas
+  - blas-devel=3.9.0
+  - brotli-python=1.0.9
+  - bzip2=1.0.8
+  - ca-certificates=2023.08.22
+  - charset-normalizer=3.3.1
+  - html5lib=1.1
+  - idna=3.4
+  - importlib-metadata=6.8.0
+  - importlib_metadata=6.8.0
+  - jaraco.classes=3.3.0
+  - keyring=23.13.1
+  - libblas=3.9.0
+  - libcblas=3.9.0
+  - libcxx=16.0.6
+  - libffi=3.4.4
+  - libgfortran5=13.2.0
+  - liblapack=3.9.0
+  - liblapacke=3.9.0
+  - libopenblas=0.3.24
+  - libsqlite=3.43.2
+  - libzlib=1.2.13
+  - llvm-openmp=17.0.3
+  - more-itertools=10.1.0
+  - ncurses=6.4
+  - numpy-base=1.26.0
+  - openblas=0.3.24
+  - openssl=3.1.4
+  - packaging=23.2
+  - pip=23.3.1
+  - pysocks=1.7.1
+  - python=3.10.12
+  - pyvo=1.4.2
+  - pyyaml=6.0.1
+  - readline=8.2
+  - requests=2.31.0
+  - setuptools=68.2.2
+  - six=1.16.0
+  - soupsieve=2.5
+  - sqlite=3.43.2
+  - tk=8.6.13
+  - tzdata=2023c
+  - urllib3=2.0.7
+  - webencodings=0.5.1
+  - wheel=0.41.3
+  - xz=5.4.2
+  - yaml=0.2.5
+  - zipp=3.17.0
+  - zlib=1.2.13

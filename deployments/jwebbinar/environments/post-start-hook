@@ -12,17 +12,41 @@ HUB_FLAG=${1:-"on-hub"}
 
 /opt/common-scripts/copy-default-home
 
-TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
-mkdir -p ~/archive/$TIMESTAMP/
-mv ~/jwebbinar_prep/ ~/archive/$TIMESTAMP/ || true
-
-git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
-/opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
+# TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
+# mkdir -p ~/archive/$TIMESTAMP/
+# mv ~/jwebbinar_prep/ ~/archive/$TIMESTAMP/ || true
+# git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
+# /opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
 
 if [[ $HUB_FLAG == "on-hub" ]]; then
     /opt/common-scripts/symlink-crds
+    /opt/common-scripts/kernel-setup
 fi
 
 # Remove VNC Desktop from Launcher
 rm -rf /home/jovyan/.user-dirs/Desktop
 rm -rf /home/jovyan/Desktop
+
+/opt/common-scripts/remove-kernel jwebbinar
+/opt/common-scripts/remove-kernel jdaviz
+/opt/common-scripts/remove-kernel mirisim
+
+
+# --------------------------------------------------------------------------------
+# Notebook setup
+
+# XXXXXX PAY ATTENTION XXXXXXXXXXXXXX
+# Notebooks are configured for rush jwebbinar-28 downloaded from jaytmiller fork.
+# This definitely has to change for the next webbinar.
+
+cd $HOME
+/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep  jwebbinar-28  /home/jovyan/jwebbinar_prep
+chmod -R +w /home/jovyan/jwebbinar_prep
+
+# /opt/common-scripts/set-notebook-kernel masterclass  `find jwebbinar_prep -name '*.ipynb'`
+
+
+# --- mkdir -p /opt/environments/jwebbinar/tests
+# --- mkdir -p /opt/environments/jdaviz/tests
+# --- ls -1 /home/jovyan/jwebbinar_prep/pointsource_imaging/MIRI_Aperture_Photometry_*.ipynb | grep -v __ | grep -v _live  >/opt/environments/jwebbinar/tests/notebooks
+# --- ls -1 /home/jovyan/jwebbinar_prep/pointsource_imaging/NIRCam_Basic_PSF_Photometry_*.ipynb | grep -v __ | grep -v _live  >/opt/environments/jwebbinar/tests/notebooks
