@@ -1,6 +1,8 @@
 #! /bin/bash -eu
 
-cd $COMMON_IMAGE_DIR/pkgs/git-sync-v4
+export TEST_DIR=$COMMON_IMAGE_DIR/pkgs/git-sync-v4
+
+cd $TEST_DIR
 
 python -m pytest -v -v -v  \
        --tb=short \
@@ -8,7 +10,7 @@ python -m pytest -v -v -v  \
        --log-level INFO --log-cli-level INFO \
        --doctest-modules \
        --doctest-report cdiff \
-       --cov=git_sync_v4 --cov=check_quota --cov-report=html:htmlcov  \
+       --cov=git_sync_v4 --cov-report=html:htmlcov  \
        tests.py tests.txt $*
 
 rm -rf __pycache__

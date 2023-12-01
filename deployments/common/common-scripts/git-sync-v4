@@ -19,7 +19,8 @@ import os
 import sys
 import subprocess
 import argparse
-
+import pprint
+import tempfile
 
 # ===========================================================================================
 
@@ -46,10 +47,10 @@ def run_lines(script, cwd=".", timeout=10):
     containing the commands themselved prefixed by '%% ' as well as the
     stderr and stdout with eac
     """
-    output = []
-    for line in script.splitlines():
-        output.append("% " + line + run(line, cwd, timeout))
-    return "\n\n".join(output)
+    with tempfile.NamedTemporaryFile(mode="w", delete=False) as script:
+        cmd = f"bash {script.name}"
+        output = run(cmd, cwd, timeout)
+    return output
 
 # ===========================================================================================
 
@@ -64,7 +65,8 @@ def all_dirs(repo_dir):
 
 class Classifications:
     """Return value for git_classify() below."""
-    def __init__(self, repo_dir):
+    def __init__(self, repo_dir, **keys):
+        self.repo_dir = repo_dir
         self.git_status = ""
         self.user_files = []
         self.user_dirs = []
@@ -72,6 +74,10 @@ class Classifications:
         self.git_dirs = []
         self.all_fles = []
         self.all_dirs = []
+        self.__dict__.update(keys)
+
+    def __repr__(self):
+        print(f"Classifications(repo_dir={repr(self.repo_dir)} {pprint.pformat(sorted(self.__dict__.items()))})")
 
 
 def git_classify(repo_dir):
@@ -104,7 +110,9 @@ def git_classify(repo_dir):
     """
     classifications = Classifications(repo_dir)
     classifications.git_status = run("git status --porcelain", cwd=repo_dir)
-    for i, line in enumerate(classifications.git_status.read().splitlines()):
+    print(classifications.git_status)
+
+    for i, line in enumerate(classifications.git_status.splitlines()):
         mode, thing = parse_git_status_line(line)
         if mode == "??":
             if line.endswith("/"):
@@ -120,8 +128,9 @@ def git_classify(repo_dir):
         elif mode in ["A", "C", "R"]:
             classifications.git_files.add(thing)
         else:
-            print(git_status)
+            print(classifications.git_status)
             raise RuntimeError("Unknown git status on line {i}: {line}.")
+    return classifications
 
 
 def parse_git_status_line(line):

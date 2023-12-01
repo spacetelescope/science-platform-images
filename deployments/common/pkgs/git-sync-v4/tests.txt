@@ -1,12 +1,45 @@
->>> from git_sync_v4 import run, run_lines
+
+
+INIT_SCRIPT = """
+cd $TEST_DIR
+rm -rf test-clone
+git clone  https://github.com/spacetelescope/nersc-refresh-announcements  test-clone
+cd test-clone
+echo "Made up user file." >made-up-file.ipynb
+echo "Add some stuff to modify" >>README.md
+mkdir -p new-dir/sub-dir
+echo "Made up user file." >new-dir/made-up-2
+echo "Made up user file." >new-dir/sub-dir/made-up-3
+rm -f LICENSE
+mkdir -p poison-dir
+echo "Poison!" >poison-dir/poison-file
+chmod 644 poison-dir/poison-file
+chmod 000 poison-dir
+"""
+from git_sync_v4 import run_lines
+run_lines(INIT_SCRIPT, cwd=os.environ['TEST_DIR'])
+
+
+"""
+>>> import os
+>>> import tests
+>>> from git_sync_v4 import run, run_lines, all_files, all_dirs, git_classify
 
 >>> run("echo hello world!")
 'hello world!\n'
 
->>> run_lines("""# +NORMALIZE_WHITESPACE
-... echo hello world!
-... echo hello world2!
-... """
-hello world!
-hello world2!
+>>> os.chdir(os.environ['TEST_DIR'])
 
+>>> _ = all_files("test-clone")
+
+>>> _ = all_dirs("test-clone")
+
+>>> c = git_classify("test-clone")
+>>> c.repo_dir
+'test-clone'
+>>> c.user_files
+>>> c.user_dirs
+>>> c.git_files
+>>> c.git_dirs
+
+"""
