@@ -1,26 +1,3 @@
-
-
-INIT_SCRIPT = """
-cd $TEST_DIR
-rm -rf test-clone
-git clone  https://github.com/spacetelescope/nersc-refresh-announcements  test-clone
-cd test-clone
-echo "Made up user file." >made-up-file.ipynb
-echo "Add some stuff to modify" >>README.md
-mkdir -p new-dir/sub-dir
-echo "Made up user file." >new-dir/made-up-2
-echo "Made up user file." >new-dir/sub-dir/made-up-3
-rm -f LICENSE
-mkdir -p poison-dir
-echo "Poison!" >poison-dir/poison-file
-chmod 644 poison-dir/poison-file
-chmod 000 poison-dir
-"""
-from git_sync_v4 import run_lines
-run_lines(INIT_SCRIPT, cwd=os.environ['TEST_DIR'])
-
-
-"""
 >>> import os
 >>> import tests
 >>> from git_sync_v4 import run, run_lines, all_files, all_dirs, git_classify
@@ -30,16 +7,56 @@ run_lines(INIT_SCRIPT, cwd=os.environ['TEST_DIR'])
 
 >>> os.chdir(os.environ['TEST_DIR'])
 
->>> _ = all_files("test-clone")
+>>> run_lines(tests.INIT_SCRIPT)
+''
 
->>> _ = all_dirs("test-clone")
+Because `git_status` stops reporting as soon as it hits a user supplied
+directory,  using find to enumerate all the files and directories is needed.
+The all_xxx functions report tons of git files and dirs which may change,
+but at least check early and simply that they do not crash:
+
+>>> files = all_files("test-clone")
+>>> assert "poison-dir/poison-file-2.txt" not in files
+
+>>> dirs = all_dirs("test-clone")
+>>> assert "poison-dir/" in dirs
+>>> assert "poison-dir-2/" in dirs
+
+The `git_classify` function runs git status to determine files affected by
+the user and to report them in normalized form for farming out actions later:
 
 >>> c = git_classify("test-clone")
+
+git_status outputs this:
+
+D LICENSE
+M README.md
+?? made-up-file.ipynb
+?? new-dir/
+
+The classifier remembers the `repo_dir` that was classified:
+
 >>> c.repo_dir
 'test-clone'
->>> c.user_files
->>> c.user_dirs
->>> c.git_files
->>> c.git_dirs
 
-"""
+Based on the INIT_SCRIPT above the classifier should return:
+
+>>> c.user_files
+SortedSet(['README.md...-...', 'made-up-file.ipynb', 'new-dir/made-up-2.txt', 'new-dir/sub-dir/made-up-3.txt', 'poison-file.txt'])
+
+Note that to the extent that happens,  even poison-file.txt is excluded from the lockdown.
+
+Note that poison_dir/ does not show up in user_dirs because its permissions thwart git:
+
+>>> c.user_dirs
+SortedSet(['new-dir/', 'new-dir/sub-dir/'])
+
+>>> assert "poison_dir/" not in c.git_dirs
+>>> # c.git_dirs
+>>> # c.all_dirs
+
+Clean up test-clone directory if all goes well,  first chmod 777 to make poison
+files/dirs deletable:
+
+>>> _ = run("chmod -R 777 test-clone")
+>>> _ = run("rm -rf test-clone")
