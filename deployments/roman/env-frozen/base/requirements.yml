@@ -4,39 +4,41 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1
   - _openmp_mutex=4.5
-  - alembic=1.12.1
+  - alembic=1.12.0
   - altair=5.1.2
-  - anyio=4.1.0
-  - aom=3.7.1
-  - archspec=0.2.2
+  - anyio=4.0.0
+  - aom=3.6.1
   - argon2-cffi=23.1.0
   - argon2-cffi-bindings=21.2.0
   - arrow=1.3.0
-  - asttokens=2.4.1
+  - asttokens=2.4.0
   - async-lru=2.0.4
   - async_generator=1.10
   - attrs=23.1.0
-  - aws-c-auth=0.7.7
-  - aws-c-cal=0.6.9
-  - aws-c-common=0.9.8
+  - aws-c-auth=0.7.4
+  - aws-c-cal=0.6.2
+  - aws-c-common=0.9.3
   - aws-c-compression=0.2.17
   - aws-c-event-stream=0.3.2
-  - aws-c-http=0.7.14
-  - aws-c-io=0.13.36
-  - aws-c-mqtt=0.9.10
-  - aws-c-s3=0.4.1
+  - aws-c-http=0.7.13
+  - aws-c-io=0.13.33
+  - aws-c-mqtt=0.9.7
+  - aws-c-s3=0.3.18
   - aws-c-sdkutils=0.1.12
   - aws-checksums=0.1.17
-  - aws-crt-cpp=0.24.7
+  - aws-crt-cpp=0.24.3
   - aws-sdk-cpp=1.11.182
-  - babel=2.13.1
+  - babel=2.13.0
+  - backcall=0.2.0
+  - backports=1.0
+  - backports.functools_lru_cache=1.6.5
   - beautifulsoup4=4.12.2
-  - blas=2.120
+  - blas=2.119
   - blas-devel=3.9.0
   - bleach=6.1.0
-  - blinker=1.7.0
+  - blinker=1.6.3
   - blosc=1.21.5
-  - bokeh=3.3.1
+  - bokeh=3.3.0
   - boltons=23.0.0
   - bottleneck=1.3.7
   - brotli=1.1.0
@@ -44,8 +46,8 @@ dependencies:
   - brotli-python=1.1.0
   - brunsli=0.1
   - bzip2=1.0.8
-  - c-ares=1.22.1
-  - c-blosc2=2.11.2
+  - c-ares=1.20.1
+  - c-blosc2=2.10.5
   - ca-certificates=2023.11.17
   - cached-property=1.5.2
   - cached_property=1.5.2
@@ -53,59 +55,58 @@ dependencies:
   - certipy=0.1.3
   - cffi=1.16.0
   - charls=2.4.2
-  - charset-normalizer=3.3.2
+  - charset-normalizer=3.3.0
   - click=8.1.7
   - cloudpickle=3.0.0
   - colorama=0.4.6
   - comm=0.1.4
-  - conda=23.10.0
-  - conda-libmamba-solver=23.11.1
+  - conda=23.9.0
   - conda-package-handling=2.2.0
   - conda-package-streaming=0.9.0
-  - configurable-http-proxy=4.6.1
-  - contourpy=1.2.0
-  - cryptography=41.0.7
+  - configurable-http-proxy=4.5.6
+  - contourpy=1.1.1
+  - cryptography=41.0.4
   - cycler=0.12.1
-  - cython=3.0.6
+  - cython=3.0.4
   - cytoolz=0.12.2
-  - dask=2023.11.0
-  - dask-core=2023.11.0
+  - dask=2023.10.0
+  - dask-core=2023.10.0
   - dav1d=1.2.1
   - debugpy=1.8.0
   - decorator=5.1.1
   - defusedxml=0.7.1
   - deprecation=2.1.0
   - dill=0.3.7
-  - distributed=2023.11.0
+  - distributed=2023.10.0
   - entrypoints=0.4
   - et_xmlfile=1.1.0
-  - exceptiongroup=1.2.0
-  - executing=2.0.1
+  - exceptiongroup=1.1.3
+  - executing=1.2.0
   - fmt=10.1.1
-  - fonttools=4.45.1
+  - fonttools=4.43.1
   - fqdn=1.5.1
   - freetype=2.12.1
-  - fsspec=2023.10.0
+  - fsspec=2023.9.2
   - gflags=2.2.2
   - giflib=5.2.1
-  - gitdb=4.0.11
+  - gitdb=4.0.10
   - gitpython=3.1.40
   - glog=0.6.0
-  - gmp=6.3.0
+  - gmp=6.2.1
   - gmpy2=2.1.2
-  - greenlet=3.0.1
+  - greenlet=3.0.0
   - h5py=3.10.0
   - hdf5=1.14.2
   - icu=73.2
-  - idna=3.6
+  - idna=3.4
   - imagecodecs=2023.9.18
   - imageio=2.31.5
   - importlib-metadata=6.8.0
   - importlib_metadata=6.8.0
-  - importlib_resources=6.1.1
-  - ipykernel=6.26.0
+  - importlib_resources=6.1.0
+  - ipykernel=6.25.2
   - ipympl=0.9.3
-  - ipython=8.18.1
+  - ipython=8.16.1
   - ipython_genutils=0.2.0
   - ipywidgets=8.1.1
   - isoduration=20.11.0
@@ -115,24 +116,24 @@ dependencies:
   - json5=0.9.14
   - jsonpatch=1.33
   - jsonpointer=2.4
-  - jsonschema=4.20.0
-  - jsonschema-specifications=2023.11.1
-  - jsonschema-with-format-nongpl=4.20.0
-  - jupyter-lsp=2.2.1
+  - jsonschema=4.19.1
+  - jsonschema-specifications=2023.7.1
+  - jsonschema-with-format-nongpl=4.19.1
+  - jupyter-lsp=2.2.0
   - jupyter-packaging=0.12.3
   - jupyter-server-mathjax=0.2.6
-  - jupyter_client=8.6.0
-  - jupyter_core=5.5.0
-  - jupyter_events=0.9.0
-  - jupyter_server=2.11.1
+  - jupyter_client=8.4.0
+  - jupyter_core=5.4.0
+  - jupyter_events=0.8.0
+  - jupyter_server=2.8.0
   - jupyter_server_terminals=0.4.4
   - jupyter_telemetry=0.1.0
   - jupyterhub=4.0.2
   - jupyterhub-base=4.0.2
-  - jupyterlab=4.0.9
-  - jupyterlab-git=0.50.0
-  - jupyterlab_pygments=0.3.0
-  - jupyterlab_server=2.25.2
+  - jupyterlab=4.0.7
+  - jupyterlab-git=0.41.0
+  - jupyterlab_pygments=0.2.2
+  - jupyterlab_server=2.25.0
   - jupyterlab_widgets=3.0.9
   - jxrlib=1.1
   - keyutils=1.6.1
@@ -145,14 +146,8 @@ dependencies:
   - libabseil=20230802.1
   - libaec=1.1.2
   - libarchive=3.7.2
-  - libarrow=14.0.1
-  - libarrow-acero=14.0.1
-  - libarrow-dataset=14.0.1
-  - libarrow-flight=14.0.1
-  - libarrow-flight-sql=14.0.1
-  - libarrow-gandiva=14.0.1
-  - libarrow-substrait=14.0.1
-  - libavif16=1.0.2
+  - libarrow=13.0.0
+  - libavif16=1.0.1
   - libblas=3.9.0
   - libbrotlicommon=1.1.0
   - libbrotlidec=1.1.0
@@ -171,26 +166,24 @@ dependencies:
   - libgfortran5=13.2.0
   - libgomp=13.2.0
   - libgoogle-cloud=2.12.0
-  - libgrpc=1.59.3
+  - libgrpc=1.58.1
   - libiconv=1.17
   - libjpeg-turbo=3.0.0
   - liblapack=3.9.0
   - liblapacke=3.9.0
   - libllvm14=14.0.6
-  - libllvm15=15.0.7
-  - libmamba=1.5.3
-  - libmambapy=1.5.3
-  - libnghttp2=1.58.0
+  - libmamba=1.5.2
+  - libmambapy=1.5.2
+  - libnghttp2=1.52.0
   - libnsl=2.0.1
   - libnuma=2.0.16
-  - libopenblas=0.3.25
-  - libparquet=14.0.1
+  - libopenblas=0.3.24
   - libpng=1.6.39
-  - libprotobuf=4.24.4
+  - libprotobuf=4.24.3
   - libre2-11=2023.06.02
   - libsodium=1.0.18
-  - libsolv=0.7.27
-  - libsqlite=3.44.2
+  - libsolv=0.7.25
+  - libsqlite=3.43.2
   - libssh2=1.11.0
   - libstdcxx-ng=13.2.0
   - libthrift=0.19.0
@@ -200,53 +193,53 @@ dependencies:
   - libuv=1.46.0
   - libwebp-base=1.3.2
   - libxcb=1.15
-  - libxml2=2.11.6
+  - libxml2=2.11.5
   - libzlib=1.2.13
   - libzopfli=1.0.3
-  - llvm-openmp=17.0.6
-  - llvmlite=0.41.1
+  - llvm-openmp=17.0.3
+  - llvmlite=0.40.1
   - locket=1.0.0
   - lz4=4.3.2
   - lz4-c=1.9.4
   - lzo=2.10
-  - mako=1.3.0
-  - mamba=1.5.3
+  - mako=1.2.4
+  - mamba=1.5.2
   - markupsafe=2.1.3
-  - matplotlib-base=3.8.2
+  - matplotlib-base=3.8.0
   - matplotlib-inline=0.1.6
-  - mistune=3.0.2
+  - mistune=3.0.1
   - mpc=1.3.1
-  - mpfr=4.2.1
+  - mpfr=4.2.0
   - mpmath=1.3.0
-  - msgpack-python=1.0.7
+  - msgpack-python=1.0.6
   - munkres=1.1.4
   - nbclassic=1.0.0
   - nbclient=0.8.0
-  - nbconvert=7.11.0
-  - nbconvert-core=7.11.0
-  - nbconvert-pandoc=7.11.0
-  - nbdime=4.0.1
+  - nbconvert=7.9.2
+  - nbconvert-core=7.9.2
+  - nbconvert-pandoc=7.9.2
+  - nbdime=3.2.1
   - nbformat=5.9.2
   - ncurses=6.4
   - nest-asyncio=1.5.8
-  - networkx=3.2.1
+  - networkx=3.2
   - nodejs=20.9.0
   - nomkl=1.0
   - notebook=7.0.6
   - notebook-shim=0.2.3
-  - numba=0.58.1
+  - numba=0.57.1
   - numexpr=2.8.7
-  - numpy=1.26.2
+  - numpy=1.24.4
   - oauthlib=3.2.2
-  - openblas=0.3.25
+  - openblas=0.3.24
   - openjpeg=2.5.0
   - openpyxl=3.1.2
   - openssl=3.2.0
-  - orc=1.9.2
+  - orc=1.9.0
   - overrides=7.4.0
   - packaging=23.2
   - pamela=1.1.0
-  - pandas=2.1.3
+  - pandas=2.1.1
   - pandoc=3.1.3
   - pandocfilters=1.5.0
   - parso=0.8.3
@@ -258,33 +251,33 @@ dependencies:
   - pip=23.3.1
   - pip-tools=7.3.0
   - pkgutil-resolve-name=1.3.10
-  - platformdirs=4.0.0
+  - platformdirs=3.11.0
   - pluggy=1.3.0
-  - prometheus_client=0.19.0
-  - prompt-toolkit=3.0.41
-  - protobuf=4.24.4
+  - prometheus_client=0.17.1
+  - prompt-toolkit=3.0.39
+  - prompt_toolkit=3.0.39
+  - protobuf=4.24.3
   - psutil=5.9.5
   - pthread-stubs=0.4
   - ptyprocess=0.7.0
   - pure_eval=0.2.2
   - py-cpuinfo=9.0.0
-  - pyarrow=14.0.1
-  - pyarrow-hotfix=0.6
+  - pyarrow=13.0.0
   - pybind11-abi=4
   - pycosat=0.6.6
   - pycparser=2.21
   - pycurl=7.45.1
-  - pygments=2.17.2
+  - pygments=2.16.1
   - pyjwt=2.8.0
-  - pyopenssl=23.3.0
+  - pyopenssl=23.2.0
   - pyparsing=3.1.1
   - pyproject_hooks=1.0.0
   - pysocks=1.7.1
-  - pytables=3.9.2
+  - pytables=3.9.1
   - python=3.11.6
   - python-build=1.0.3
   - python-dateutil=2.8.2
-  - python-fastjsonschema=2.19.0
+  - python-fastjsonschema=2.18.1
   - python-json-logger=2.0.7
   - python-tzdata=2023.3
   - python_abi=3.11
@@ -296,36 +289,36 @@ dependencies:
   - rdma-core=28.9
   - re2=2023.06.02
   - readline=8.2
-  - referencing=0.31.0
+  - referencing=0.30.2
   - reproc=14.2.4.post0
   - reproc-cpp=14.2.4.post0
   - requests=2.31.0
   - rfc3339-validator=0.1.4
   - rfc3986-validator=0.1.1
-  - rpds-py=0.13.1
-  - ruamel.yaml=0.18.5
+  - rpds-py=0.10.6
+  - ruamel.yaml=0.17.39
   - ruamel.yaml.clib=0.2.7
-  - s2n=1.3.56
+  - s2n=1.3.54
   - scikit-image=0.22.0
-  - scikit-learn=1.3.2
-  - scipy=1.11.4
+  - scikit-learn=1.3.1
+  - scipy=1.11.3
   - seaborn=0.13.0
   - seaborn-base=0.13.0
   - send2trash=1.8.2
   - setuptools=68.2.2
   - six=1.16.0
-  - smmap=5.0.0
+  - smmap=3.0.5
   - snappy=1.1.10
   - sniffio=1.3.0
   - sortedcontainers=2.4.0
   - soupsieve=2.5
-  - sqlalchemy=2.0.23
+  - sqlalchemy=2.0.22
   - stack_data=0.6.2
   - statsmodels=0.14.0
   - svt-av1=1.7.0
   - sympy=1.12
   - tblib=2.0.0
-  - terminado=0.18.0
+  - terminado=0.17.1
   - threadpoolctl=3.2.0
   - tifffile=2023.9.26
   - tinycss2=1.2.1
@@ -335,7 +328,7 @@ dependencies:
   - toolz=0.12.0
   - tornado=6.3.3
   - tqdm=4.66.1
-  - traitlets=5.14.0
+  - traitlets=5.11.2
   - truststore=0.8.0
   - types-python-dateutil=2.8.19.14
   - typing-extensions=4.8.0
@@ -344,16 +337,17 @@ dependencies:
   - tzdata=2023c
   - ucx=1.15.0
   - uri-template=1.3.0
-  - wcwidth=0.2.12
+  - urllib3=2.0.7
+  - wcwidth=0.2.8
   - webcolors=1.13
   - webencodings=0.5.1
   - websocket-client=1.6.4
-  - wheel=0.42.0
+  - wheel=0.41.2
   - widgetsnbextension=4.0.9
   - xlrd=2.0.1
   - xorg-libxau=1.0.11
   - xorg-libxdmcp=1.1.3
-  - xyzservices=2023.10.1
+  - xyzservices=2023.10.0
   - xz=5.2.6
   - yaml=0.2.5
   - yaml-cpp=0.8.0
@@ -363,7 +357,7 @@ dependencies:
   - zipp=3.17.0
   - zlib=1.2.13
   - zlib-ng=2.0.7
-  - zstandard=0.22.0
+  - zstandard=0.21.0
   - zstd=1.5.5
   - pip:
       - aiohttp==3.9.1
@@ -375,17 +369,17 @@ dependencies:
       - asdf-transform-schemas==0.4.0
       - asdf-unit-schemas==0.1.0
       - astropy==6.0.0
-      - astropy-iers-data==0.2023.11.27.0.30.38
+      - astropy-iers-data==0.2023.12.4.0.30.20
       - astropy-sphinx-theme==1.1
       - black==23.11.0
-      - boto3==1.33.2
-      - botocore==1.33.2
+      - boto3==1.33.9
+      - botocore==1.33.9
       - bqplot==0.12.42
       - bqplot-gl==0.0.0
       - bqplot-image-gl==1.4.11
       - casa-formats-io==0.2.2
       - ci-watson==0.6.2
-      - crds==11.17.12
+      - crds==11.17.13
       - distlib==0.3.7
       - docutils==0.20.1
       - echo==0.8.0
@@ -394,8 +388,8 @@ dependencies:
       - flake8==6.1.0
       - freetype-py==2.4.0
       - frozenlist==1.4.0
-      - glue-core==1.16.0
-      - glue-jupyter==0.19.0
+      - glue-core==1.17.1
+      - glue-jupyter==0.20.0
       - glue-qt==0.3.0
       - glue-vispy-viewers==1.1.0
       - hsluv==5.0.4
@@ -438,15 +432,15 @@ dependencies:
       - pythreejs==2.4.2
       - qtconsole==5.5.1
       - qtpy==2.4.1
-      - radio-beam==0.3.6
+      - radio-beam==0.3.7
       - requests-mock==1.11.0
-      - s3transfer==0.8.1
+      - s3transfer==0.8.2
       - semantic-version==2.10.0
       - shapely==2.0.2
       - sidecar==0.7.0
       - simpervisor==1.0.0
       - snowballstemmer==2.2.0
-      - spectral-cube==0.6.3
+      - spectral-cube==0.6.5
       - sphinx==7.2.6
       - sphinx-astropy==1.9.1
       - sphinx-automodapi==0.16.0
@@ -464,9 +458,8 @@ dependencies:
       - tabulate==0.9.0
       - tenacity==8.2.3
       - traittypes==0.2.1
-      - urllib3==2.0.7
       - vispy==0.14.1
       - y-py==0.6.2
-      - yarl==1.9.3
+      - yarl==1.9.4
       - ypy-websocket==0.12.4
 prefix: /opt/conda
