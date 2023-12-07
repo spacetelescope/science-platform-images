@@ -1,9 +1,7 @@
-ansiwrap
 asdf
 astropy
 asttokens
 attrs
-backcall
 build
 certifi
 click
@@ -32,7 +30,6 @@ papermill
 parsley
 parso
 pexpect
-pickleshare
 piptools
 platformdirs
 prompt_toolkit
@@ -56,7 +53,6 @@ stpipe
 stsci.imagestats
 stsci.stimage
 tenacity
-textwrap3
 tornado
 tqdm
 traitlets
