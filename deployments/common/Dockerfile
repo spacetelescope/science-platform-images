@@ -179,3 +179,4 @@ RUN npm install -g --prod yarn             && \
 
 COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
 COPY --chown=${NB_UID}:${NB_GID} VERSION /opt
+COPY --chown=${NB_UID}:${NB_GID} HASH /opt

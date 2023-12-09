@@ -125,6 +125,7 @@ COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
 # ----------------------------------------------------------------------
 
 COPY --chown=${NB_UID}:${NB_GID}  MISSION_VERSION /opt
+COPY --chown=${NB_UID}:${NB_GID}  MISSION_HASH /opt
 
 # ----------------------------------------------------------------------
 # YYYY SEC
