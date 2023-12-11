@@ -1,5 +1,4 @@
 anyio
-appnope
 argon2
 _argon2_cffi_bindings
 _argon2_cffi_bindings._ffi
