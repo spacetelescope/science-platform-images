@@ -9,6 +9,8 @@ git clone  https://github.com/spacetelescope/nersc-refresh-announcements  test-c
 cd test-clone
 echo "Made up user file." >made-up-file.ipynb
 echo "Add some stuff to modify" >>README.md
+chmod 600 CHANGELOG.md
+chmod 700 node_modules
 mkdir -p new-dir/sub-dir
 echo "Made up user file." >new-dir/made-up-2.txt
 echo "Made up user file." >new-dir/sub-dir/made-up-3.txt

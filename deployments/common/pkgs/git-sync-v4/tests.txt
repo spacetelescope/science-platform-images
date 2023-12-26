@@ -2,13 +2,63 @@
 >>> import tests
 >>> from git_sync_v4 import run, run_lines, all_files, all_dirs, git_classify
 
+Check the basic subprocess function:
+
 >>> run("echo hello world!")
 'hello world!\n'
 
+Note that an err'ing subprocess will raise an exception:
+
+>>> run("fecho hello world!")
+Traceback (most recent call last):
+...
+FileNotFoundError: [Errno 2] No such file or directory: 'fecho'
+
+Run these tests from TEST_DIR giving a known input and output dir:
+
 >>> os.chdir(os.environ['TEST_DIR'])
+
+Run the script from tests.py which creates a test directory repo and
+modifies it with various forms of user malfeasance:
 
 >>> run_lines(tests.INIT_SCRIPT)
 ''
+
+-------------------------------------------------------------------------------
+
+If AUTO_UPDATE=off is set in the config then exit with success.
+
+If no archive directory is found then create one.
+
+If there is no notebook-archive link to the hidden archive,  add one.
+
+If the repo is already in the archive directory,  say so and do nothing.
+If the repo is not archived,  but exists,  archive it.
+If the repo is not archived and has not been cloned,  create a fake archive.
+
+If a v2 clone already exists,  adapt it for v4 by making directories writable.  755
+Make files writable for git  644
+
+    git config --global --add safe.directory ${WHERE}
+    cd ${WHERE}
+    git fetch origin
+    git reset HEAD
+    git checkout -- .
+    git checkout origin/${BRANCH}
+
+
+During starup verify some basic characteristics of the clone:
+
+1. Verify the remote it is on and/or actively set the remote.
+2. Verify the branch it is on and/or actively set the branch.
+3. Verify the commit it is on
+4. Once updated,  verify that it matches the upstream repo.
+
+
+If there is no v2 clone then: git clone --single-branch --branch ${BRANCH} ${URL} ${WHERE}
+
+
+-------------------------------------------------------------------------------
 
 Because `git_status` stops reporting as soon as it hits a user supplied
 directory,  using find to enumerate all the files and directories is needed.
@@ -25,7 +75,7 @@ but at least check early and simply that they do not crash:
 The `git_classify` function runs git status to determine files affected by
 the user and to report them in normalized form for farming out actions later:
 
->>> c = git_classify("test-clone")
+>>> git_classify("test-clone")
 
 git_status outputs this:
 
@@ -46,14 +96,18 @@ SortedSet(['README.md...-...', 'made-up-file.ipynb', 'new-dir/made-up-2.txt', 'n
 
 Note that to the extent that happens,  even poison-file.txt is excluded from the lockdown.
 
-Note that poison_dir/ does not show up in user_dirs because its permissions thwart git:
+Now look for some basic user created directories with normal permissions:
 
 >>> c.user_dirs
 SortedSet(['new-dir/', 'new-dir/sub-dir/'])
 
+Note that poison_dir/ does not show up in user_dirs because its permissions thwart git.
+Giving it and odd status that it is in neither
+
 >>> assert "poison_dir/" not in c.git_dirs
->>> # c.git_dirs
->>> # c.all_dirs
+
+>>> c.git_dirs
+>>> c.all_dirs
 
 Clean up test-clone directory if all goes well,  first chmod 777 to make poison
 files/dirs deletable:
