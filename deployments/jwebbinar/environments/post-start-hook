@@ -40,7 +40,7 @@ rm -rf /home/jovyan/Desktop
 # This definitely has to change for the next webbinar.
 
 cd $HOME
-/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep  jwebbinar-28  /home/jovyan/jwebbinar_prep
+/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep  jwebbinar_29  /home/jovyan/jwebbinar_prep
 chmod -R +w /home/jovyan/jwebbinar_prep
 
 # /opt/common-scripts/set-notebook-kernel masterclass  `find jwebbinar_prep -name '*.ipynb'`
