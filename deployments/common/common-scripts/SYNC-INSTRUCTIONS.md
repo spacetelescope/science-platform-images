@@ -22,17 +22,21 @@ DO: If you modify a notebook,  to save your changes there are two easy options:
 
     2. Use save-as to save to a new filename such as 'my-<original-notebook>.ipynb.
 
-DO: If automatic updates are not to your liking,  that's fine
+DO: If automatic updates are not to your liking,  that's fine, read up
+    on opting out farther below.
 
-## STRONGLY DISCOURAGED
+## DISCOURAGED
 
-DO NOT: change permissions on a file to make it read/write,  then save it.
-        your changes will be lost the next time the login script is run and
-        the file will automatically be reverted to read/write status.
+If you choose to keep git-sync enabled,  then don't:
 
-DO NOT: change mode on ANY directory to remove all execute/search permissions,
-        there's a strong possibility it will be deleted with no warning, but
-        at a minimum your changes will be lost at the your next login.
+DO NOT: make a file read/write,  then save it in its original location.
+    the next time you log in,  at best,  the file will be moved aside to
+    a dated copy and the  original filename will be replaced by an updated
+    readonly copy.  at worst your changes may be lost.
+
+DO NOT: change mode on a directory to remove all execute/search permissions,
+    there's a strong possibility it will be deleted with no warning, but
+    at a minimum your changes will be lost at your next login.
 
 ## OTHER INFO
 
