@@ -1,0 +1,35 @@
+#!/bin/bash -u
+
+# .............................................................................................
+#
+# Post Start Hook Preamble
+#
+# This file implements:
+#
+# 0. EFS quota lockouts on jupyterhub.
+#
+# 1. Setup and update of the default-home-contents.
+#
+# .............................................................................................
+
+HUB_FLAG=${1:-"on-hub"}
+
+# .............................................................................................
+# Quota checking is only relevant to cloud deployments,  standalone sessions have no quotas.
+# .............................................................................................
+if [[ $HUB_FLAG == "on-hub" ]]; then
+    set -e  # Quota check failures block logins by design.
+    /opt/common-scripts/check-quota
+fi
+
+# .............................................................................................
+# In general, failure of a step should not prevent logins enabling users to correct
+# any issues with $HOME state and re-login w/o direct admin assistance.
+# .............................................................................................
+set +e
+
+# .............................................................................................
+# Initialize $HOME with things like rc-files, conda setup, and jupyterlab kernel definitions.
+# .............................................................................................
+/opt/common-scripts/copy-default-home  $HUB_FLAG
+

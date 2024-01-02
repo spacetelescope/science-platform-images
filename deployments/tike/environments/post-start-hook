@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/bash -u
 
-# ------------------------------------------------------------------------------------
+# .............................................................................................
 #
 # This file is used to initialize $HOME after a notebook session has been spawned.
 #
@@ -9,45 +9,42 @@
 # When running in Docker,  $HOME is part of the image being initialized for standalone
 #   usage.   AWS features are assumed to be unavailable.
 #
-# Only this file should be called from the Dockerfile or hub post
-# start hook.
+# ONLY this file should be called from the Dockerfile or hub post start hook.
+# When called on jupyterhub, the single optional parameter "on-hub" should be specified
+# to enable the initialization of features not needed/supported for standalone ops.
 #
-# This file implements:
-#
-# 0. EFS quota lockouts on jupyterhub.
-#
-# 1. Setup and update of the default-home-contents.
-#
-# 2. Notebook setup for class and test notebooks.
-#
-set -eu
-
 # .............................................................................................
-
+# Include multi-mission common behavior
+# .............................................................................................
 HUB_FLAG=${1:-"on-hub"}
 
-if [[ $HUB_FLAG == "on-hub" ]]; then
-    /opt/common-scripts/check-quota
-fi
+/opt/common-scripts/psh-preamble ${HUB_FLAG}
+set +e   # Do not let init failures block logins
 
 # .............................................................................................
+# Initialization of the shared CRDS cache if it exists for this mission.
+# .............................................................................................
 
-/opt/common-scripts/copy-default-home
-
+# .............................................................................................
+# Sync reference notebook directories / branches.
 # .............................................................................................
 
 TC=/home/jovyan/tike_content
-/opt/common-scripts/git-sync-v2  https://github.com/spacetelescope/tike_content.git  main  ${TC}
+/opt/common-scripts/git-sync-v4  https://github.com/spacetelescope/tike_content.git  main  ${TC}
 
 MN=/home/jovyan/mast_notebooks
-/opt/common-scripts/git-sync-v2   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
+/opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
 
 HU=/home/jovyan/hellouniverse
-/opt/common-scripts/git-sync-v2   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
+/opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
 
 PT=/home/jovyan/project-tikebook
-/opt/common-scripts/git-sync-v2   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
+/opt/common-scripts/git-sync-v4   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
 
+# .............................................................................................
+# Define image notebook tests based on installed images.
+# Note that doing this dynamically is overwriting the notebooks file defined in the original
+# tess tests directory.
 # .............................................................................................
 
 mkdir -p /opt/environments/tess/tests
@@ -118,11 +115,12 @@ cat <<EOF >/opt/environments/tess/tests/notebooks
 
 EOF
 
+# .............................................................................................
 # These are tests we'd like to run which fail for various reasons.
 # These can be run in the container with:
 #      /opt/common-scripts/test-notebooks tess `cat /opt/environments/test/tests/notebooks-failing`
-
 # Note that some of these fail due to the 7G pipeline memory requirement
+# .............................................................................................
 
 cat <<EOF >/opt/environments/tess/tests/notebooks-failing
     ${MN}/notebooks/TESS/asteroid_rotation/asteroid_rotation_soutions.ipynb
@@ -134,15 +132,15 @@ cat <<EOF >/opt/environments/tess/tests/notebooks-failing
 EOF
 
 # .............................................................................................
-
 # This runs for e.g. 30 min
+# .............................................................................................
 cat <<EOF >/opt/environments/tess/tests/long-notebooks-failing
     ${MN}/notebooks/TESS/interm_tesscut_dss_overlay/interm_tesscut_dss_overlay.ipynb
 EOF
 
 # .............................................................................................
-
 # Disabled notebooks after priority packages due to not available libraries
+# .............................................................................................
 cat <<EOF >/opt/environments/tess/tests/notebooks-with-no-required-libraries
     ${HU}/notebooks/hello-universe/Classifying_JWST-HST_galaxy_mergers_with_CNNs/Classifying_JWST-HST_galaxy_mergers_with_CNNs.ipynb
     ${HU}/notebooks/hello-universe/Classifying_TESS_flares_with_CNNs/Classifying_TESS_flares_with_CNNs.ipynb
@@ -158,11 +156,13 @@ EOF
 
 # .............................................................................................
 # Remove VNC Desktop from Launcher
+# .............................................................................................
 rm -rf /home/jovyan/.user-dirs/Desktop
 rm -rf /home/jovyan/Desktop
 
 # .............................................................................................
 # Configure lightkurve and astropy cache locations for automatic clearing
+# .............................................................................................
 rm -rf /home/jovyan/.lightkurve-cache
 mkdir -p /home/jovyan/.cache \
       /home/jovyan/.lightkurve/cache \

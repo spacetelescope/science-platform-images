@@ -1,29 +1,43 @@
-#! /bin/bash
+#!/bin/bash -u
 
-set -eu
-
-# This is a placeholder version of post-start-hook which eventually should
-# fully replace setup-notebooks once common.yaml and this file are appropriately
-# refactored.   This file should contain only those functions which need to
-# be performed both on AWS and standalone.  AWS-only functions should be included
-# directly in common.yaml or perhaps another script.
-
+# .............................................................................................
+#
+# This file is used to initialize $HOME after a notebook session has been spawned.
+#
+# When running on JupyterHub,  $HOME is backed by and overlay of EFS and AWS features
+#   are available.
+# When running in Docker,  $HOME is part of the image being initialized for standalone
+#   usage.   AWS features are assumed to be unavailable.
+#
+# ONLY this file should be called from the Dockerfile or hub post start hook.
+# When called on jupyterhub, the single optional parameter "on-hub" should be specified
+# to enable the initialization of features not needed/supported for standalone ops.
+#
+# .............................................................................................
+# Include multi-mission common behavior
+# .............................................................................................
 HUB_FLAG=${1:-"on-hub"}
 
-/opt/common-scripts/copy-default-home
+/opt/common-scripts/psh-preamble ${HUB_FLAG}
+set +e   # Do not let init failures block logins
 
-# TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
-# mkdir -p ~/archive/$TIMESTAMP/
-# mv ~/jwebbinar_prep/ ~/archive/$TIMESTAMP/ || true
-# git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
-# /opt/common-scripts/set-notebook-kernel jwebbinar jwebbinar_prep/**/**/*.ipynb || true
-
+# .............................................................................................
+# CRDS cache setup and sharing
+#
+# Only a hub installation is guaranteed to have a shared CRDS cache
+# which can be exploited by symlinking.  Note that this symlinking
+# process is a definite improvement over normal CRDS caching since a
+# user's cache can share system files while remaining writable for
+# files which are not available globally.
+# .............................................................................................
 if [[ $HUB_FLAG == "on-hub" ]]; then
     /opt/common-scripts/symlink-crds
     /opt/common-scripts/kernel-setup
 fi
 
-# Remove VNC Desktop from Launcher
+# .............................................................................................
+# Legacy feature cleanup:  Remove VNC Desktop from Launcher
+# .............................................................................................
 rm -rf /home/jovyan/.user-dirs/Desktop
 rm -rf /home/jovyan/Desktop
 
@@ -31,20 +45,29 @@ rm -rf /home/jovyan/Desktop
 /opt/common-scripts/remove-kernel jdaviz
 /opt/common-scripts/remove-kernel mirisim
 
-
 # --------------------------------------------------------------------------------
 # Notebook setup
 
-# XXXXXX PAY ATTENTION XXXXXXXXXXXXXX
-# Notebooks are configured for rush jwebbinar-28 downloaded from jaytmiller fork.
-# This definitely has to change for the next webbinar.
-
-cd $HOME
-/opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep  jwebbinar_29  /home/jovyan/jwebbinar_prep
-chmod -R +w /home/jovyan/jwebbinar_prep
-
+# .............................................................................................
+# Past approaches,  non-standard lightweight "git-sync" behavior
+# .............................................................................................
+# TIMESTAMP=`date +%Y-%m-%d.%H%M%S`
+# mkdir -p ~/archive/$TIMESTAMP/
+# mv ~/jwebbinar_prep/ ~/archive/$TIMESTAMP/ || true
+# git clone -b current_webbinar https://github.com/spacetelescope/jwebbinar_prep
 # /opt/common-scripts/set-notebook-kernel masterclass  `find jwebbinar_prep -name '*.ipynb'`
+#
+# - or -
+# (verify whether 'git-sync' is the original or just v2)
+# /opt/common-scripts/git-sync https://github.com/spacetelescope/jwebbinar_prep  jwebbinar_29  /home/jovyan/jwebbinar_prep
+# chmod -R +w /home/jovyan/jwebbinar_prep
 
+
+# .............................................................................................
+# Standard git-sync-v4 behavior:  r/o files,  r/w directories, implicit -ref suffix on clone name
+# .............................................................................................
+cd $HOME
+/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep  main  /home/jovyan/jwebbinar_prep
 
 # --- mkdir -p /opt/environments/jwebbinar/tests
 # --- mkdir -p /opt/environments/jdaviz/tests
