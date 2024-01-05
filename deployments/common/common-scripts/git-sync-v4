@@ -48,7 +48,9 @@ def run(cmd, cwd=".", timeout=10, debug=False):
 
 def run_lines(script, cwd=".", timeout=60):
     """Treat `script` as an inline bash script and execute it after switching
-    to the `cwd` directory.
+    to the `cwd` directory.  The script is written to a temp file and executed
+    there rather than looping with `run()` calls because there is no continuity
+    of environment settings between runs.
     """
     with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
         tmp.write(script)
@@ -223,6 +225,15 @@ def parse_git_status_line(line):
     else:
         mode = line[0]
         file_or_dir = line[2:]
+    parsing = {
+        "??" : "untracked",
+        "A" : "added",
+        "M" : "modified",
+        "D": "deleted",
+        "R" : "renamed",
+        "C" : "copied",
+        "U" : "updated",
+    }
     return mode, file_or_dir
 
 
