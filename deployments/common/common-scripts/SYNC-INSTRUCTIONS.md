@@ -1,85 +1,95 @@
-# About this directory and default file installations
+# About this reference directory
 
-This directory is a pre-installed git clone of URL from branch BRANCH.
+This directory contains a pre-installed reference copy of a notebook or
+software git repository.  git is a system which is used to track and manage
+different versions of a set of files and directories.
 
-It is intended to be used as a read-only copy of the repository which is updated
-each time you log in with the latest changes from class instructors and other
-notebook authors.  To that end each of the files is set to read-only to prevent
-you from accidentally changing it, but the directories themselves are read/write.
-By avoiding changes to the files,  automatic updates work smoothly and without
-conflict.
+## Intended usage
 
-## ENCOURAGED
+The directory is intended to be used for classes, platform testing of
+pre-installed s/w, and to act as reference code and not for general purpose
+development.
 
-DO: Open notebooks and step along (often during a class) without copying the notebook
-    to another directory first.  Since JupyterLab automatically saves checkpoints in
-    a notebook's directory, directories are kept writable to enable this.
+Nominal uses:
 
-DO: If you modify a notebook,  to save your changes there are two easy options:
+- As class materials with notebooks which can be executed directly, in place.
+- As test materials for the pre-installed s/w of the platform itself.
+- As refence materials containing the latest copy of a repo.
+- Untracked files or directories will be ignored unless added by the repo itself.
 
-    1. Use save-as to save it in a different directory either outside
-    this clone,  or in a directory within this clone named something like 'my-changes'.
+Discouraged uses, all bets are off:
 
-    2. Use save-as to save to a new filename such as 'my-<original-notebook>.ipynb.
+- Normal git development adding, copying, renaming, deleting,  or modifying files
+- Commiting changes
+- Switching branches or remotes
+- Changing file or directory permissions
 
-DO: If automatic updates are not to your liking, there is an opt-out option
-    described further below.
+# Non-standard git behavior
 
-## DISCOURAGED
+To support and guide these uses the directory (git clone) has the following
+non-standard behavior:
 
-If you choose to keep git-sync enabled,  then don't:
+## '-ref' directory name suffix and/or 'reference' parent directory
 
-DO NOT: make a file read/write,  then save it in its original location.
-    the next time you log in,  at best,  the file will be moved aside to
-    a dated copy and the  original filename will be replaced by an updated
-    readonly copy.  at worst your changes may be lost.
+The name of the directory ends with a '-ref' suffix designating its intended
+limited purpose.  Likewise, if it is located under a 'reference' parent
+directory it is being declared as "for reference use only".
 
-DO NOT: change mode on a directory to remove all execute/search permissions,
-    there's a strong possibility it will be deleted with no warning, but
-    at a minimum your changes will be lost at your next login.
+If you really do wish to do development for the associated repo and utilize git
+fully, this naming convention makes it possible to do normal git clones with
+nominal directory names owned by you which will be ignored by the sync process.
 
-## OTHER INFO
+## Readonly Files
 
-### Where'd my old files go?
+Files stored in the clone are set to readonly file permissions.  This prevents
+you from accidentally changing a notebook and saving it back to its original
+location.  Instead, save it in a different directory, or with a different name.
+Unless a similar file or directory is added by the source repository, your copy
+of a file using a different name or location will not be touched.
 
-When the repo update script runs,  if you already have a clone of the repository
-and it has not already be archived, the current copy will be moved to the
-hidden directory:
+## Read/Write Directories
 
-   ${HOME}/.git-sync-archive-3
+All of the directories in the clone are set to read/write/execute.  This enables
+notebooks to be opened simply and executed in their original locations.  As the
+notebook executes, JupyterLab saves related information in a checkpoint file
+located in the same directory.  If you do change permissions of a clone directory
+to something else,  your changes will be lost during the next sync.
 
-Afterwards a fresh copy of the repository will be made which by default will be
-updated and should be used in accordance with these instructions,  files will
-be readonly but directories and files under .git will be read/write.
+## Automatic Updates
 
-### Opting out of automatic repo updates
+This reference directory is sync'ed with its source repository each time you
+log in so that you automatically receive the latest materials the authors have
+committed to the source repository. If however you modify any files or
+directories in place, upon sync your changes will be backed up and the original
+file locations reverted and updated normally.  Likewise, if you save a file to
+a new name, and the source repository coincidentally adds the same file name
+later with different contents, during the sync your version of the file will be
+backed up to a different name.  To the extent possible, after evey sync the
+file contents of this directory will be an exact copy of files in the source
+repository and your changes and additions will be stored in backups and/or
+other untracked file names.
 
-If you wish to opt out of repo updates completely once the initial clones are
-made,  you can do so as follows from a JupyterLab terminal window:
+## But I never Read This... / Do No Harm
 
-   echo "AUTO_UPDATE=off" >> $HOME/.git-sync-config
+If you forged ahead without reading and changed file permissions to read/write
+and made changes and a sync happened, while the original or repo-updated file
+will be restored, your modified copy will also be backed up liken increasing
+number:
 
-With this setting,  the repo becomes yours completely unless the AUTO_UPDATE
-option is changed.   Once yours,  you are free to change modes of the files
-and directories and use it as you would any git clone. Typing these commands
-in a terminal window should revert the clone to its original git behavior:
+<original_name>.12345678
 
-    cd $HOME/<clone-directory-name>
-    find . -type d -exec chmod 755 {} + \;   # directories are read/write/execute for you
-    find . -type f -exec chmod 644 {} + \;   # files are read/write for you
-    git reset HEAD
-    git checkout -- .
+where 12345678 will be a number which monotonically increases each time you log
+in.  You modified copy is renamed but not altered by any automatic merge with
+changes to the repo.
 
-Note that using a terminal window is strongly recommended since JupyterLab's
-!-command does not retain shell environment state across commands.
+## Opting out / I got this,  nix all these updates,  its not for me
 
-Obviously if there's any trouble with the above you can just delete the clone
-and make a new one the normal git way.
+To stop the automtic sync process from performing wasted updates and/or
+recreating reference copies you want deleted, just create a file:
 
-If you wish to resume the original automatic syncing behavior you can simply
-remove 'AUTO_SYNC=off' from $HOME/.git-sync-config.
+```
+touch $HOME/.git-sync-off
+```
 
-If you wish to automatically sync without having to re-login,  you can run
-the following command in a terminal:
-
-    /opt/environments/post-start-hook
+The existence of the file will not remove the reference directories, but neither
+will they be updated nor restored if you delete them yourself.

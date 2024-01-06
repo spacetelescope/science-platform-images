@@ -5,3 +5,6 @@ ipykernel
 
 # needed to run headless notebook tests
 papermill
+
+# required for git-sync-v4
+GitPython
