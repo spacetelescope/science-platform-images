@@ -67,7 +67,7 @@ rm -rf /home/jovyan/Desktop
 # Standard git-sync-v4 behavior:  r/o files,  r/w directories, implicit -ref suffix on clone name
 # .............................................................................................
 cd $HOME
-/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep  main  /home/jovyan/jwebbinar_prep
+/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep  main  /home/jovyan/references/jwebbinar_prep-ref
 
 # --- mkdir -p /opt/environments/jwebbinar/tests
 # --- mkdir -p /opt/environments/jdaviz/tests

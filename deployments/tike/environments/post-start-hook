@@ -29,16 +29,16 @@ set +e   # Do not let init failures block logins
 # Sync reference notebook directories / branches.
 # .............................................................................................
 
-TC=/home/jovyan/tike_content
+TC=/home/jovyan/references/tike_content-ref
 /opt/common-scripts/git-sync-v4  https://github.com/spacetelescope/tike_content.git  main  ${TC}
 
-MN=/home/jovyan/mast_notebooks
+MN=/home/jovyan/references/mast_notebooks-ref
 /opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
 
-HU=/home/jovyan/hellouniverse
+HU=/home/jovyan/references/hellouniverse-ref
 /opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
 
-PT=/home/jovyan/project-tikebook
+PT=/home/jovyan/references/project-tikebook-ref
 /opt/common-scripts/git-sync-v4   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
 
 # .............................................................................................

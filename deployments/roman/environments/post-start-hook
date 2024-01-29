@@ -1,4 +1,4 @@
-#!/bin/bash -u 
+#!/bin/bash -u
 
 # .............................................................................................
 #
@@ -29,9 +29,8 @@ set +e   # Do not let init failures block logins
 # Sync reference notebook directories / branches.
 # .............................................................................................
 
-/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/romancal-notebooks
+/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/references/romancal-notebooks-ref
 
 # .............................................................................................
 # Test notebook setup if applicable
 # .............................................................................................
-

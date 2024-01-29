@@ -359,6 +359,7 @@ class Syncer:
         self.dump_sets()
         self.validate_clone()
         self.lock_clone()
+        self.add_sync_instructions()
         self.validate_clone(diff=False)
 
     def fetch_origin(self) -> None:
@@ -392,8 +393,14 @@ class Syncer:
         )
         self.repo.git.config("safe.directory", self.repo_dir, "--global")
         self.repo.git.fetch("origin", self.branch)
-        text = (self.program_dir / FilePath("SYNC-INSTRUCTIONS.md")).read_text()
-        with open(self.repo_dir / FilePath("SYNC-INSTRUCTIONS.md"), "w+") as f:
+
+    def add_sync_instructions(self) -> None:
+        """Add the sync instructions file to the repo and the root directory."""
+        sync_file = FilePath("SYNC-INSTRUCTIONS.md")
+        text = (self.program_dir / sync_file).read_text()
+        with open(self.repo_dir / sync_file, "w+") as f:
+            f.write(text)
+        with open(self.repo_dir.parent / sync_file, "w+") as f:
             f.write(text)
 
     def detoxify_repo(self) -> None:
@@ -545,7 +552,7 @@ git checkout origin/{self.branch}
             elif mode in [
                 "untracked",
                 "modified",
-                "updated",   # but unmerged
+                "updated",  # but unmerged
                 "added",
                 "copied",
                 "renamed",
@@ -599,26 +606,14 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help="The URL for the repo which is being synced.  Required.",
     )
     parser.add_argument(
-        "repo_dir",
-        type=str,
-        help="The path to the clone being created/updated.  Required.",
-    )
-    parser.add_argument(
         "branch",
         type=str,
         help="The branch of the repo clone being checked out.  Required.",
     )
     parser.add_argument(
-        "--repo-prefix",
+        "repo_dir",
         type=str,
-        default="references",
-        help="Directory where clones are stored to consoidate and designate they are not intended for normal git usage.",
-    )
-    parser.add_argument(
-        "--repo-suffix",
-        type=str,
-        default="-ref",
-        help="Standard suffix attached to clone name to designate its a reference clone not intended for normal git usage.",
+        help="The path to the clone being created/updated.  Required.",
     )
     parser.add_argument(
         "-v",
@@ -642,23 +637,21 @@ def main(argv: List[str]) -> int:
     args = parse_args(argv[1:])
     global log
     log = Log("gs4.log", level="DEBUG" if args.verbose else "INFO")
-    repo_dir = DirPath(args.repo_prefix) / (args.repo_dir + args.repo_suffix)
     try:
         opt_out_file = DirPath(os.environ["HOME"]) / FilePath(".git-sync-off")
         if opt_out_file.exists():
             log.info(f"git-sync is disabled by file {opt_out_file}.")
             log.info("Remove .git-sync-off to restore syncing.")
         else:
-            syncer = Syncer(args.repo_url, repo_dir, args.branch, program)
+            syncer = Syncer(args.repo_url, args.repo_dir, args.branch, program)
             syncer.sync()
     except Exception:
         log.exception("Failed to sync:")
-        if repo_dir.exists() and repo_dir.is_dir():
-            log.moveto(repo_dir / "gs4.failed.log")
+        if args.repo_dir.exists() and args.repo_dir.is_dir():
+            log.moveto(args.repo_dir / "gs4.failed.log")
         return 1
-    else:
-        log.clear()
-        return 0
+    log.clear()
+    return 0
 
 
 if __name__ == "__main__":

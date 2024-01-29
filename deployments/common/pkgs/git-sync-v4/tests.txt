@@ -431,6 +431,10 @@ DEBUG - git status:
 >>> s.lock_clone()
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 
+>>> s.add_sync_instructions()
+>>> assert (s.repo_dir / "SYNC-INSTRUCTIONS.md").exists()
+>>> assert (s.repo_dir.parent / "SYNC-INSTRUCTIONS.md").exists()
+
 -------------------------------------------------------------------------------
 
 Start worrying less about logging and just check results:
@@ -442,7 +446,7 @@ Start worrying less about logging and just check results:
 Test basic sync with no existing clone
 
 >>> _ = shell(tests.CLEANUP_SCRIPT)
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Creating new clone.
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
@@ -451,7 +455,7 @@ INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 Test basic sync with existing clone
 
 >>> _ = shell(tests.INIT_SCRIPT)
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
@@ -464,7 +468,7 @@ Test opt-out system for turning off syncs:
 >>> _ = shell(tests.CLEANUP_SCRIPT)
 >>> gate = f"{os.environ['HOME']}/.git-sync-off"
 >>> with open(gate, "w+") as f:  _ = f.write("\n")
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test",  tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - git-sync is disabled by file .../.git-sync-off.
 INFO - Remove .git-sync-off to restore syncing.
 0
@@ -476,7 +480,7 @@ Check clone blocked by file
 
 >>> _ = shell(tests.CLEANUP_SCRIPT)
 >>> _ = shell("mkdir references; echo 'Not a git repo.' >references/sync-test-ref")
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 ERROR - Updating failed:
@@ -494,7 +498,7 @@ Check clone with trashed .git dir
 
 >>> _ = shell(tests.INIT_SCRIPT)
 >>> _ = shell("rm -rf references/sync-test-ref/.git")
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 ERROR - Updating failed:
@@ -512,7 +516,7 @@ Check clone with bad dir perms works:
 
 >>> _ = shell(tests.INIT_SCRIPT)
 >>> os.chmod("references/sync-test-ref", 0o000)
->>> main(["./test", tests.REPO_URL, "sync-test", "main"]) # doctest: +ELLIPSIS
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 ERROR - Updating failed:
@@ -541,4 +545,3 @@ INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 Clean up sync-test directory and test files if all goes well:
 
 >>> _ = shell(tests.CLEANUP_SCRIPT, check=False)
-
