@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         DEPLOYMENT_NAME: [ jwebbinar, roman, tike ]
-        USE_FROZEN: [ 1 ]
+        USE_FROZEN: [ 0 ]
         CAL_VERSION: [ none ]
         FREEZE_CHILL: [ 1 ]
         OWNER: [ jupyter ]
