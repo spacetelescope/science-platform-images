@@ -1,4 +1,4 @@
-REPO_URL = "https://github.com/jaytmiller/sync-test"
+REPO_URL = "https://github.com/spacetelescope/sync-test"
 
 # doctest is not a good format for entering these shell commands even with multi-line shell()
 # adding here cuts down on test file complexity
