@@ -57,7 +57,7 @@ Run these tests from TEST_DIR giving a known input and output dir:
 Run the script from tests.py which creates a test directory repo and
 modifies it with various forms of user malfeasance:
 
->>> _ = shell(tests.INIT_SCRIPT, check=False, capture_output=True)
+>>> _ = shell(tests.INIT_SCRIPT, capture_output=True)
 
 
 -------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ SortedSet([DirPath('references/sync-test-ref/blocker-dir'), DirPath('references/
 
 Simulate a repo checkout with some additional user modifications
 
->>> _ = shell(tests.INIT_SCRIPT, check=True)
+>>> _ = shell(tests.INIT_SCRIPT)
 >>> s = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
 >>> s.detoxify_repo()
 DEBUG - Detoxifying
@@ -532,8 +532,8 @@ INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 
 Check clone on bad branch with bad origin works:
 
->>> _ = shell(f"git remote rename origin foo", cwd=s.repo_dir)
 >>> _ = shell(f"git fetch origin;  git checkout wrong-branch", cwd=s.repo_dir)
+>>> _ = shell(f"git remote rename origin foo", cwd=s.repo_dir)
 >>> s = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
 >>> s.sync()   # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
@@ -544,4 +544,4 @@ INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 
 Clean up sync-test directory and test files if all goes well:
 
->>> _ = shell(tests.CLEANUP_SCRIPT, check=False)
+>>> _ = shell(tests.CLEANUP_SCRIPT)

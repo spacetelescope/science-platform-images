@@ -155,6 +155,7 @@ def shell(
     cwd: DirPath = DirPath("."),
     timeout: float = 120,
     interpreter="/bin/bash",
+    shell_settings="set -eux -o pipefail\n\n",
     check: bool = True,
     capture_output: bool = True,
 ) -> subprocess.CompletedProcess:
@@ -162,6 +163,7 @@ def shell(
     to the `cwd` directory.
     """
     with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
+        tmp.write(shell_settings)
         tmp.write(script)
         tmp.flush()
         result = subprocess.run(
@@ -507,7 +509,6 @@ git checkout origin/{self.branch}
 #git status --porcelain
 """,
             cwd=self.repo_dir,
-            check=True,
         ).stdout
 
     def lock_clone(self):
@@ -568,7 +569,7 @@ git checkout origin/{self.branch}
         """Return the clone porecelain status output which reveals changes
         as well as untracked files.
         """
-        output = shell("git status --porcelain", cwd=self.repo_dir, check=False).stdout
+        output = shell("git status --porcelain", cwd=self.repo_dir).stdout
         log.debug("git status:\n", output)
         return output
 
@@ -588,7 +589,7 @@ git checkout origin/{self.branch}
                 code == "untracked"
             ), f"Expected only untracked artifacts to be present: {path}"
         if diff:
-            results = shell("git diff origin/main", check=False, cwd=self.repo_dir)
+            results = shell("git diff origin/main", cwd=self.repo_dir)
             if results.returncode != 0:
                 raise ValueError("Expected a clean diff for updated-clone repo.")
 

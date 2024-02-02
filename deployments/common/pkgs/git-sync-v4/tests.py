@@ -3,10 +3,9 @@ REPO_URL = "https://github.com/spacetelescope/sync-test"
 # doctest is not a good format for entering these shell commands even with multi-line shell()
 # adding here cuts down on test file complexity
 CLEANUP_SCRIPT = """
-set -ux
-
 # this is to handle "poison" directories and files which unfortunately get created fairly often
 # and hence we construct test cases for them.  w/o this test cleanup below doesn't work.
+mkdir -p references
 chmod -R 777 references
 rm -rf references
 rm -f ~/.git-sync-off
@@ -14,7 +13,6 @@ rm -f gs*.log
 """
 
 INIT_SCRIPT = CLEANUP_SCRIPT + f"""
-set -ux
 git clone  {REPO_URL}  references/sync-test-ref
 cd references/sync-test-ref
 git checkout initial-clone
