@@ -174,23 +174,7 @@ def shell(
             cwd=cwd,
             timeout=timeout,
         )
-        if result.returncode != 0:
-            log.exception(
-                f"""
-shell() failed with return code {result.returncode}:
-
-SCRIPT:
-{script}
-
-STDOUT:
-{result.stdout}
-
-STDERR:
-{result.stderr}
-"""
-            )
-        else:
-            os.remove(tmp.name)
+        os.remove(tmp.name)
         return result
 
 

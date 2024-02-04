@@ -47,6 +47,32 @@ subprocess.CalledProcessError: Command '('/bin/bash', '...')' returned non-zero 
 
 -------------------------------------------------------------------------------
 
+Note that an err'ing subprocess will raise an exception,  unless check=False.
+
+>>> shell("fecho hello world!", check=False).stdout
+''
+
+-------------------------------------------------------------------------------
+
+Multi-command process with mid-file error:  (nominally shell_settings='set -eux -o pipefail\n\n')
+
+>>> shell(r"echo '1'; echo '2';  fecho '3'; echo '4'").stdout
+Traceback (most recent call last):
+...
+subprocess.CalledProcessError: Command '('/bin/bash', '...')' returned non-zero exit status 127.
+
+
+-------------------------------------------------------------------------------
+
+Multi-command process with mid-file error but shell_settings='':  (default bash settings)
+
+>>> print(shell(r"echo '1'; echo '2';  fecho '3'; echo '4'", shell_settings="").stdout, end='')
+1
+2
+4
+
+-------------------------------------------------------------------------------
+
 Run these tests from TEST_DIR giving a known input and output dir:
 
 >>> os.chdir(os.environ['TEST_DIR'])
