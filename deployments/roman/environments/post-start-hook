@@ -29,7 +29,9 @@ set +e   # Do not let init failures block logins
 # Sync reference notebook directories / branches.
 # .............................................................................................
 
-/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/romancal-notebooks  main  /home/jovyan/references/romancal-notebooks-ref
+/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/romancal-notebooks \
+                                main \
+                                /home/jovyan/references/romancal-notebooks-ref
 
 # .............................................................................................
 # Test notebook setup if applicable

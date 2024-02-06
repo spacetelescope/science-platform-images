@@ -64,7 +64,7 @@ directories in place, upon sync your changes will be backed up and the original
 file locations reverted and updated normally.  Likewise, if you save a file to
 a new name, and the source repository coincidentally adds the same file name
 later with different contents, during the sync your version of the file will be
-backed up to a different name.  To the extent possible, after evey sync the
+backed up to a different name.  To the extent possible, after every sync the
 file contents of this directory will be an exact copy of files in the source
 repository and your changes and additions will be stored in backups and/or
 other untracked file names.
