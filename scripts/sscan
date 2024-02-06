@@ -17,6 +17,11 @@ sscan-yaml $yaml_files
 yaml_status=$?
 
 echo "====================================================="
+echo "Removing HTML coverage output from htmlcov dirs.     "
+echo "====================================================="
+find $JUPYTERHUB_DIR -name htmlcov -type d | xargs rm -rf
+
+echo "====================================================="
 echo "Scanning source code for quality with flake8         "
 echo "====================================================="
 sscan-flake8

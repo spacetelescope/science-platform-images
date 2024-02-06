@@ -1,0 +1,573 @@
+>>> import os
+>>> import logging
+>>> import re
+
+>>> import tests
+>>> import git_sync_v4 as gs
+>>> from git_sync_v4 import shell, all_files, all_dirs, Syncer, FilePath, DirPath, PosixPath, main
+
+-------------------------------------------------------------------------------
+
+Init the logger:
+
+>>> gs.log.set_level("DEBUG")
+>>> gs.log.info("It's working!")
+INFO - It's working!
+
+-------------------------------------------------------------------------------
+
+Test the timestamp function,  now an 8 digit hex number,  secs since 1970
+
+>>> bool(re.match("^[a-f0-9]{8,8}$", gs.now()))
+True
+
+-------------------------------------------------------------------------------
+
+Fake out the timestamp function to return a constant value for repeatable tests:
+
+>>> gs.now = lambda: "12345678"
+>>> gs.now()
+'12345678'
+
+-------------------------------------------------------------------------------
+
+Check the subprocess multi-line shellscript function:
+
+>>> shell("echo hello world!").stdout
+'hello world!\n'
+
+-------------------------------------------------------------------------------
+
+Note that an err'ing subprocess will raise an exception:
+
+>>> shell("fecho hello world!").stdout
+Traceback (most recent call last):
+...
+subprocess.CalledProcessError: Command '('/bin/bash', '...')' returned non-zero exit status 127.
+
+-------------------------------------------------------------------------------
+
+Note that an err'ing subprocess will raise an exception,  unless check=False.
+
+>>> shell("fecho hello world!", check=False).stdout
+''
+
+-------------------------------------------------------------------------------
+
+Multi-command process with mid-file error:  (nominally shell_settings='set -eux -o pipefail\n\n')
+
+>>> shell(r"echo '1'; echo '2';  fecho '3'; echo '4'").stdout
+Traceback (most recent call last):
+...
+subprocess.CalledProcessError: Command '('/bin/bash', '...')' returned non-zero exit status 127.
+
+
+-------------------------------------------------------------------------------
+
+Multi-command process with mid-file error but shell_settings='':  (default bash settings)
+
+>>> print(shell(r"echo '1'; echo '2';  fecho '3'; echo '4'", shell_settings="").stdout, end='')
+1
+2
+4
+
+-------------------------------------------------------------------------------
+
+Run these tests from TEST_DIR giving a known input and output dir:
+
+>>> os.chdir(os.environ['TEST_DIR'])
+
+
+-------------------------------------------------------------------------------
+
+Run the script from tests.py which creates a test directory repo and
+modifies it with various forms of user malfeasance:
+
+>>> _ = shell(tests.INIT_SCRIPT, capture_output=True)
+
+
+-------------------------------------------------------------------------------
+
+Check the DirPath / FilePath concatenation cases:
+
+>>> DirPath("references/sync-test-ref") / DirPath("subdir")
+DirPath('references/sync-test-ref/subdir')
+
+>>> DirPath("references/sync-test-ref") / "new-dir"
+DirPath('references/sync-test-ref/new-dir')
+
+Check the FilePath cases:
+
+>>> "references/sync-test-ref" / FilePath("readme.txt")
+FilePath('references/sync-test-ref/readme.txt')
+
+>>> DirPath("references/sync-test-ref") / "README.md"
+FilePath('references/sync-test-ref/README.md')
+
+>>> DirPath("references/sync-test-ref") / FilePath("README.md")
+FilePath('references/sync-test-ref/README.md')
+
+Check some invalid cases:
+
+>>> FilePath("references/sync-test-ref") / FilePath("README.md")
+Traceback (most recent call last):
+...
+ValueError: Cannot concatenate: references/sync-test-ref / README.md
+
+>>> 1 / DirPath("references/sync-test-ref")
+Traceback (most recent call last):
+...
+TypeError: unsupported operand type(s) for /: 'int' and 'DirPath'
+
+>>> DirPath("references/sync-test-ref") / 1
+Traceback (most recent call last):
+...
+ValueError: Cannot concatenate: DirPath('references/sync-test-ref') / 1
+
+>>> 1 / FilePath("test")
+Traceback (most recent call last):
+...
+TypeError: unsupported operand type(s) for /: 'int' and 'FilePath'
+
+-------------------------------------------------------------------------------
+
+Check early and simply that the all_xxx functions do not crash:
+
+>>> files = all_files("references/sync-test-ref")
+>>> assert FilePath("poison-dir/poison-file-2.txt") not in files
+
+>>> dirs = all_dirs("references/sync-test-ref")
+>>> print(dirs)
+SortedSet([DirPath('references/sync-test-ref/blocker-dir'), DirPath('references/sync-test-ref/new-dir'), DirPath('references/sync-test-ref/new-dir/sub-dir'), DirPath('references/sync-test-ref/poison-dir'), DirPath('references/sync-test-ref/poison-dir/poison-dir-2'), DirPath('references/sync-test-ref/poison.dir'), DirPath('references/sync-test-ref/rw_to_poison.dir')])
+
+-------------------------------------------------------------------------------
+
+Simulate a repo checkout with some additional user modifications
+
+>>> _ = shell(tests.INIT_SCRIPT)
+>>> s = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
+>>> s.detoxify_repo()
+DEBUG - Detoxifying
+DEBUG - Collecting all dirs and files.
+
+-------------------------------------------------------------------------------
+
+get_clone_status runs git status to determine files affected by
+the user and to report them in normalized form for farming out actions later:
+
+>>> clone_status = s.get_clone_status()
+DEBUG - git status:
+  D LICENSE
+ M README.md
+A  added.txt
+ M change-mode.md
+R  rename-me.txt -> renamed-me.txt
+?? blocker-dir/
+?? blocker-file
+?? copy-me-2.txt
+?? made-up-file.ipynb
+?? new-dir/
+?? poison-dir/
+?? poison-file.txt
+?? rw_to_poison.dir/user_file.txt
+<BLANKLINE>
+
+-------------------------------------------------------------------------------
+
+The syncer interprets clone status to identify and process files appropriately,
+but here we just dump the parsing without acting on it:
+
+>>> for line in s.parse_git_status(clone_status): print(line)
+('deleted', FilePath('LICENSE'))
+('modified', FilePath('README.md'))
+('added', FilePath('added.txt'))
+('modified', FilePath('change-mode.md'))
+('renamed', FilePath('rename-me.txt'))
+('untracked', DirPath('blocker-dir'))
+('untracked', FilePath('blocker-file'))
+('untracked', FilePath('copy-me-2.txt'))
+('untracked', FilePath('made-up-file.ipynb'))
+('untracked', DirPath('new-dir'))
+('untracked', DirPath('poison-dir'))
+('untracked', FilePath('poison-file.txt'))
+('untracked', FilePath('rw_to_poison.dir/user_file.txt'))
+
+>>> s.repo_dir
+DirPath('references/sync-test-ref')
+
+>>> s.branch
+'main'
+
+-------------------------------------------------------------------------------
+
+Based on the INIT_SCRIPT above the classifier should return:
+
+>>> s.classify_clone_status(clone_status)
+DEBUG - Classifying clone git status.
+DEBUG - Classified LICENSE as deleted.
+DEBUG - Classified README.md as modified.
+DEBUG - Created backup references/sync-test-ref/README.md.12345678
+DEBUG - Classified added.txt as added.
+DEBUG - Created backup references/sync-test-ref/added.txt.12345678
+DEBUG - Classified change-mode.md as modified.
+DEBUG - Created backup references/sync-test-ref/change-mode.md.12345678
+DEBUG - Classified rename-me.txt as renamed.
+DEBUG - Classified blocker-dir as untracked.
+DEBUG - Created backup references/sync-test-ref/blocker-dir.12345678
+DEBUG - Classified blocker-file as untracked.
+DEBUG - Created backup references/sync-test-ref/blocker-file.12345678
+DEBUG - Classified copy-me-2.txt as untracked.
+DEBUG - Created backup references/sync-test-ref/copy-me-2.txt.12345678
+DEBUG - Classified made-up-file.ipynb as untracked.
+DEBUG - Created backup references/sync-test-ref/made-up-file.ipynb.12345678
+DEBUG - Classified new-dir as untracked.
+DEBUG - Created backup references/sync-test-ref/new-dir.12345678
+DEBUG - Classified poison-dir as untracked.
+DEBUG - Created backup references/sync-test-ref/poison-dir.12345678
+DEBUG - Classified poison-file.txt as untracked.
+DEBUG - Created backup references/sync-test-ref/poison-file.txt.12345678
+DEBUG - Classified rw_to_poison.dir/user_file.txt as untracked.
+DEBUG - Created backup references/sync-test-ref/rw_to_poison.dir/user_file.txt.12345678
+
+-------------------------------------------------------------------------------
+
+Now that backups of user files/dirs have been generated, all_xxx sets can be regenerated:
+
+>>> s.get_all_artifacts()
+DEBUG - Collecting all dirs and files.
+
+>>> s.dump_sets()
+DEBUG - Set all_dirs::
+DEBUG - references/sync-test-ref/blocker-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir
+DEBUG - references/sync-test-ref/poison-dir.12345678
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2
+DEBUG - references/sync-test-ref/poison.dir
+DEBUG - references/sync-test-ref/rw_to_poison.dir
+DEBUG - Set all_files::
+DEBUG - references/sync-test-ref/README.md.12345678
+DEBUG - references/sync-test-ref/added.txt.12345678
+DEBUG - references/sync-test-ref/blocker-dir.12345678/placeholder-2.txt
+DEBUG - references/sync-test-ref/blocker-file.12345678
+DEBUG - references/sync-test-ref/change-mode.md.12345678
+DEBUG - references/sync-test-ref/change.txt
+DEBUG - references/sync-test-ref/copy-me-2.txt.12345678
+DEBUG - references/sync-test-ref/copy-me.txt
+DEBUG - references/sync-test-ref/made-up-file.ipynb.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/made-up-1.txt
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir/made-up-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2/poison-file-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-file.txt
+DEBUG - references/sync-test-ref/poison-file.txt.12345678
+DEBUG - references/sync-test-ref/poison.dir/unchanged.txt
+DEBUG - references/sync-test-ref/renamed-me.txt
+DEBUG - references/sync-test-ref/ro_to_rw.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/normal.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/user_file.txt.12345678
+DEBUG - references/sync-test-ref/setup.sh
+DEBUG - references/sync-test-ref/unchanged.txt
+DEBUG - Set user_dirs::
+DEBUG - references/sync-test-ref/blocker-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir
+DEBUG - references/sync-test-ref/poison-dir.12345678
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2
+DEBUG - Set user_files::
+DEBUG - references/sync-test-ref/README.md.12345678
+DEBUG - references/sync-test-ref/added.txt.12345678
+DEBUG - references/sync-test-ref/blocker-dir.12345678/placeholder-2.txt
+DEBUG - references/sync-test-ref/blocker-file.12345678
+DEBUG - references/sync-test-ref/change-mode.md.12345678
+DEBUG - references/sync-test-ref/copy-me-2.txt.12345678
+DEBUG - references/sync-test-ref/made-up-file.ipynb.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/made-up-1.txt
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir/made-up-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2/poison-file-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-file.txt
+DEBUG - references/sync-test-ref/poison-file.txt.12345678
+DEBUG - references/sync-test-ref/rw_to_poison.dir/user_file.txt.12345678
+DEBUG - Set git_dirs::
+DEBUG - references/sync-test-ref/poison.dir
+DEBUG - references/sync-test-ref/rw_to_poison.dir
+DEBUG - Set git_files::
+DEBUG - references/sync-test-ref/change.txt
+DEBUG - references/sync-test-ref/copy-me.txt
+DEBUG - references/sync-test-ref/poison.dir/unchanged.txt
+DEBUG - references/sync-test-ref/renamed-me.txt
+DEBUG - references/sync-test-ref/ro_to_rw.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/normal.txt
+DEBUG - references/sync-test-ref/setup.sh
+DEBUG - references/sync-test-ref/unchanged.txt
+
+>>> s.fetch_origin()
+DEBUG - Fetching
+
+>>> _ = s.reset_and_update_branch()
+DEBUG - Resetting and updating.
+
+>>> s.get_all_artifacts()
+DEBUG - Collecting all dirs and files.
+>>> s.dump_sets()
+DEBUG - Set all_dirs::
+DEBUG - references/sync-test-ref/blocker-dir
+DEBUG - references/sync-test-ref/blocker-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir
+DEBUG - references/sync-test-ref/poison-dir.12345678
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2
+DEBUG - references/sync-test-ref/poison.dir
+DEBUG - references/sync-test-ref/rw_to_poison.dir
+DEBUG - Set all_files::
+DEBUG - references/sync-test-ref/LICENSE
+DEBUG - references/sync-test-ref/README.md
+DEBUG - references/sync-test-ref/README.md.12345678
+DEBUG - references/sync-test-ref/added.txt.12345678
+DEBUG - references/sync-test-ref/blocker-dir/placeholder.txt
+DEBUG - references/sync-test-ref/blocker-dir.12345678/placeholder-2.txt
+DEBUG - references/sync-test-ref/blocker-file
+DEBUG - references/sync-test-ref/blocker-file.12345678
+DEBUG - references/sync-test-ref/change-mode.md
+DEBUG - references/sync-test-ref/change-mode.md.12345678
+DEBUG - references/sync-test-ref/change.txt
+DEBUG - references/sync-test-ref/copy-me-2.txt.12345678
+DEBUG - references/sync-test-ref/copy-me.txt
+DEBUG - references/sync-test-ref/made-up-file.ipynb.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/made-up-1.txt
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir/made-up-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2/poison-file-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-file.txt
+DEBUG - references/sync-test-ref/poison-file.txt.12345678
+DEBUG - references/sync-test-ref/poison.dir/unchanged.txt
+DEBUG - references/sync-test-ref/rename-me.txt
+DEBUG - references/sync-test-ref/renamed-me.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/normal.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/user_file.txt.12345678
+DEBUG - references/sync-test-ref/rw_to_ro.txt
+DEBUG - references/sync-test-ref/setup.sh
+DEBUG - references/sync-test-ref/unchanged.txt
+DEBUG - Set user_dirs::
+DEBUG - references/sync-test-ref/blocker-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir
+DEBUG - references/sync-test-ref/poison-dir.12345678
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2
+DEBUG - Set user_files::
+DEBUG - references/sync-test-ref/README.md.12345678
+DEBUG - references/sync-test-ref/added.txt.12345678
+DEBUG - references/sync-test-ref/blocker-dir.12345678/placeholder-2.txt
+DEBUG - references/sync-test-ref/blocker-file.12345678
+DEBUG - references/sync-test-ref/change-mode.md.12345678
+DEBUG - references/sync-test-ref/copy-me-2.txt.12345678
+DEBUG - references/sync-test-ref/made-up-file.ipynb.12345678
+DEBUG - references/sync-test-ref/new-dir.12345678/made-up-1.txt
+DEBUG - references/sync-test-ref/new-dir.12345678/sub-dir/made-up-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-dir-2/poison-file-2.txt
+DEBUG - references/sync-test-ref/poison-dir.12345678/poison-file.txt
+DEBUG - references/sync-test-ref/poison-file.txt.12345678
+DEBUG - references/sync-test-ref/rw_to_poison.dir/user_file.txt.12345678
+DEBUG - Set git_dirs::
+DEBUG - references/sync-test-ref/blocker-dir
+DEBUG - references/sync-test-ref/poison.dir
+DEBUG - references/sync-test-ref/rw_to_poison.dir
+DEBUG - Set git_files::
+DEBUG - references/sync-test-ref/LICENSE
+DEBUG - references/sync-test-ref/README.md
+DEBUG - references/sync-test-ref/blocker-dir/placeholder.txt
+DEBUG - references/sync-test-ref/blocker-file
+DEBUG - references/sync-test-ref/change-mode.md
+DEBUG - references/sync-test-ref/change.txt
+DEBUG - references/sync-test-ref/copy-me.txt
+DEBUG - references/sync-test-ref/poison.dir/unchanged.txt
+DEBUG - references/sync-test-ref/rename-me.txt
+DEBUG - references/sync-test-ref/renamed-me.txt
+DEBUG - references/sync-test-ref/rw_to_poison.dir/normal.txt
+DEBUG - references/sync-test-ref/rw_to_ro.txt
+DEBUG - references/sync-test-ref/setup.sh
+DEBUG - references/sync-test-ref/unchanged.txt
+
+
+>>> git_status = s.get_clone_status()
+DEBUG - git status:
+ ?? README.md.12345678
+?? added.txt.12345678
+?? blocker-dir.12345678/
+?? blocker-file.12345678
+?? change-mode.md.12345678
+?? copy-me-2.txt.12345678
+?? made-up-file.ipynb.12345678
+?? new-dir.12345678/
+?? poison-dir.12345678/
+?? poison-file.txt.12345678
+?? renamed-me.txt
+?? rw_to_poison.dir/user_file.txt.12345678
+<BLANKLINE>
+
+>>> s.classify_clone_status(git_status, backup=False)
+DEBUG - Classifying clone git status.
+DEBUG - Classified README.md.12345678 as untracked.
+DEBUG - Classified added.txt.12345678 as untracked.
+DEBUG - Classified blocker-dir.12345678 as untracked.
+DEBUG - Classified blocker-file.12345678 as untracked.
+DEBUG - Classified change-mode.md.12345678 as untracked.
+DEBUG - Classified copy-me-2.txt.12345678 as untracked.
+DEBUG - Classified made-up-file.ipynb.12345678 as untracked.
+DEBUG - Classified new-dir.12345678 as untracked.
+DEBUG - Classified poison-dir.12345678 as untracked.
+DEBUG - Classified poison-file.txt.12345678 as untracked.
+DEBUG - Classified renamed-me.txt as untracked.
+DEBUG - Classified rw_to_poison.dir/user_file.txt.12345678 as untracked.
+
+>>> s.restore_backups()
+DEBUG - Restoring backups.
+DEBUG - Artifact references/sync-test-ref/README.md already exists, skipping restore.
+DEBUG - Restoring file references/sync-test-ref/added.txt
+DEBUG - Artifact references/sync-test-ref/blocker-dir already exists, skipping restore.
+DEBUG - Artifact references/sync-test-ref/blocker-file already exists, skipping restore.
+DEBUG - Artifact references/sync-test-ref/change-mode.md already exists, skipping restore.
+DEBUG - Restoring file references/sync-test-ref/copy-me-2.txt
+DEBUG - Restoring file references/sync-test-ref/made-up-file.ipynb
+DEBUG - Restoring directory references/sync-test-ref/new-dir
+DEBUG - Restoring directory references/sync-test-ref/poison-dir
+DEBUG - Restoring file references/sync-test-ref/poison-file.txt
+DEBUG - Restoring file references/sync-test-ref/rw_to_poison.dir/user_file.txt
+
+>>> s.get_all_artifacts()
+DEBUG - Collecting all dirs and files.
+
+>>> s.all_dirs
+SortedSet([DirPath('references/sync-test-ref/blocker-dir'), DirPath('references/sync-test-ref/blocker-dir.12345678'), DirPath('references/sync-test-ref/new-dir'), DirPath('references/sync-test-ref/new-dir/sub-dir'), DirPath('references/sync-test-ref/poison-dir'), DirPath('references/sync-test-ref/poison-dir/poison-dir-2'), DirPath('references/sync-test-ref/poison.dir'), DirPath('references/sync-test-ref/rw_to_poison.dir')])
+
+>>> s.validate_clone()
+DEBUG - git status:
+ ?? README.md.12345678
+?? added.txt
+?? blocker-dir.12345678/
+?? blocker-file.12345678
+?? change-mode.md.12345678
+?? copy-me-2.txt
+?? made-up-file.ipynb
+?? new-dir/
+?? poison-dir/
+?? poison-file.txt
+?? renamed-me.txt
+?? rw_to_poison.dir/user_file.txt
+<BLANKLINE>
+
+>>> s.lock_clone()
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+
+>>> s.add_sync_instructions()
+>>> assert (s.repo_dir / "SYNC-INSTRUCTIONS.md").exists()
+>>> assert (s.repo_dir.parent / "SYNC-INSTRUCTIONS.md").exists()
+
+-------------------------------------------------------------------------------
+
+Start worrying less about logging and just check results:
+
+>>> gs.log.set_level("INFO")
+
+-------------------------------------------------------------------------------
+
+Test basic sync with no existing clone
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Creating new clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+Test basic sync with existing clone
+
+>>> _ = shell(tests.INIT_SCRIPT)
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Updating existing clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+-------------------------------------------------------------------------------
+
+Test opt-out system for turning off syncs:
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)
+>>> gate = f"{os.environ['HOME']}/.git-sync-off"
+>>> with open(gate, "w+") as f:  _ = f.write("\n")
+>>> main(["./test",  tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - git-sync is disabled by file .../.git-sync-off.
+INFO - Remove .git-sync-off to restore syncing.
+0
+>>> os.remove(gate)
+
+-------------------------------------------------------------------------------
+
+Check clone blocked by file
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)
+>>> _ = shell("mkdir references; echo 'Not a git repo.' >references/sync-test-ref")
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Updating existing clone.
+ERROR - Updating failed:
+Traceback (most recent call last):
+...
+NotADirectoryError: [Errno 20] Not a directory: DirPath('references/sync-test-ref')
+INFO - Backing up existing clone and re-cloning.
+INFO - Creating new clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+-------------------------------------------------------------------------------
+
+Check clone with trashed .git dir
+
+>>> _ = shell(tests.INIT_SCRIPT)
+>>> _ = shell("rm -rf references/sync-test-ref/.git")
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Updating existing clone.
+ERROR - Updating failed:
+Traceback (most recent call last):
+...
+FileNotFoundError: [Errno 2] No such file or directory: 'references/sync-test-ref/...'
+INFO - Backing up existing clone and re-cloning.
+INFO - Creating new clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+-------------------------------------------------------------------------------
+
+Check clone with bad dir perms works:
+
+>>> _ = shell(tests.INIT_SCRIPT)
+>>> os.chmod("references/sync-test-ref", 0o000)
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Updating existing clone.
+ERROR - Updating failed:
+Traceback (most recent call last):
+...
+PermissionError: [Errno 13] Permission denied: DirPath('references/sync-test-ref')
+INFO - Backing up existing clone and re-cloning.
+INFO - Creating new clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+-------------------------------------------------------------------------------
+
+Check clone on bad branch with bad origin works:
+
+>>> _ = shell(f"git fetch origin;  git checkout wrong-branch", cwd=s.repo_dir)
+>>> _ = shell(f"git remote rename origin foo", cwd=s.repo_dir)
+>>> s = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
+>>> s.sync()   # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Updating existing clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+
+-------------------------------------------------------------------------------
+
+Clean up sync-test directory and test files if all goes well:
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)

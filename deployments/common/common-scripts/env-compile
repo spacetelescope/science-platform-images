@@ -113,3 +113,6 @@ rm -f ${env_reqs}  # ... hence this delete is REQUIRED
 
 # The real work of determining the version solution...  outputs FROZEN pip reqs
 pip-compile  -v  --resolver=backtracking --output-file ${env_reqs} --pip-args "${PIP_SWITCHES}"  ${all_constraints}
+
+/opt/common-scripts/env-clean
+
