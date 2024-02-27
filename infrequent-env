@@ -61,7 +61,7 @@ export COMMON_IMAGE_DIR=`pwd`/deployments/common
 # --------------- vvvvv misc env settings vvvvv ---------------------------------
 
 function where () {
-    info="${DEPLOYMENT_NAME}-${ENVIRONMENT}"
+    info="${DEPLOYMENT_NAME}-${ENVIRONMENT}-${OWNER}-${CAL_VERSION}"
     if [[ "${USE_FROZEN}" == "0" ]]; then
         info="${info}-floating"
     elif [[ "${USE_FROZEN}" == "1" ]]; then
