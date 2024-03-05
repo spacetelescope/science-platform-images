@@ -36,8 +36,7 @@ for kernel in `${CONDA_VER} env list | grep -v '#' | grep -v base | cut -d' ' -f
     source /opt/common-scripts/env-deactivate $kernel
 done
 
-# echo "nb_kernels:"
-# python -m nb_conda_kernels list
+/opt/common-scripts/kernel-purge  $HOME/.local/share/jupyter/kernels
 
 echo "jupyter kernelspecs:"
 jupyter kernelspec list

@@ -2,6 +2,10 @@
 
 """This module is used to remove Jupyter kernels for environments which are now
 defunct insofar as their kernel exceutable no longer exists.
+
+Before removing a kernel it looks to see if the executable for the kernel actually
+exists and if so leaves the kernel intact.  This avoids removing user-added kernels
+which don't comply with any official platform scheme.
 """
 
 import json
