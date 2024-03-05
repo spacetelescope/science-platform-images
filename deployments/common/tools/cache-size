@@ -55,11 +55,12 @@ def human_format_number(number):
 
 def get_lk_size():
     """Return size of the lightkurve cache in bytes."""
-    import lightkurve.config
-
-    lk_cache = lightkurve.config.get_cache_dir()
-    return path_size(lk_cache)
-
+    try:
+        import lightkurve.config
+        lk_cache = lightkurve.config.get_cache_dir()
+        return path_size(lk_cache)
+    except Exception:
+        return 0
 
 def get_ap_size():
     """Return size of the astropy cache in bytes."""
