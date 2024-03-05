@@ -1,4 +1,4 @@
-#! /bin/sh -eu
+#! /bin/bash -eu
 
 # convenience script for running a standalone lab session on localhost:8888
 
