@@ -31,7 +31,6 @@ class Log:
         self.mode = mode
         self.handle = open(self.filename, self.mode, encoding='utf-8')
 
-
     def set_level(self, level):
         self.level = level
 
