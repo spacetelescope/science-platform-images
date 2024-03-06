@@ -1,0 +1,61 @@
+#! /usr/bin/env python
+
+"""This module is used to remove Jupyter kernels for environments which are now
+defunct insofar as their kernel exceutable no longer exists.
+
+Before removing a kernel it looks to see if the executable for the kernel actually
+exists and if so leaves the kernel intact.  This avoids removing user-added kernels
+which don't comply with any official platform scheme.
+"""
+
+import json
+import pathlib
+import shutil
+import os
+import sys
+
+
+class NoExecutableFound(Exception):
+    def __init__(self, executable):
+        self.executable = executable
+
+
+def purge_kernel(path):
+    """Handle an individual environment / kernel."""
+    print(f"Purging {path}")
+    try:
+        with open(f"{path}/kernel.json") as file:
+            jdict = json.load(file)
+        executable = jdict["argv"][0]
+        if not os.path.exists(executable):
+            raise NoExecutableFound(executable)
+    except Exception:
+        print(f"Error finding kernel environment. Removing kernel {path}.")
+        shutil.rmtree(path)
+    else:
+        print(f"Executable {executable} exists.  Keeping kernel.")
+
+
+def purge_kernels(root):
+    """Handle all kernel environments under the given root directory."""
+    for root, dirs, _files in os.walk(root):
+        for d in dirs:
+            try:
+                purge_kernel(pathlib.Path(root, d))
+            except Exception:
+                raise
+
+
+def main(args):
+    """Present basic usage and/or purge every kernel found under a list
+    of root directories,  where 'purge' only removes kernels for which 
+    the environment executable no longer exists.
+    """
+    if not len(args):
+        print(f"usage: {sys.arg[0]} <kernel-root-dirs>...")
+    for path in args:
+        purge_kernels(path)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

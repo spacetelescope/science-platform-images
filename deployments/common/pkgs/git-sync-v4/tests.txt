@@ -10,6 +10,7 @@
 
 Init the logger:
 
+>>> gs.log = gs.Log("gs.log")
 >>> gs.log.set_level("DEBUG")
 >>> gs.log.info("It's working!")
 INFO - It's working!
