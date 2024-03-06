@@ -26,10 +26,11 @@ import git
 
 class Log:
     def __init__(self, filename, level="INFO", mode="w+"):
-        self.filename = filename
+        self.filename = os.path.abspath(filename)
         self.level = level
         self.mode = mode
-        self.handle = open(filename, mode)
+        self.handle = open(self.filename, self.mode, encoding='utf-8')
+
 
     def set_level(self, level):
         self.level = level
@@ -68,7 +69,7 @@ class Log:
         self.error(f"{message}\n{tb.rstrip()}")
 
 
-log = Log("gs.log")
+# log = Log("gs.log")
 
 # ===========================================================================================
 

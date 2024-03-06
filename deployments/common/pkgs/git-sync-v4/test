@@ -9,6 +9,7 @@ python -m pytest -v -v -v  \
        --capture=no \
        --log-level INFO --log-cli-level INFO \
        --doctest-modules \
+       --doctest-continue-on-failure \
        --doctest-report cdiff \
        --cov=git_sync_v4 --cov-report=html:htmlcov  \
        tests.py tests.txt $*
