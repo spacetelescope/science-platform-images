@@ -36,7 +36,8 @@ for kernel in `${CONDA_VER} env list | grep -v '#' | grep -v base | cut -d' ' -f
     source /opt/common-scripts/env-deactivate $kernel
 done
 
-/opt/common-scripts/kernel-purge  $HOME/.local/share/jupyter/kernels
+# XXXX pending more extensive testing to ensure it won't wipe user environments
+# /opt/common-scripts/kernel-purge  $HOME/.local/share/jupyter/kernels
 
 echo "jupyter kernelspecs:"
 jupyter kernelspec list
