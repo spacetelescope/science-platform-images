@@ -1,6 +1,9 @@
 #!/bin/bash
 
+# NO set -eu for source script
+
 ENVROOT=${ENVROOT:-${HOME}/envs}
+ENVROOTS=${ENVROOTS:-${ENVROOT} /opt/conda/envs}   # To add team conda environments?
 
 function usage() {
    if `eval [[ $1 ]]`; then
