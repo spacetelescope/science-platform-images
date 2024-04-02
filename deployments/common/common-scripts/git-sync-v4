@@ -18,6 +18,8 @@ import time
 from typing import List, Tuple, Union, Any  # AbstractSet, Dict, Optional
 from pathlib import PosixPath
 import traceback
+import cProfile
+import pstats
 
 import git
 
@@ -26,7 +28,7 @@ import git
 
 class Log:
     def __init__(self, filename, level="INFO", mode="w+"):
-        self.filename = os.path.abspath(filename)
+        self.filename = FilePath(os.path.abspath(filename))
         self.level = level
         self.mode = mode
         self.handle = open(self.filename, self.mode, encoding='utf-8')
@@ -40,8 +42,12 @@ class Log:
             print(level, "-", message, file=handle)
             handle.flush()
 
-    def moveto(self, whereto):
-        shutil.move(self.filename, whereto)
+    def moveto(self, newfilepath):
+        newloc = FilePath(newfilepath)
+        # log.info("Moving log file to", newloc)
+        if newloc.exists():
+            newloc.unlink()
+        shutil.move(self.filename, newloc)
 
     def clear(self):
         os.remove(self.filename)
@@ -67,8 +73,7 @@ class Log:
         message = " ".join(str(a) for a in args)
         self.error(f"{message}\n{tb.rstrip()}")
 
-
-# log = Log("gs.log")
+log = None
 
 # ===========================================================================================
 
@@ -108,7 +113,6 @@ class SortedSet(set):
 
 # ===========================================================================================
 
-
 class DirPath(PosixPath):
     """A directory path."""
 
@@ -140,7 +144,7 @@ class FilePath(PosixPath):
         In general,  concatenation to a filepath is an error.
         """
         if isinstance(other, str):
-            return FilePath(str(self) + "/" + other)
+            return FilePath(str(self) + other)
         else:
             raise ValueError(f"Cannot concatenate: {self} / {other}")
 
@@ -257,7 +261,7 @@ def classify_git_status_line(line: str) -> Tuple[str, FileOrDirPath]:
         "U": "updated",
     }
     words: List[str] = line.strip().split()
-    mode: str = parsing[words[0]]
+    mode: str = parsing.get(words[0], "unknown")
     path: FileOrDirPath = (DirPath if words[1].endswith("/") else FilePath)(words[1])
     return (mode, path)
 
@@ -547,7 +551,7 @@ git checkout origin/{self.branch}
                     self.backup_and_track(thing)
             else:
                 log.info("git status:\n", git_status)
-                raise RuntimeError(f"Unhandled git status {mode} for {thing}.")
+                raise RuntimeError(f"Unhandled git status {repr(mode)} for {repr(thing)}.")
 
     def get_clone_status(self) -> str:
         """Return the clone porecelain status output which reveals changes
@@ -606,10 +610,16 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         action="store_true",
         help="Enable logging DEBUG messages.",
     )
+    parser.add_argument(
+        "-p",
+        "--profile",
+        action="store_true",
+        help="Enable logging DEBUG messages.",
+    )
     return parser.parse_args(argv)
 
 
-def main(argv: List[str]) -> int:
+def _main(program, args) -> int:
     """Main entry point for the git sync script.
 
     Parses command line arguments, sets up logging, creates a Syncer instance,
@@ -618,8 +628,6 @@ def main(argv: List[str]) -> int:
     If an error occurs,  a log is left behind in the repo_dir,  nominally
     "gs4.failed.log".  If no error occurs, the log file is cleared.
     """
-    program = argv[0]
-    args = parse_args(argv[1:])
     global log
     log = Log("gs4.log", level="DEBUG" if args.verbose else "INFO")
     try:
@@ -632,12 +640,31 @@ def main(argv: List[str]) -> int:
             syncer.sync()
     except Exception:
         log.exception("Failed to sync:")
-        if args.repo_dir.exists() and args.repo_dir.is_dir():
-            log.moveto(args.repo_dir / "gs4.failed.log")
+        log_dir = DirPath(args.repo_dir)
+        if log_dir.exists() and log_dir.is_dir():
+            log.moveto(log_dir / "gs4.failed.log")
         return 1
     log.clear()
     return 0
 
+def console_profile(program, args):
+    """Run `function` under the profiler and print results to console."""
+    prof = cProfile.Profile()
+    prof.enable()
+    result = _main(program, args)
+    prof.disable()
+    prof_stats = pstats.Stats(prof).sort_stats("cumulative")
+    prof_stats.print_stats(100)
+    return result
+
+def main(argv: List[str]) -> int:
+    program = argv[0]
+    args = parse_args(argv[1:])
+    if args.profile:
+        result = console_profile(program, args)
+    else:
+        result = _main(program, args)
+    return result
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
