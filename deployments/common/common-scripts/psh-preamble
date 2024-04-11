@@ -1,4 +1,6 @@
-#!/bin/bash -u
+#!/bin/bash
+
+set -u
 
 # .............................................................................................
 #
@@ -34,4 +36,3 @@ set +e
 /opt/common-scripts/copy-default-home  $HUB_FLAG
 
 /opt/common-scripts/kernel-setup
-

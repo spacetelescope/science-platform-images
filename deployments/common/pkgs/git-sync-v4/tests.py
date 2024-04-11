@@ -10,6 +10,7 @@ chmod -R 777 references
 rm -rf references
 rm -f ~/.git-sync-off
 rm -f gs*.log
+rm -rf someplace-else
 """
 
 INIT_SCRIPT = CLEANUP_SCRIPT + f"""

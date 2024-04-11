@@ -1,19 +1,66 @@
 >>> import os
 >>> import logging
 >>> import re
+>>> import doctest
 
 >>> import tests
 >>> import git_sync_v4 as gs
->>> from git_sync_v4 import shell, all_files, all_dirs, Syncer, FilePath, DirPath, PosixPath, main
+>>> from git_sync_v4 import shell, all_files, all_dirs, Syncer, FilePath, DirPath, PosixPath,  main
+>>> from git_sync_v4 import SortedSet
 
 -------------------------------------------------------------------------------
+
+Clean up any old test artifacts before starting.
+
+>>> _ = shell(tests.CLEANUP_SCRIPT, capture_output=True)
 
 Init the logger:
 
 >>> gs.log = gs.Log("gs.log")
 >>> gs.log.set_level("DEBUG")
+
+>>> where = DirPath("someplace-else")
+>>> where.mkdir()
+>>> what = where / FilePath('gs.log')
+>>> gs.log.moveto(what)
+>>> what.exists() and what.is_file()
+True
+
+>>> gs.log = gs.Log("gs.log")
+>>> gs.log.set_level("DEBUG")
+>>> gs.log.moveto(what)
+
 >>> gs.log.info("It's working!")
 INFO - It's working!
+
+>>> gs.log.warning("Test warning.")
+WARN - Test warning.
+
+>>> gs.log.error("Test error.")
+ERROR - Test error.
+
+>>> gs.log.critical("Test critical.")
+CRITICAL - Test critical.
+
+-------------------------------------------------------------------------------
+
+Sorted Set tests
+
+>>> [ x for x in SortedSet([4,5,3,2,6,1,7,1,2])]
+[1, 2, 3, 4, 5, 6, 7]
+
+>>> SortedSet([4,5,3,2,6,1,7,1,2]) - SortedSet([2,7])
+SortedSet([1, 3, 4, 5, 6])
+
+>>> SortedSet([4,5,3,2,6,1]) | SortedSet([2,7])
+SortedSet([1, 2, 3, 4, 5, 6, 7])
+
+>>> SortedSet([4,5,3,2,6,1]) & SortedSet([2,7])
+SortedSet([2])
+
+>>> SortedSet([4,5,3,2,6,1]) ^ SortedSet([2,7])
+SortedSet([1, 3, 4, 5, 6, 7])
+
 
 -------------------------------------------------------------------------------
 
@@ -129,6 +176,12 @@ ValueError: Cannot concatenate: DirPath('references/sync-test-ref') / 1
 Traceback (most recent call last):
 ...
 TypeError: unsupported operand type(s) for /: 'int' and 'FilePath'
+
+>>> FilePath("somewhere/the_file.txt") / ".bak"
+FilePath('somewhere/the_file.txt.bak')
+
+>>> DirPath("somewhere") / PosixPath("some-subdir")
+DirPath('somewhere/some-subdir')
 
 -------------------------------------------------------------------------------
 
@@ -462,6 +515,16 @@ INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 >>> assert (s.repo_dir / "SYNC-INSTRUCTIONS.md").exists()
 >>> assert (s.repo_dir.parent / "SYNC-INSTRUCTIONS.md").exists()
 
+-------------------------------------------------------------------------------------
+
+specifically check for bad status code in git status --porcelain output
+
+>>> bad_status = "XX broken_file"
+>>> s.classify_clone_status(bad_status, backup=False)
+Traceback (most recent call last):
+...
+RuntimeError: Unhandled git status 'unknown' for FilePath('broken_file').
+
 -------------------------------------------------------------------------------
 
 Start worrying less about logging and just check results:
@@ -471,6 +534,15 @@ Start worrying less about logging and just check results:
 -------------------------------------------------------------------------------
 
 Test basic sync with no existing clone
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Creating new clone.
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+0
+
+Test basic sync,  no existing clone, profiling
 
 >>> _ = shell(tests.CLEANUP_SCRIPT)
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
@@ -566,6 +638,22 @@ Check clone on bad branch with bad origin works:
 INFO - Syncing Syncer(repo_url='.../sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+
+-------------------------------------------------------------------------------
+
+Monkey patch s.sync to exercise exception handling in main():
+
+>>> def fail(self): raise RuntimeError("Syncing failed for some reason.")
+
+>>> temp = Syncer.sync
+>>> Syncer.sync = fail
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
+ERROR - Failed to sync:
+Traceback (most recent call last):
+...
+RuntimeError: Syncing failed for some reason.
+1
+>>> Syncer.sync = temp
 
 -------------------------------------------------------------------------------
 
