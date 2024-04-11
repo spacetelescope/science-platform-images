@@ -19,7 +19,7 @@ Nominal uses:
 
 Discouraged uses, all bets are off:
 
-- Normal git development adding, copying, renaming, deleting,  or modifying files
+- Normal git development adding, copying, renaming, deleting, or modifying files
 - Commiting changes
 - Switching branches or remotes
 - Changing file or directory permissions
@@ -29,15 +29,15 @@ Discouraged uses, all bets are off:
 To support and guide these uses the directory (git clone) has the following
 non-standard behavior:
 
-## '-ref' directory name suffix and/or 'reference' parent directory
+## '-ref' directory name suffix and/or 'references' parent directory
 
 The name of the directory ends with a '-ref' suffix designating its intended
-limited purpose.  Likewise, if it is located under a 'reference' parent
+limited purpose.  Likewise, if it is located under a 'references' parent
 directory it is being declared as "for reference use only".
 
 If you really do wish to do development for the associated repo and utilize git
 fully, this naming convention makes it possible to do normal git clones with
-nominal directory names owned by you which will be ignored by the sync process.
+standard directory names, owned by you, which will be ignored by the sync process.
 
 ## Readonly Files
 
@@ -49,11 +49,12 @@ of a file using a different name or location will not be touched.
 
 ## Read/Write Directories
 
-All of the directories in the clone are set to read/write/execute.  This enables
-notebooks to be opened simply and executed in their original locations.  As the
-notebook executes, JupyterLab saves related information in a checkpoint file
-located in the same directory.  If you do change permissions of a clone directory
-to something else,  your changes will be lost during the next sync.
+All of the directories in the clone are set to read/write/execute for you.
+This enables notebooks to be opened simply and executed in their original
+locations.  As the notebook executes, JupyterLab saves related information in a
+checkpoint file located in the same directory.  If you do change permissions of
+a clone directory to something else, your changes will be lost during the next
+sync.
 
 ## Automatic Updates
 
@@ -73,16 +74,16 @@ other untracked file names.
 
 If you forged ahead without reading and changed file permissions to read/write
 and made changes and a sync happened, while the original or repo-updated file
-will be restored, your modified copy will also be backed up liken increasing
-number:
+will be restored, your modified copy will also be backed up with an
+increasing number as a suffix:
 
-<original_name>.12345678
+<original_name>.12345678...
 
-where 12345678 will be a number which monotonically increases each time you log
-in.  You modified copy is renamed but not altered by any automatic merge with
+where 12345678... will be a number which monotonically increases each time you log
+in.  Your modified copy is renamed but not altered by any automatic merge with
 changes to the repo.
 
-## Opting out / I got this,  nix all these updates,  its not for me
+## Opting out / I got this,  nix all these updates,  it's not for me
 
 To stop the automtic sync process from performing wasted updates and/or
 recreating reference copies you want deleted, just create a file:
@@ -91,5 +92,5 @@ recreating reference copies you want deleted, just create a file:
 touch $HOME/.git-sync-off
 ```
 
-The existence of the file will not remove the reference directories, but neither
-will they be updated nor restored if you delete them yourself.
+The existence of the file will not remove existing reference directories, but
+neither will they be updated or restored if you delete them yourself.
