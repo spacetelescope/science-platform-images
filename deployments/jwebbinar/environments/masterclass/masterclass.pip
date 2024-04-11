@@ -7,3 +7,5 @@ crds
 seaborn
 scipy
 astroquery
+jdaviz==3.8.2
+regions
