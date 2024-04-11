@@ -10,6 +10,7 @@ asdf_standard
 asdf_transform_schemas
 asdf_unit_schemas
 asdf_wcs_schemas
+astropy
 astroquery
 asttokens
 async_lru
@@ -44,6 +45,7 @@ gwcs
 ipykernel
 IPython
 isoduration
+jdaviz
 jedi
 jinja2
 jmespath
@@ -96,6 +98,7 @@ pygments
 pyparsing
 dateutil
 pythonjsonlogger
+regions
 zmq
 zmq.backend.cython._device
 zmq.backend.cython._poll
