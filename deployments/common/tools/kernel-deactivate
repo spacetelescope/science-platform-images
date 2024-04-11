@@ -1,21 +1,37 @@
 #! /bin/bash
 
+# NO set -eu for source script
+
 source /opt/tools/kernel-utils
 
-if [ $# -ne 1 ]; then
-    echo "usage:  source kernel-deactivate <env-name>"
+if [ $# -lt 1 ]; then
+    echo "usage:  source kernel-deactivate <env-name>  <env-root... (ignored)>"
+    # no exit for source script.
 else
     ENVNAME=$1
-
-    ENVDIR=`find ${ENVROOT} -name ${ENVNAME} -type d`
-
-    if [[ ${ENVNAME} != "" ]]; then
-	if echo ${ENVDIR} | grep -q ${ENVROOT}/venv; then
+    shift;
+    ENVROOTS=${*:-${ENVROOTS}}  # Add team env roots here
+    deactivated=false
+    for ENVROOT in ${ENVROOTS}; do
+        if [ ! -d ${ENVROOT} ]; then
+            banner "WARNING:  ${ENVROOT} is not a directory"
+	        # some other root may hit though
+        elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
             deactivate
-	elif echo ${ENVDIR} | grep -q ${ENVROOT}/conda; then
+            deactivated=true
+            break
+        elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
             conda deactivate
-	else
+            deactivated=true
+            break
+        else
             /opt/conda/bin/deactivate
-	fi
+            deactivated=true
+            break
+        fi
+    done
+    if [ ! ${deactivated} ]; then
+        banner "ERROR:  ${ENVNAME} is not a valid environment to deactivate under ${ENVROOTS}."
+        # No exit for source script.
     fi
 fi

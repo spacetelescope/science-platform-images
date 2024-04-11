@@ -2,25 +2,35 @@
 
 source /opt/tools/kernel-utils
 
-if [ $# -ne 1 ]; then
-    echo "usage:  source kernel-activate <env-name>"
-    
+if [ $# -lt 1 ]; then
+    echo "usage:  source kernel-activate <env-name> [<env-root...>]"
+    # can't exit in source'd script
 else
-    ENVNAME=$1
+	source /opt/conda/etc/profile.d/conda.sh
 
-    if [ ! -d "${ENVROOT}" ]; then
-	echo "You must install at least one kernel or virtualenv before you can kernel-activate"
-    else
-	ENVDIR=`find ${ENVROOT} -name ${ENVNAME} -type d`
-	
-	if [[ ${ENVNAME} != "" ]]; then
-	    if echo ${ENVDIR} | grep -q ${ENVROOT}/venv; then
-		source ${ENVDIR}/bin/activate ${ENVDIR}
-	    elif echo ${ENVDIR} | grep -q ${ENVROOT}/conda; then
-		conda activate ${ENVDIR}
-	    else
-		/opt/conda/bin/activate ${ENVNAME}
+    ENVNAME=$1
+    shift;
+    ENVROOTS=${*:-${ENVROOTS}}  # Add team env roots here
+	activated=false
+    for ENVROOT in ${ENVROOTS}; do
+	    if [ ! -d ${ENVROOT} ]; then
+			banner "Kernel environments directory ${ENVROOT} does not exist."
+			continue
+	    elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
+			source ${ENVROOT}/venv/${ENVNAME}/bin/activate
+			activated=true
+			break
+	    elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
+			conda activate ${ENVROOT}/conda/${ENVNAME}
+			activated=true
+			break
+	    elif [ -d ${ENVROOT}/${ENVNAME} ]; then
+			conda activate ${ENVNAME}
+			activated=true
+			break
 	    fi
+    done
+	if [ "${activated}" == "false" ]; then
+		banner "Kernel environment ${ENVNAME} not found under ${ENVROOTS}."
 	fi
-    fi
 fi

@@ -1,32 +1,34 @@
-#! /bin/bash  -eu
+#! /bin/bash
+
+set -eu
 
 source `dirname $0`/kernel-utils
 
-usage "$# -ne 1" "kernel-delete <env-name>"
+usage "$# -lt 1" "kernel-delete <env-name>  [<env-roots...>]"
 
 ENVNAME=$1
-ENVROOT=${HOME}/envs
-ENVDIR=`find ${ENVROOT} -name ${ENVNAME} -type d`
-if [[ "${ENVDIR}" == "" ]];  then
-    banner "No environment ${ENVNAME} found under ${ENVROOT}."
-    exit 2
-fi
+shift;
+ENVROOTS="${*:-${ENVROOTS}}"
 
-if [[ ${ENVNAME} != "" ]]; then
-    banner "Removing kernel ${ENVNAME} at ${ENVDIR}"
-    jupyter kernelspec remove -f ${ENVNAME} || true
-    if echo ${ENVDIR} | grep -q ${ENVROOT}/venv; then
-	banner "Removing virtual env ${ENVNAME} at ${ENVDIR}"
-	rm -rf ${ENVDIR}
-    elif echo ${ENVDIR} | grep -q ${ENVROOT}/conda; then
-	banner "Removing conda env ${ENVNAME} at ${ENVDIR}"
-	conda env remove --prefix ${ENVDIR} --yes --quiet
-    else
-	banner "No env ${ENVNAME} found at ${ENVDIR}"
-	exit 2
+for ENVROOT in ${ENVROOTS}; do
+    if [ ! -d ${ENVROOT} ]; then
+        banner "Kernel environments directory ${ENVROOT} does not exist."
+        continue
+    elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
+        banner "Removing virtual env ${ENVNAME} at ${${ENVROOT}/venv/${ENVNAME}}"
+        rm -rf ${ENVROOT}/venv/${ENVNAME}
+        exit 0
+    elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
+        banner "Removing conda env ${ENVNAME} at ${ENVROOT}/conda/${ENVNAME}"
+        conda env remove --prefix  ${ENVROOT}/conda/${ENVNAME} --yes --quiet
+        exit 0
+    elif [ -d ${ENVROOT}/${ENVNAME} ]; then
+        banner "Removing conda env ${ENVNAME} at ${ENVROOT}/${ENVNAME}"
+        conda env remove --prefix ${ENVROOT}/${ENVNAME} --yes --quiet
+        exit 0
     fi
-fi
+done
 
-exit 0
-
+banner "No env ${ENVNAME} found under ${ENVROOTS}"
+exit 1
 
