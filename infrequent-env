@@ -2,8 +2,6 @@
 
 export PATH=`pwd`/scripts:${PATH}
 
-# export CPU_ARCH=aarch64
-
 # By default,  do not export frozen/chilly requirements from image. If already set, use that value.
 export FREEZE_CHILL=${FREEZE_CHILL:-0}
 
