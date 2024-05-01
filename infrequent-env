@@ -22,6 +22,11 @@ export UBUNTU_TAG="20.04"
 # Image scanning,  report CVE's at this severity level and  higher
 export IMAGE_VULNERABILITY_LEVEL="medium"
 
+# Extra standard parameters to docker build commands
+export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM}"
+
+export ROOT_CONTAINER=${REGISTRY}ubuntu:${UBUNTU_TAG}
+
 # -------------------------------------------------------------------
 # Docker Buildkit has two killer features:
 #   1. It can set up caches for package download directories which

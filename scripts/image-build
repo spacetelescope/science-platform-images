@@ -36,7 +36,7 @@ cd ${COMMON_IMAGE_DIR}
 echo "========================= Building Common Image ========================"
 add-caching Dockerfile >Dockerfile.cached
 time docker build \
-       --progress plain \
+       ${DOCKER_BUILD_ARGS} \
        --tag notebook-common \
        --build-arg BASE_IMAGE=${BASE_IMAGE} \
        --build-arg USE_FROZEN=${USE_FROZEN} \
@@ -55,7 +55,7 @@ cd ${IMAGE_DIR}
 echo "========================= Building $NOTEBOOK_ID USE_FROZEN=${USE_FROZEN} =========================="
 add-caching Dockerfile >Dockerfile.cached
 time docker build \
-     --progress plain \
+     ${DOCKER_BUILD_ARGS} \
      --tag "notebook-${DEPLOYMENT_NAME}-dirty" \
      --build-arg BASE_IMAGE=notebook-common \
      --file Dockerfile.cached .
@@ -68,7 +68,7 @@ rm Dockerfile.cached
 
 cd $COMMON_IMAGE_DIR
 docker build \
-       --progress plain \
+     ${DOCKER_BUILD_ARGS} \
        --tag $NOTEBOOK_ID \
        --build-arg BASE_CONTAINER="notebook-${DEPLOYMENT_NAME}-dirty" \
        --build-arg USER_CACHE_DIRS="${USER_CACHE_DIRS}" \

@@ -43,14 +43,17 @@ fi
 #
 build_jh() {
     STACK=$1;  shift
-    docker build --rm --force-rm -t ${OWNER}/${STACK}:latest ./images/${STACK} --file images/${STACK}/Dockerfile --build-arg OWNER=${OWNER} --progress plain $*
+    docker build ${DOCKER_BUILD_ARGS} \
+           -t ${OWNER}/${STACK}:latest \
+           ./images/${STACK} \
+           --file images/${STACK}/Dockerfile \
+           $*
 }
 
-build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=ubuntu:${UBUNTU_TAG}
+build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=${ROOT_CONTAINER}
 
 build_jh  base-notebook     --build-arg BASE_CONTAINER=${OWNER}/docker-stacks-foundation:latest
 
 build_jh  minimal-notebook  --build-arg BASE_CONTAINER=${OWNER}/base-notebook:latest
 
 build_jh  scipy-notebook    --build-arg BASE_CONTAINER=${OWNER}/minimal-notebook:latest
-

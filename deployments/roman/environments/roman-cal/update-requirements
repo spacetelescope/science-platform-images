@@ -28,7 +28,9 @@ if [[ ${CAL_VERSION} != "latest" ]]; then  # formal release
 else
     # no conda env defined on github yet,  let the last roman-cal.explicit ride
     SOURCE=https://raw.githubusercontent.com/spacetelescope/romancal/main
-    curl -s ${SOURCE}/requirements-dev.txt >roman-cal.pip
+    echo "git+https://github.com/spacetelescope/romancal.git@main" >roman-cal.pip
+    curl -s ${SOURCE}/requirements-dev-st.txt >romancal-dev-st.pip
+    curl -s ${SOURCE}/requirements-dev-thirdparty.txt >romancal-dev-thirdparty.pip
     git rm --ignore-unmatch roman-cal.explicit
     git mv -k roman-cal.yml.disabled roman-cal.yml
 fi

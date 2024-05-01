@@ -16,7 +16,7 @@ PACKAGES=$*
 
 apt-get update --yes --fix-missing
 
-DEBIAN_FRONTEND=noninteractive apt-get install -f --yes ${PACKAGES}
+DEBIAN_FRONTEND=noninteractive apt-get install -f --yes --fix-missing  ${PACKAGES}
 
 # These dirs are not cached by buildkit as we configure it
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -8,7 +8,7 @@
 
 export DEPLOYMENT_NAME=cluster-name  # roman, jwebbinar, tike
 export ENVIRONMENT=sandbox           # sandbox, dev, test, prod, int
-export CAL_VERSION=latest            # e.g. roman or jwst x.y.z CAL release, latest, or none
+export CAL_VERSION=none              # e.g. roman or jwst x.y.z CAL release, latest, or none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
                                      # 1 for tagged production build, 2 for chilly
@@ -16,9 +16,16 @@ export USE_FROZEN=0                  # use 0 for loosely pinned package versions
 export FREEZE_CHILL=0                # capture new frozen and chilly requirements as
                                      # modified files in this git repo
 
-export OWNER=spacetelescope          # jupyter or spacetelescope base image repo
-                                     # jupyter will be pulled from DockerHub
-                                     # spacetelescope will be built from source code
+export PLATFORM="linux/amd64"        # os / instruction-set for built image: linux/amd64 or linux/aarch64
+
+export REGISTRY=""                         # empty for DockerHub
+# export REGISTRY="quay.io/repository/"    # but jupyter/docker-stacks is now at quay.io/repository
+
+
+
+export OWNER="spacetelescope"        # spacetelescope will be built from source code
+                                     # jupyter or spacetelescope base image repo
+                                     # jupyter will be pulled from DockerHub, stale, but quay.io TBD
 
 export BASE_IMAGE=${OWNER}/scipy-notebook   # from jupyter/docker-stacks
 
