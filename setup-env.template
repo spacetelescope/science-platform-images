@@ -13,7 +13,7 @@ export CAL_VERSION=none              # e.g. roman or jwst x.y.z CAL release, lat
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
                                      # 1 for tagged production build, 2 for chilly
 
-export FREEZE_CHILL=0                # capture new frozen and chilly requirements as
+export FREEZE_CHILL=1                # capture new frozen and chilly requirements as
                                      # modified files in this git repo
 
 export PLATFORM="linux/amd64"        # os / instruction-set for built image: linux/amd64 or linux/aarch64
