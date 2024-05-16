@@ -70,4 +70,8 @@ RUN /opt/common-scripts/env-sync roman-cal
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
 
+# ----- Set for roman-cal phase 1 to point to requested data in EFS
+ENV WEBBPSF_PATH=/home/shared/phase1/webbpsf-data
+ENV PYSYN_CDBS=/home/shared/phase1/reference-atlases
+ENV PANDEIA_REFDATA=/home/shared/phase1/pandeia_data-3.1_roman
 # ========================= ^^^^^ Custom  ^^^^^ =========================
