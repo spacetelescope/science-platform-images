@@ -10,7 +10,7 @@ dependencies:
   - colorama=0.4.6
   - deprecation=2.1.0
   - fftw=3.3.10
-  - freetds=1.4.12
+  - freetds=1.4.13
   - icu=73.2
   - importlib-metadata=7.1.0
   - jupyter-packaging=0.12.3
@@ -33,7 +33,7 @@ dependencies:
   - libuv=1.48.0
   - libxcrypt=4.4.36
   - libzlib=1.2.13
-  - ncurses=6.4.20240210
+  - ncurses=6.5
   - nodejs=20.12.2
   - nomkl=1.0
   - openblas=0.3.27
@@ -49,7 +49,7 @@ dependencies:
   - sqlite=3.45.3
   - tk=8.6.13
   - tomli=2.0.1
-  - tomlkit=0.12.4
+  - tomlkit=0.12.5
   - tzdata=2024a
   - unixodbc=2.3.12
   - wheel=0.43.0
