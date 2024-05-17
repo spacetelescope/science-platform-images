@@ -7,5 +7,5 @@ crds
 seaborn
 scipy
 astroquery
-jdaviz==3.8.2
-regions
+jdaviz==3.10.1
+pysiaf
