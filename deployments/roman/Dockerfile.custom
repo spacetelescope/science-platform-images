@@ -8,8 +8,13 @@ FROM $BASE_IMAGE AS build
 # Duplicated in config,  these are for standalone non-hub lab use.
 
 ENV CRDS_PATH=/home/jovyan/crds_cache
-ENV CRDS_SERVER_URL=https://roman-crds-test.stsci.edu
+ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
+
+# Set for roman-cal phase 1 pointing to requested data in EFS
+ENV WEBBPSF_PATH=/home/shared/phase1/webbpsf-data
+ENV PYSYN_CDBS=/home/shared/phase1/reference-atlases
+ENV PANDEIA_REFDATA=/home/shared/phase1/pandeia_data-3.1_roman
 
 # ----------------------------------------------------------------------
 USER root
@@ -70,8 +75,4 @@ RUN /opt/common-scripts/env-sync roman-cal
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
 
-# ----- Set for roman-cal phase 1 to point to requested data in EFS
-ENV WEBBPSF_PATH=/home/shared/phase1/webbpsf-data
-ENV PYSYN_CDBS=/home/shared/phase1/reference-atlases
-ENV PANDEIA_REFDATA=/home/shared/phase1/pandeia_data-3.1_roman
 # ========================= ^^^^^ Custom  ^^^^^ =========================
