@@ -19,7 +19,7 @@ import shutil
 import tempfile
 import argparse
 import datetime
-
+import glob
 
 from concurrent.futures import ProcessPoolExecutor
 
@@ -85,6 +85,8 @@ def test_notebook(kernel, notebook, timeout=30 * 60):
         shutil.copytree(source_path, test_dir)
         os.chdir(test_dir)
         os.chmod(test_dir, stat.S_IRWXU)
+        for path in glob.glob("*"):
+            os.chmod(path, stat.S_IRWXU)
 
         if notebook.endswith(".ipynb"):
             cmd = f"papermill --no-progress-bar {os.path.basename(notebook)} test.ipynb -k {kernel}"

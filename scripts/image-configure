@@ -68,7 +68,7 @@ def main():
     parser.add_argument(
         "--freeze-chill",
         type=int,
-        default=0,
+        default=1,
         choices=[0, 1],
         help="Don't freeze/chill requirements (default: 0).",
     )

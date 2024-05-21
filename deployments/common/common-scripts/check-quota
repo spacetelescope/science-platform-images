@@ -19,10 +19,10 @@ def human_format_number(number):
     10s of megs for G-scale files.
     """
     convert = [
-        (2**40, "T"),
-        (2**30, "G"),
-        (2**20, "M"),
-        (2**10, "K"),
+        (2**40, "TiB"),
+        (2**30, "GiB"),
+        (2**20, "MiB"),
+        (2**10, "KiB"),
     ]
     for limit, sym in convert:
         if isinstance(number, (float, int)) and number > limit:
