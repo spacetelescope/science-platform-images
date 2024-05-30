@@ -75,4 +75,6 @@ RUN /opt/common-scripts/env-sync roman-cal
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
 
+RUN conda run -n roman-cal pip install jdaviz
+
 # ========================= ^^^^^ Custom  ^^^^^ =========================
