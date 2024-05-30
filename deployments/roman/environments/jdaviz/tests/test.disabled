@@ -1,0 +1,25 @@
+#! /bin/bash -eu
+
+# This script performs custom kernel tests for this kernel
+
+test_scope=${1:-short}   # or long (requires data access, mucho time)
+
+git clone https://github.com/spacetelescope/romancal.git
+
+cd romancal
+
+git checkout $(cat ../../CAL_VERSION)
+
+crds sync --contexts roman-edit
+
+export TEST_BIGDATA=https://bytesalad.stsci.edu/artifactory
+
+if [[ $test_scope == short ]]; then
+    extra_params=""
+else
+    extra_params="--bigdata"
+fi
+
+pytest ${extra_params} romancal/regtest
+
+# pytest  --ignore-glob='*test_suffix*'
