@@ -38,6 +38,8 @@ set +e   # Do not let init failures block logins
 /opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/roman_notebooks \
                                 main \
                                 /home/jovyan/references/roman_notebooks
+
+conda run -n roman-cal pip install jdaviz
                             
 # .............................................................................................
 # Test notebook setup if applicable
