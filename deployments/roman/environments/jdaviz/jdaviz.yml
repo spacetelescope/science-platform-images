@@ -1,5 +1,5 @@
 # until there is an official github version,  make one up
-name: roman-cal
+name: jdaviz
 channels:
     - conda-forge
     - defaults

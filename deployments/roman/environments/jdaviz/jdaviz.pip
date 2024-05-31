@@ -1,2 +1,2 @@
-git+https://github.com/spacetelescope/romancal.git@main
-boto3
+s3fs>=2024.3.1
+xarray
