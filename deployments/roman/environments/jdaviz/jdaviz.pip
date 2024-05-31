@@ -1,2 +1,12 @@
+bokeh
+galsim
+pandeia.engine
+rad
+roman_datamodels
+romancal
+romanisim
+stips
+stsynphot
+webbpsf
 s3fs>=2024.3.1
 xarray
