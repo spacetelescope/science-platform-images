@@ -1,0 +1,22 @@
+# This file defines hints to resolve version conflicts based on the
+# multi-mission packages defined under deployments/common/image/common-env.
+# Similar to build-hints.pip and every kernel,  hints to fix common
+# conflicts should be added here instead of in the common-env .pip
+# file which only declares the unconstrained basic need of the package,
+# not any particular version which can cause inter-mission conflicts.
+
+#jupyter-server<2.17.0
+#y-py==0.5.4
+#ypy-websocket==0.8.2
+
+#boto3==1.26.144
+#s3transfer==0.6.1
+#botocore==1.29.144
+
+# For botocore 1.29.144 constrain urllib3
+#urllib3<1.27
+
+# Slow install,  used by previous image
+#glue_vispy_viewers~=1.0.7
+#ipyvue~=1.9.0
+#jedi~=0.18.2
