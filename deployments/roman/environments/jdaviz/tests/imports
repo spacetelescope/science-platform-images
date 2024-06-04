@@ -2,6 +2,7 @@ asdf
 astropy
 astroquery
 bokeh
+boto3
 galsim
 gwcs
 jdaviz

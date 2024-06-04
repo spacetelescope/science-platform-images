@@ -1,4 +1,5 @@
 bokeh
+boto3
 galsim
 pandeia.engine
 rad
