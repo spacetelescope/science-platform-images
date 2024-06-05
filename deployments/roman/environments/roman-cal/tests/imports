@@ -45,7 +45,6 @@ ptyprocess
 pure_eval
 erfa
 pygments
-pymssql
 pyproject_hooks
 scipy
 dateutil
