@@ -18,7 +18,6 @@
    "outputs": [],
    "source": [
     "import warnings\n",
-    "import time\n",
     "\n",
     "from astropy.utils.data import download_file\n",
     "from regions import CirclePixelRegion, RectanglePixelRegion, PixCoord\n",
@@ -181,8 +180,6 @@
     }
    ],
    "source": [
-    "time.sleep(15)\n",
-    "\n",
     "viewer = imviz.default_viewer\n",
     "viewer.center_on(my_aper.center.xy)\n",
     "viewer.zoom_level = my_zoom\n",
