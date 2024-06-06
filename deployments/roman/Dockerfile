@@ -12,7 +12,7 @@ ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 
 # Set for roman-cal phase 1 pointing to requested data in EFS
-ENV PYSYN_CDBS=/home/shared/preloaded-fits/phase1/reference-atlases
+ENV PYSYN_CDBS=/home/shared/preloaded-fits/phase1/reference-atlases/grp/redcat/trds/
 ENV WEBBPSF_PATH=/home/shared/preloaded-fits/phase1/webbpsf-data
 ENV PANDEIA_REFDATA=/home/shared/preloaded-fits/phase1/pandeia-data
 
