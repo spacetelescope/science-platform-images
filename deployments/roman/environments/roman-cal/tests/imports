@@ -45,7 +45,6 @@ ptyprocess
 pure_eval
 erfa
 pygments
-pymssql
 pyproject_hooks
 scipy
 dateutil
@@ -56,6 +55,7 @@ requests
 roman_datamodels
 romanisim
 romancal
+s3fs
 scipy
 six
 stcal

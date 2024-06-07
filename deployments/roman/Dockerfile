@@ -8,8 +8,13 @@ FROM $BASE_IMAGE AS build
 # Duplicated in config,  these are for standalone non-hub lab use.
 
 ENV CRDS_PATH=/home/jovyan/crds_cache
-ENV CRDS_SERVER_URL=https://roman-crds-test.stsci.edu
+ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
+
+# Set for roman-cal phase 1 pointing to requested data in EFS
+ENV PYSYN_CDBS=/home/shared/preloaded-fits/phase1/reference-atlases/grp/redcat/trds/
+ENV WEBBPSF_PATH=/home/shared/preloaded-fits/phase1/webbpsf-data
+ENV PANDEIA_REFDATA=/home/shared/preloaded-fits/phase1/pandeia-data
 
 # ----------------------------------------------------------------------
 USER root
@@ -31,7 +36,7 @@ RUN   /opt/common-scripts/install-common  base
 # ----------------------------------------------------------------------
 # Roman CAL
 #
-# Copy romcan-cal conda environment requirements: floating, frozen, chilly
+# Copy roman-cal conda environment requirements: floating, frozen, chilly
 # All copies below are factored to enable Docker idempotence / build caching
 # e.g. changing tests should not result in re-installing conda
 
@@ -44,14 +49,14 @@ COPY --chown=${NB_UID}:${NB_GID} env-frozen/roman-cal/  /opt/env-frozen/roman-ca
 
 COPY --chown=${NB_UID}:${NB_GID} env-chilly/roman-cal/  /opt/env-chilly/roman-cal/
 
-# ----- Install romcan-cal conda environment
+# ----- Install roman-cal conda environment
 RUN /opt/common-scripts/env-conda roman-cal
 
-# ----- Copy romcan-cal pip requirements
+# ----- Copy roman-cal pip requirements
 # ----- This will include both romancal release requirements and anything JH adds.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.pip  /opt/environments/roman-cal/
 
-# ----  Compile romcan-cal pip requirements to dependency solution
+# ----  Compile roman-cal pip requirements to dependency solution
 #       Normally this includes *.pip from common/common-env automatically.
 # RUN /opt/common-scripts/env-compile roman-cal
 

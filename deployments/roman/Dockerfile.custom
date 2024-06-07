@@ -12,7 +12,7 @@ ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 
 # Set for roman-cal phase 1 pointing to requested data in EFS
-ENV PYSYN_CDBS=/home/shared/preloaded-fits/phase1/reference-atlases
+ENV PYSYN_CDBS=/home/shared/preloaded-fits/phase1/reference-atlases/grp/redcat/trds/
 ENV WEBBPSF_PATH=/home/shared/preloaded-fits/phase1/webbpsf-data
 ENV PANDEIA_REFDATA=/home/shared/preloaded-fits/phase1/pandeia-data
 
@@ -74,50 +74,5 @@ RUN /opt/common-scripts/env-sync roman-cal
 # iterating on the post-start-hook or tests.  The problem is that the broad copy makes it look
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
-
-# ----------------------------------------------------------------------
-# jdaviz
-#
-# Copy jdaviz conda environment requirements: floating, frozen, chilly
-# All copies below are factored to enable Docker idempotence / build caching
-# e.g. changing tests should not result in re-installing conda
-
-COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.yml  /opt/environments/jdaviz/
-COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.explicit  /opt/environments/jdaviz/
-
-COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.conda  /opt/environments/jdaviz/
-
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/jdaviz/  /opt/env-frozen/jdaviz/
-
-COPY --chown=${NB_UID}:${NB_GID} env-chilly/jdaviz/  /opt/env-chilly/jdaviz/
-
-# ----- Install jdaviz conda environment
-RUN /opt/common-scripts/env-conda jdaviz
-
-# ----- Copy jdaviz pip requirements
-# ----- This will include both romancal release requirements and anything JH adds.
-COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/*.pip  /opt/environments/jdaviz/
-
-# ----  Compile jdaviz pip requirements to dependency solution
-#       Normally this includes *.pip from common/common-env automatically.
-# RUN /opt/common-scripts/env-compile jdaviz
-
-# ----  If common-env causes conflicts,  it can be omitted and/or reduced if necessary
-#       by specifying alternate package lists such as /opt/common-env/required.pip
-#       which should be the minimum installed to avoid breaking our framework in places,
-#       particularly for testing.
-RUN /opt/common-scripts/env-compile jdaviz  /opt/common-env/required.pip
-
-# ----- Install compiled jdaviz pip dependency solution
-RUN /opt/common-scripts/env-sync jdaviz
-
-# ----- Copy remaining roman environments files, including tests and post-start-hook scripts
-# NOTE: this is a Docker cache buster and why builds back up to env installation when you're
-# iterating on the post-start-hook or tests.  The problem is that the broad copy makes it look
-# like potentially all jdaviz-specific requirements have changed.
-COPY --chown=${NB_UID}:${NB_GID} environments/jdaviz/ /opt/environments/jdaviz/
-
-# ----- Installed last, as this was the only way the package would work
-RUN conda run -n jdaviz pip install jdaviz
 
 # ========================= ^^^^^ Custom  ^^^^^ =========================
