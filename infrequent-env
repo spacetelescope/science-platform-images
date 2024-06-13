@@ -14,7 +14,7 @@ export FREEZE_CHILL=${FREEZE_CHILL:-0}
 export CONDA_VER=conda  # switch to conda while "mamba env export" in install-common is broken
 
 # Additional parameters for image-exec Docker run command, e.g. add mounts here
-export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes"
+export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
 
 # Image scanning,  report Ubuntu status for this version of Ubuntu
 export UBUNTU_TAG="20.04"
