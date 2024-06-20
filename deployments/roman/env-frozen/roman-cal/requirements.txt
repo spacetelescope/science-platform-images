@@ -74,7 +74,7 @@ asdf-wcs-schemas==0.4.0
     # via gwcs
 asteval==0.9.33
     # via jdaviz
-astropy==6.1.0
+astropy==6.1.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   asdf-astropy
@@ -112,7 +112,7 @@ astropy==6.1.0
     #   synphot
     #   tweakwcs
     #   webbpsf
-astropy-iers-data==0.2024.6.3.0.31.14
+astropy-iers-data==0.2024.6.17.0.31.35
     # via astropy
 astroquery==0.4.7
     # via
@@ -191,7 +191,7 @@ contourpy==1.2.1
     # via
     #   bokeh
     #   matplotlib
-crds==11.17.23
+crds==11.17.25
     # via
     #   romancal
     #   romanisim
@@ -202,7 +202,7 @@ cycler==0.12.1
     # via matplotlib
 cython==3.0.10
     # via romanisim
-dask[array]==2024.5.2
+dask[array]==2024.6.1
     # via
     #   casa-formats-io
     #   spectral-cube
@@ -218,7 +218,7 @@ dill==0.3.8
     # via glue-core
 docutils==0.21.2
     # via sphinx
-drizzle==1.15.1
+drizzle==1.15.2
     # via romancal
 echo==0.8.0
     # via
@@ -227,6 +227,8 @@ echo==0.8.0
     #   jdaviz
 entrypoints==0.4
     # via papermill
+esutil==0.6.14
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 et-xmlfile==1.1.0
     # via openpyxl
 executing==2.0.1
@@ -235,9 +237,9 @@ fast-histogram==0.14
     # via
     #   glue-core
     #   mpl-scatter-density
-fastjsonschema==2.19.1
+fastjsonschema==2.20.0
     # via nbformat
-filelock==3.14.0
+filelock==3.15.3
     # via crds
 fonttools==4.53.0
     # via matplotlib
@@ -312,7 +314,7 @@ imageio==2.34.1
     #   scikit-image
 imagesize==1.4.1
     # via sphinx
-importlib-metadata==7.1.0
+importlib-metadata==7.2.0
     # via
     #   asdf
     #   dask
@@ -405,7 +407,7 @@ joblib==1.4.2
     # via spectral-cube
 json5==0.9.25
     # via jupyterlab-server
-jsonpointer==2.4
+jsonpointer==3.0.0
     # via jsonschema
 jsonschema[format-nongpl]==4.22.0
     # via
@@ -446,7 +448,7 @@ jupyter-server==2.14.1
     #   voila
 jupyter-server-terminals==0.5.3
     # via jupyter-server
-jupyterlab==4.2.1
+jupyterlab==4.2.2
     # via notebook
 jupyterlab-pygments==0.3.0
     # via nbconvert
@@ -498,7 +500,7 @@ mistune==3.0.2
     # via nbconvert
 montage-wrapper==0.9.9
     # via stips
-more-itertools==10.2.0
+more-itertools==10.3.0
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -523,13 +525,13 @@ nbformat==5.10.4
     #   nbclient
     #   nbconvert
     #   papermill
-ndcube==2.2.1
+ndcube==2.2.2
     # via specutils
 nest-asyncio==1.6.0
     # via ipykernel
 networkx==3.3
     # via scikit-image
-notebook==7.2.0
+notebook==7.2.1
     # via glue-jupyter
 notebook-shim==0.2.4
     # via
@@ -550,6 +552,7 @@ numpy==1.26.4
     #   dask
     #   drizzle
     #   echo
+    #   esutil
     #   fast-histogram
     #   galsim
     #   glue-core
@@ -597,15 +600,15 @@ numpy==1.26.4
     #   xarray
 numpydoc==1.7.0
     # via pysiaf
-opencv-python-headless==4.10.0.82
+opencv-python-headless==4.10.0.84
     # via stcal
-openpyxl==3.1.3
+openpyxl==3.1.4
     # via
     #   glue-core
     #   pysiaf
 overrides==7.7.0
     # via jupyter-server
-packaging==24.0
+packaging==24.1
     # via
     #   asdf
     #   asdf-astropy
@@ -672,9 +675,9 @@ poppy==1.1.1
     # via webbpsf
 prometheus-client==0.20.0
     # via jupyter-server
-prompt-toolkit==3.0.46
+prompt-toolkit==3.0.47
     # via ipython
-psutil==5.9.8
+psutil==6.0.0
     # via
     #   ipykernel
     #   stdatamodels
@@ -742,7 +745,7 @@ qtpy==2.4.1
     # via
     #   echo
     #   pvextractor
-rad==0.19.2
+rad==0.19.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   roman-datamodels
@@ -778,13 +781,13 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-roman-datamodels==0.19.1
+roman-datamodels==0.19.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romancal
     #   romanisim
     #   soc-roman-tools
-romancal==0.14.0
+romancal==0.15.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 romanisim==0.5.1
     # via -r /opt/environments/roman-cal/roman-cal.pip
@@ -796,13 +799,14 @@ s3fs==2024.6.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 s3transfer==0.10.1
     # via boto3
-scikit-image==0.23.2
+scikit-image==0.24.0
     # via
     #   glue-jupyter
     #   jdaviz
 scipy==1.13.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   esutil
     #   glue-core
     #   glue-vispy-viewers
     #   gwcs
@@ -866,7 +870,7 @@ specutils==1.15.0
     #   glue-astronomy
     #   jdaviz
     #   specreduce
-spherical-geometry==1.3.1
+spherical-geometry==1.3.2
     # via
     #   romancal
     #   tweakwcs
@@ -886,7 +890,7 @@ sphinxcontrib-serializinghtml==1.1.10
     # via sphinx
 stack-data==0.6.3
     # via ipython
-stcal==1.7.1
+stcal==1.7.2
     # via romancal
 stdatamodels==1.10.1
     # via jdaviz
@@ -894,7 +898,7 @@ stips==2.2.1
     # via -r /opt/environments/roman-cal/roman-cal.pip
 stpipe==0.5.2
     # via romancal
-stsci-imagestats==1.8.2
+stsci-imagestats==1.8.3
     # via
     #   romancal
     #   tweakwcs
@@ -915,13 +919,13 @@ synphot==1.4.0
     #   webbpsf
 tabulate==0.9.0
     # via numpydoc
-tenacity==8.3.0
+tenacity==8.4.1
     # via papermill
 terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
-tifffile==2024.5.22
+tifffile==2024.6.18
     # via scikit-image
 tinycss2==1.3.0
     # via nbconvert
@@ -971,17 +975,17 @@ tweakwcs==0.8.7
     # via romancal
 types-python-dateutil==2.9.0.20240316
     # via arrow
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via ipython
 tzdata==2024.1
     # via pandas
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   botocore
     #   requests
-vispy==0.14.2
+vispy==0.14.3
     # via
     #   glue-vispy-viewers
     #   jdaviz
@@ -1012,7 +1016,7 @@ widgetsnbextension==4.0.11
     # via ipywidgets
 wrapt==1.16.0
     # via aiobotocore
-xarray==2024.5.0
+xarray==2024.6.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 xlrd==2.0.1
     # via glue-core
