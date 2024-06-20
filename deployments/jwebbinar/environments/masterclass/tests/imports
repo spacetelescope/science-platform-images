@@ -45,6 +45,7 @@ gwcs
 ipykernel
 IPython
 isoduration
+itables
 jdaviz
 jedi
 jinja2
@@ -70,6 +71,7 @@ nest_asyncio
 notebook
 numpy
 cv2
+opencv-python
 overrides
 pandocfilters
 parsley
@@ -85,6 +87,7 @@ PIL._imagingmorph
 PIL._imagingtk
 PIL._webp
 platformdirs
+plotly
 poppy
 prometheus_client
 prompt_toolkit
@@ -96,6 +99,7 @@ erfa
 erfa.ufunc
 pygments
 pyparsing
+seaborn
 dateutil
 pythonjsonlogger
 regions
@@ -143,3 +147,4 @@ wcwidth
 webcolors
 websocket
 wiimatch
+tqdm
