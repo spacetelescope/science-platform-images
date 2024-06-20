@@ -202,7 +202,7 @@ cycler==0.12.1
     # via matplotlib
 cython==3.0.10
     # via romanisim
-dask[array]==2024.6.1
+dask[array]==2024.6.2
     # via
     #   casa-formats-io
     #   spectral-cube
@@ -537,7 +537,7 @@ notebook-shim==0.2.4
     # via
     #   jupyterlab
     #   notebook
-numpy==2.0.0
+numpy==1.26.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   asdf
