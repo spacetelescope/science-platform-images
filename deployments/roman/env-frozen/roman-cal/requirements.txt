@@ -537,7 +537,7 @@ notebook-shim==0.2.4
     # via
     #   jupyterlab
     #   notebook
-numpy==1.26.4
+numpy==2.0.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   asdf
