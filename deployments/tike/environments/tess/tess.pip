@@ -240,3 +240,6 @@ setuptools
 pyfftw
 cython
 numba
+
+s3fs
+astrocut
