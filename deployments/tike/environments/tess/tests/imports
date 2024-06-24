@@ -8,7 +8,7 @@ numpy
 numba
 pandas
 sklearn
-###s3fs
+s3fs
 scipy
 stella
 tensorflow
