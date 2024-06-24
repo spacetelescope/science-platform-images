@@ -51,9 +51,7 @@ mkdir -p /opt/environments/tess/tests
 
 # Set up test notebooks for TIKE MAST Summer Webbinar 2024 based on JUSI-1607
 rm -f /opt/environments/tess/tests/notebooks
-for dir_num in  00 01 03 7 8 09; do
-    find $PT/notebooks -name '*.ipynb' | grep notebooks/$dir_num | grep -v solutions | grep -v questions_and_answers >> /opt/environments/tess/tests/notebooks
-done
+find $TC/content/notebooks/webinar-series -name '*.ipynb'  | grep -v live > /opt/environments/tess/tests/notebooks
 
 # DROPPED for MAST Summer Webbinar 2024
 # cat <<EOF >/opt/environments/tess/tests/notebooks

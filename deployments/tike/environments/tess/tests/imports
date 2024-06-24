@@ -12,11 +12,9 @@ s3fs
 scipy
 stella
 tensorflow
+tqdm
 
-batman
 bokeh
 dask
 h5py
-juliet
 requests
-tess_stars2px

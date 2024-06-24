@@ -69,9 +69,9 @@ COPY --chown=${NB_UID}:${NB_GID} environments/tess/ /opt/environments/tess/
 # Re-building from source ensures compatability with the installed numpy
 # Install these BEFORE the packages which depend on them or you may get incompatible versions from PyPi
 
-RUN /opt/common-scripts/env-src-install  tess  batman-package
+# RUN /opt/common-scripts/env-src-install  tess  batman-package
 
-RUN /opt/common-scripts/env-src-install  tess  radvel
+# RUN /opt/common-scripts/env-src-install  tess  radvel
 
 # RUN /opt/common-scripts/env-src-install  tess  juliet
 
@@ -79,8 +79,8 @@ RUN /opt/common-scripts/env-src-install  tess  radvel
 
 
 # ellc is a dependency of allesfitter
-RUN /opt/common-scripts/env-src-install  tess  ellc
-RUN /opt/common-scripts/env-src-install  tess  allesfitter
+# RUN /opt/common-scripts/env-src-install  tess  ellc
+# RUN /opt/common-scripts/env-src-install  tess  allesfitter
 
 # ----------------------------------------------------------------------
 # YYYY SEC
