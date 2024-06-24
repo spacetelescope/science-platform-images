@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=/opt/env-frozen/masterclass/requirements.txt --pip-args='--no-color --default-timeout 100' /opt/common-env/common.pip /opt/common-env/docs.pip /opt/common-env/jupyter.pip /opt/common-env/required.pip /opt/common-env/testing.pip /opt/environments/common-hints.pip /opt/environments/masterclass/build-hints.pip /opt/environments/masterclass/masterclass.pip
 #
-aiohttp==3.9.3
+aiohttp==3.9.5
     # via jupyter-server-proxy
 aiosignal==1.3.1
     # via aiohttp
@@ -14,7 +14,11 @@ alabaster==0.7.16
     # via sphinx
 alembic==1.13.1
     # via jupyterhub
-anyio==4.3.0
+annotated-types==0.7.0
+    # via pydantic
+ansicolors==1.1.8
+    # via papermill
+anyio==4.4.0
     # via
     #   httpx
     #   jupyter-server
@@ -25,7 +29,7 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 arrow==1.3.0
     # via isoduration
-asdf==2.15.2
+asdf==3.2.0
     # via
     #   asdf-astropy
     #   asdf-coordinates-schemas
@@ -34,9 +38,10 @@ asdf==2.15.2
     #   jdaviz
     #   jwst
     #   specutils
+    #   stcal
     #   stdatamodels
     #   stpipe
-asdf-astropy==0.6.0
+asdf-astropy==0.6.1
     # via
     #   gwcs
     #   jwst
@@ -58,14 +63,12 @@ asdf-transform-schemas==0.5.0
     #   asdf
     #   asdf-astropy
     #   asdf-wcs-schemas
-    #   jwst
-asdf-unit-schemas==0.2.0
-    # via asdf
+    #   stdatamodels
 asdf-wcs-schemas==0.4.0
     # via gwcs
-asteval==0.9.32
+asteval==0.9.33
     # via jdaviz
-astropy==6.0.1
+astropy==6.1.1
     # via
     #   -r /opt/environments/masterclass/masterclass.pip
     #   asdf-astropy
@@ -76,7 +79,6 @@ astropy==6.0.1
     #   drizzle
     #   glue-astronomy
     #   glue-core
-    #   glue-qt
     #   gwcs
     #   jdaviz
     #   jwst
@@ -96,7 +98,7 @@ astropy==6.0.1
     #   stpipe
     #   synphot
     #   tweakwcs
-astropy-iers-data==0.2024.4.1.0.33.14
+astropy-iers-data==0.2024.6.17.0.31.35
     # via astropy
 astropy-sphinx-theme==1.1
     # via sphinx-astropy
@@ -106,8 +108,6 @@ astroquery==0.4.7
     #   jdaviz
 asttokens==2.4.1
     # via stack-data
-async-generator==1.10
-    # via jupyterhub
 async-lru==2.0.4
     # via jupyterlab
 async-timeout==4.0.3
@@ -118,25 +118,27 @@ attrs==23.2.0
     #   asdf
     #   jsonschema
     #   referencing
-babel==2.14.0
+babel==2.15.0
     # via
     #   jupyterlab-server
     #   sphinx
+backports-tarfile==1.2.0
+    # via jaraco-context
 bayesicfitting==3.2.1
     # via jwst
 beautifulsoup4==4.12.3
     # via
     #   astroquery
     #   nbconvert
-black==24.3.0
+black==24.4.2
     # via -r /opt/common-env/common.pip
 bleach==6.1.0
     # via nbconvert
-bokeh==3.4.0
+bokeh==3.4.1
     # via jupyter-bokeh
-boto3==1.34.77
+boto3==1.34.130
     # via -r /opt/common-env/common.pip
-botocore==1.34.77
+botocore==1.34.130
     # via
     #   boto3
     #   s3transfer
@@ -157,9 +159,9 @@ bqplot-image-gl==1.4.11
     #   jdaviz
 build==1.2.1
     # via pip-tools
-casa-formats-io==0.2.2
+casa-formats-io==0.3.0
     # via spectral-cube
-certifi==2024.2.2
+certifi==2024.6.2
     # via
     #   httpcore
     #   httpx
@@ -190,19 +192,19 @@ contourpy==1.2.1
     # via
     #   bokeh
     #   matplotlib
-crds==11.17.19
+crds==11.17.25
     # via
     #   -r /opt/environments/masterclass/masterclass.pip
     #   ci-watson
     #   jwst
     #   stpipe
-cryptography==42.0.5
+cryptography==42.0.8
     # via
     #   pyopenssl
     #   secretstorage
 cycler==0.12.1
     # via matplotlib
-dask[array]==2024.4.0
+dask[array]==2024.6.1
     # via
     #   casa-formats-io
     #   spectral-cube
@@ -223,34 +225,35 @@ docutils==0.20.1
     #   nbsphinx
     #   sphinx
     #   sphinx-rtd-theme
-drizzle==1.14.4
+drizzle==1.15.2
     # via jwst
 echo==0.8.0
     # via
     #   glue-core
-    #   glue-qt
     #   glue-vispy-viewers
     #   jdaviz
 entrypoints==0.4
     # via papermill
 et-xmlfile==1.1.0
     # via openpyxl
-exceptiongroup==1.2.0
+exceptiongroup==1.2.1
     # via
     #   anyio
     #   ipython
     #   pytest
 executing==2.0.1
     # via stack-data
-fast-histogram==0.12
-    # via mpl-scatter-density
-fastjsonschema==2.19.1
+fast-histogram==0.14
+    # via
+    #   glue-core
+    #   mpl-scatter-density
+fastjsonschema==2.20.0
     # via nbformat
-filelock==3.13.3
+filelock==3.15.3
     # via crds
-flake8==7.0.0
+flake8==7.1.0
     # via -r /opt/common-env/testing.pip
-fonttools==4.50.0
+fonttools==4.53.0
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -260,7 +263,7 @@ frozenlist==1.4.1
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2024.3.1
+fsspec==2024.6.0
     # via dask
 future==1.0.0
     # via bayesicfitting
@@ -268,35 +271,35 @@ gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
     # via -r /opt/common-env/required.pip
+glfw==2.7.0
+    # via glue-vispy-viewers
 glue-astronomy==0.10.0
     # via jdaviz
-glue-core==1.18.0
+glue-core==1.21.0
     # via
     #   glue-astronomy
     #   glue-jupyter
-    #   glue-qt
     #   glue-vispy-viewers
     #   jdaviz
-glue-jupyter==0.20.1
+glue-jupyter==0.21.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   jdaviz
-glue-qt==0.3.1
-    # via glue-vispy-viewers
-glue-vispy-viewers==1.1.0
+glue-vispy-viewers==1.2.1
     # via glue-jupyter
 greenlet==3.0.3
     # via sqlalchemy
-gwcs==0.19.0
+gwcs==0.21.0
     # via
     #   jdaviz
     #   jwst
     #   ndcube
     #   specutils
+    #   stcal
     #   tweakwcs
 h11==0.14.0
     # via httpcore
-h5py==3.10.0
+h5py==3.11.0
     # via glue-core
 hsluv==5.0.4
     # via vispy
@@ -306,16 +309,19 @@ httpcore==1.0.5
     # via httpx
 httpx==0.27.0
     # via jupyterlab
-idna==3.6
+idna==3.7
     # via
     #   anyio
     #   httpx
     #   jdaviz
     #   jsonschema
+    #   jupyterhub
     #   requests
     #   yarl
-imageio==2.34.0
-    # via scikit-image
+imageio==2.34.1
+    # via
+    #   glue-vispy-viewers
+    #   scikit-image
 imagesize==1.4.1
     # via sphinx
 importlib-metadata==7.1.0
@@ -342,11 +348,9 @@ ipykernel==6.29.4
     #   -r /opt/common-env/common.pip
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/common-env/required.pip
-    #   glue-qt
     #   jdaviz
     #   jupyterlab
-    #   qtconsole
-ipympl==0.9.3
+ipympl==0.9.4
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -356,14 +360,14 @@ ipysplitpanes==0.2.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   jdaviz
-ipython==8.23.0
+ipython==8.25.0
     # via
     #   -r /opt/common-env/common.pip
     #   glue-core
-    #   glue-qt
     #   ipykernel
     #   ipympl
     #   ipywidgets
+    #   itables
 ipython-genutils==0.2.0
     # via
     #   -r /opt/common-env/jupyter.pip
@@ -372,7 +376,7 @@ ipyvolume==0.6.3
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
-ipyvue==1.10.2
+ipyvue==1.11.1
     # via
     #   glue-jupyter
     #   ipygoldenlayout
@@ -380,7 +384,7 @@ ipyvue==1.10.2
     #   ipyvolume
     #   ipyvuetify
     #   jdaviz
-ipyvuetify==1.9.3
+ipyvuetify==1.9.4
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -391,7 +395,7 @@ ipywebrtc==0.6.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   ipyvolume
-ipywidgets==8.1.2
+ipywidgets==8.1.3
     # via
     #   -r /opt/common-env/jupyter.pip
     #   bqplot
@@ -409,11 +413,13 @@ ipywidgets==8.1.2
     #   sidecar
 isoduration==20.11.0
     # via jsonschema
+itables==2.1.2
+    # via -r /opt/environments/masterclass/masterclass.pip
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==4.3.0
+jaraco-context==5.3.0
     # via keyring
-jaraco-functools==4.0.0
+jaraco-functools==4.0.1
     # via keyring
 jdaviz==3.8.2
     # via -r /opt/environments/masterclass/masterclass.pip
@@ -423,7 +429,7 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-jinja2==3.1.3
+jinja2==3.1.4
     # via
     #   bokeh
     #   jupyter-server
@@ -438,31 +444,28 @@ jmespath==1.0.1
     #   asdf
     #   boto3
     #   botocore
-joblib==1.3.2
+joblib==1.4.2
     # via spectral-cube
-json5==0.9.24
+json5==0.9.25
     # via jupyterlab-server
-jsonpointer==2.4
+jsonpointer==3.0.0
     # via jsonschema
-jsonschema[format-nongpl]==4.21.1
+jsonschema[format-nongpl]==4.22.0
     # via
-    #   asdf
     #   jupyter-events
-    #   jupyter-telemetry
     #   jupyterlab-server
     #   jwst
     #   nbformat
 jsonschema-specifications==2023.12.1
     # via jsonschema
-jupyter-bokeh==4.0.1
+jupyter-bokeh==4.0.5
     # via -r /opt/common-env/jupyter.pip
-jupyter-client==8.6.1
+jupyter-client==8.6.2
     # via
     #   -r /opt/common-env/jupyter.pip
     #   ipykernel
     #   jupyter-server
     #   nbclient
-    #   qtconsole
     #   voila
 jupyter-core==5.7.2
     # via
@@ -474,17 +477,18 @@ jupyter-core==5.7.2
     #   nbclient
     #   nbconvert
     #   nbformat
-    #   qtconsole
     #   voila
 jupyter-events==0.10.0
-    # via jupyter-server
-jupyter-lsp==2.2.4
+    # via
+    #   jupyter-server
+    #   jupyterhub
+jupyter-lsp==2.2.5
     # via jupyterlab
 jupyter-packaging==0.12.3
     # via -r /opt/common-env/jupyter.pip
 jupyter-resource-usage==1.0.2
     # via -r /opt/common-env/jupyter.pip
-jupyter-server==2.13.0
+jupyter-server==2.14.1
     # via
     #   -r /opt/common-env/jupyter.pip
     #   jupyter-lsp
@@ -496,17 +500,15 @@ jupyter-server==2.13.0
     #   notebook
     #   notebook-shim
     #   voila
-jupyter-server-proxy==4.1.2
+jupyter-server-proxy==4.2.0
     # via -r /opt/common-env/jupyter.pip
 jupyter-server-terminals==0.5.3
     # via jupyter-server
-jupyter-telemetry==0.1.0
-    # via jupyterhub
-jupyterhub==4.1.4
+jupyterhub==5.0.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/common-env/jupyter.pip
-jupyterlab==4.1.5
+jupyterlab==4.2.2
     # via
     #   -r /opt/common-env/jupyter.pip
     #   notebook
@@ -514,41 +516,40 @@ jupyterlab-pygments==0.3.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   nbconvert
-jupyterlab-server==2.25.4
+jupyterlab-server==2.27.2
     # via
     #   jupyterlab
     #   notebook
     #   voila
-jupyterlab-widgets==3.0.10
+jupyterlab-widgets==3.0.11
     # via
     #   -r /opt/common-env/jupyter.pip
     #   ipywidgets
-jwst==1.12.5
+jwst==1.14.0
     # via -r /opt/environments/masterclass/masterclass.pip
-keyring==25.1.0
+keyring==25.2.1
     # via astroquery
 kiwisolver==1.4.5
     # via
     #   matplotlib
     #   vispy
-lazy-loader==0.3
+lazy-loader==0.4
     # via scikit-image
 locket==1.0.0
     # via partd
-mako==1.3.2
+mako==1.3.5
     # via alembic
 markupsafe==2.1.5
     # via
     #   jinja2
     #   mako
     #   nbconvert
-matplotlib==3.8.4
+matplotlib==3.9.0
     # via
     #   -r /opt/common-env/docs.pip
     #   -r /opt/environments/masterclass/masterclass.pip
     #   bayesicfitting
     #   glue-core
-    #   glue-qt
     #   glue-vispy-viewers
     #   ipympl
     #   ipyvolume
@@ -558,7 +559,7 @@ matplotlib==3.8.4
     #   pvextractor
     #   seaborn
     #   specreduce
-matplotlib-inline==0.1.6
+matplotlib-inline==0.1.7
     # via
     #   ipykernel
     #   ipython
@@ -566,7 +567,7 @@ mccabe==0.7.0
     # via flake8
 mistune==3.0.2
     # via nbconvert
-more-itertools==10.2.0
+more-itertools==10.3.0
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -583,7 +584,7 @@ nbclient==0.7.4
     #   nbconvert
     #   papermill
     #   voila
-nbconvert==7.16.3
+nbconvert==7.16.4
     # via
     #   jupyter-server
     #   nbsphinx
@@ -597,15 +598,15 @@ nbformat==5.10.4
     #   papermill
 nbgitpuller==1.2.1
     # via -r /opt/common-env/common.pip
-nbsphinx==0.9.3
+nbsphinx==0.9.4
     # via -r /opt/common-env/docs.pip
-ndcube==2.2.0
+ndcube==2.2.2
     # via specutils
 nest-asyncio==1.6.0
     # via ipykernel
-networkx==3.2.1
+networkx==3.3
     # via scikit-image
-notebook==7.1.2
+notebook==7.2.1
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -616,6 +617,7 @@ notebook-shim==0.2.4
 numpy==1.25.2
     # via
     #   -r /opt/common-env/common.pip
+    #   -r /opt/environments/masterclass/masterclass.pip
     #   asdf
     #   asdf-astropy
     #   astropy
@@ -631,7 +633,6 @@ numpy==1.25.2
     #   echo
     #   fast-histogram
     #   glue-core
-    #   glue-qt
     #   glue-vispy-viewers
     #   gwcs
     #   h5py
@@ -639,6 +640,7 @@ numpy==1.25.2
     #   ipydatawidgets
     #   ipympl
     #   ipyvolume
+    #   itables
     #   jwst
     #   matplotlib
     #   mpl-scatter-density
@@ -674,17 +676,17 @@ numpydoc==1.7.0
     # via sphinx-astropy
 oauthlib==3.2.2
     # via jupyterhub
-opencv-python==4.9.0.80
+opencv-python==4.10.0.84
     # via -r /opt/environments/masterclass/masterclass.pip
-opencv-python-headless==4.9.0.80
+opencv-python-headless==4.10.0.84
     # via
     #   jwst
     #   stcal
-openpyxl==3.1.2
+openpyxl==3.1.4
     # via glue-core
 overrides==7.7.0
     # via jupyter-server
-packaging==24.0
+packaging==24.1
     # via
     #   asdf
     #   asdf-astropy
@@ -702,11 +704,14 @@ packaging==24.0
     #   jupyterlab
     #   jupyterlab-server
     #   jwst
+    #   lazy-loader
     #   matplotlib
     #   nbconvert
+    #   pipdeptree
+    #   plotly
     #   pytest
     #   pytest-doctestplus
-    #   qtconsole
+    #   pytest-openfiles
     #   qtpy
     #   scikit-image
     #   sphinx
@@ -715,29 +720,30 @@ packaging==24.0
     #   vispy
 pamela==1.1.0
     # via jupyterhub
-pandas==2.2.1
+pandas==2.2.2
     # via
     #   bokeh
     #   bqplot
     #   glue-core
+    #   itables
     #   seaborn
 pandocfilters==1.5.1
     # via nbconvert
-papermill==2.5.0
+papermill==2.6.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/common-env/required.pip
 parsley==1.3
     # via crds
-parso==0.8.3
+parso==0.8.4
     # via jedi
-partd==1.4.1
+partd==1.4.2
     # via dask
 pathspec==0.12.1
     # via black
 pexpect==4.9.0
     # via ipython
-photutils==1.11.0
+photutils==1.12.0
     # via
     #   jdaviz
     #   jwst
@@ -754,13 +760,15 @@ pillow==10.3.0
     #   sphinx-gallery
 pip-tools==7.4.1
     # via -r /opt/common-env/common.pip
-pipdeptree==2.16.2
+pipdeptree==2.23.0
     # via -r /opt/common-env/common.pip
-platformdirs==4.2.0
+platformdirs==4.2.2
     # via
     #   black
     #   jupyter-core
-pluggy==1.4.0
+plotly==5.22.0
+    # via -r /opt/environments/masterclass/masterclass.pip
+pluggy==1.5.0
     # via pytest
 poppy==1.1.1
     # via jwst
@@ -769,7 +777,7 @@ prometheus-client==0.20.0
     #   jupyter-resource-usage
     #   jupyter-server
     #   jupyterhub
-prompt-toolkit==3.0.43
+prompt-toolkit==3.0.47
     # via ipython
 psutil==5.9.8
     # via
@@ -785,26 +793,27 @@ ptyprocess==0.7.0
 pure-eval==0.2.2
     # via stack-data
 pvextractor==0.4
-    # via
-    #   glue-core
-    #   glue-qt
-pycodestyle==2.11.1
+    # via glue-core
+pycodestyle==2.12.0
     # via flake8
 pycparser==2.22
     # via cffi
+pydantic==2.7.4
+    # via jupyterhub
+pydantic-core==2.18.4
+    # via pydantic
 pydeps==1.12.20
     # via -r /opt/common-env/common.pip
 pyds9==1.8.1
     # via -r /opt/common-env/common.pip
-pyerfa==2.0.1.1
+pyerfa==2.0.1.4
     # via astropy
 pyflakes==3.2.0
     # via flake8
-pygments==2.17.2
+pygments==2.18.0
     # via
     #   ipython
     #   nbconvert
-    #   qtconsole
     #   sphinx
 pyopengl==3.1.7
     # via glue-vispy-viewers
@@ -814,11 +823,11 @@ pyparsing==3.1.2
     # via
     #   jwst
     #   matplotlib
-pyproject-hooks==1.0.0
+pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
-pytest==8.1.1
+pytest==8.2.2
     # via
     #   -r /opt/common-env/testing.pip
     #   ci-watson
@@ -828,7 +837,7 @@ pytest-doctestplus==1.2.1
     # via
     #   -r /opt/common-env/testing.pip
     #   sphinx-astropy
-pytest-openfiles==0.5.0
+pytest-openfiles==0.6.0
     # via -r /opt/common-env/testing.pip
 python-dateutil==2.9.0.post0
     # via
@@ -839,14 +848,12 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   pandas
 python-json-logger==2.0.7
-    # via
-    #   jupyter-events
-    #   jupyter-telemetry
+    # via jupyter-events
 pythreejs==2.4.2
     # via ipyvolume
 pytz==2024.1
     # via pandas
-pyvo==1.5.1
+pyvo==1.5.2
     # via astroquery
 pyyaml==6.0.1
     # via
@@ -858,35 +865,29 @@ pyyaml==6.0.1
     #   jupyter-events
     #   papermill
     #   stpipe
-pyzmq==25.1.2
+pyzmq==26.0.3
     # via
     #   ipykernel
     #   jupyter-client
     #   jupyter-resource-usage
     #   jupyter-server
-    #   qtconsole
-qtconsole==5.5.1
-    # via glue-qt
 qtpy==2.4.1
     # via
     #   echo
-    #   glue-qt
-    #   glue-vispy-viewers
     #   pvextractor
-    #   qtconsole
 radio-beam==0.3.7
     # via spectral-cube
-referencing==0.34.0
+referencing==0.35.1
     # via
     #   jsonschema
     #   jsonschema-specifications
     #   jupyter-events
-regions==0.8
+regions==0.9
     # via
     #   -r /opt/environments/masterclass/masterclass.pip
     #   glue-astronomy
     #   jdaviz
-requests==2.31.0
+requests==2.32.3
     # via
     #   astroquery
     #   ci-watson
@@ -909,26 +910,22 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rpds-py==0.18.0
+rpds-py==0.18.1
     # via
     #   jsonschema
     #   referencing
-ruamel-yaml==0.18.6
-    # via jupyter-telemetry
-ruamel-yaml-clib==0.2.8
-    # via ruamel-yaml
 s3transfer==0.10.1
     # via boto3
-scikit-image==0.22.0
+scikit-image==0.24.0
     # via
     #   glue-jupyter
     #   jdaviz
-scipy==1.9.3
+    #   jwst
+scipy==1.13.1
     # via
     #   -r /opt/environments/masterclass/masterclass.pip
     #   bayesicfitting
     #   glue-core
-    #   glue-qt
     #   glue-vispy-viewers
     #   gwcs
     #   jwst
@@ -947,9 +944,9 @@ secretstorage==3.3.3
     # via keyring
 semantic-version==2.10.0
     # via asdf
-send2trash==1.8.2
+send2trash==1.8.3
     # via jupyter-server
-shapely==2.0.3
+shapely==2.0.4
     # via glue-core
 sidecar==0.7.0
     # via
@@ -985,16 +982,16 @@ spectral-cube==0.6.5
     # via
     #   glue-astronomy
     #   pvextractor
-specutils==1.13.0
+specutils==1.15.0
     # via
     #   glue-astronomy
     #   jdaviz
     #   specreduce
-spherical-geometry==1.3.1
+spherical-geometry==1.3.2
     # via
     #   jwst
     #   tweakwcs
-sphinx==7.2.6
+sphinx==7.3.7
     # via
     #   -r /opt/common-env/docs.pip
     #   nbsphinx
@@ -1011,7 +1008,7 @@ sphinx-automodapi==0.17.0
     # via
     #   -r /opt/common-env/docs.pip
     #   sphinx-astropy
-sphinx-gallery==0.15.0
+sphinx-gallery==0.16.0
     # via sphinx-astropy
 sphinx-rtd-theme==2.0.0
     # via
@@ -1033,47 +1030,53 @@ sphinxcontrib-qthelp==1.0.7
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.10
     # via sphinx
-sqlalchemy==2.0.29
+sqlalchemy==2.0.31
     # via
     #   alembic
     #   jupyterhub
 stack-data==0.6.3
     # via ipython
-stcal==1.4.4
+stcal==1.7.2
     # via jwst
-stdatamodels==1.8.4
+stdatamodels==1.10.1
     # via
     #   jdaviz
     #   jwst
 stdlib-list==0.10.0
     # via pydeps
 stpipe==0.5.2
-    # via jwst
+    # via
+    #   -r /opt/environments/masterclass/masterclass.pip
+    #   jwst
 stsci-announce @ git+https://github.com/spacetelescope/stsci-announce
     # via -r /opt/common-env/jupyter.pip
-stsci-image==2.3.5
+stsci-image==2.3.9
     # via jwst
-stsci-imagestats==1.8.2
+stsci-imagestats==1.6.3
     # via
     #   jwst
     #   tweakwcs
-stsci-rtd-theme==1.0.0
+stsci-rtd-theme==1.0.1
     # via -r /opt/common-env/docs.pip
-stsci-stimage==0.2.6
+stsci-stimage==0.2.9
     # via tweakwcs
-synphot==1.3.post0
-    # via specreduce
+synphot==1.4.0
+    # via
+    #   jwst
+    #   specreduce
 tabulate==0.9.0
     # via numpydoc
-tenacity==8.2.3
-    # via papermill
+tenacity==8.4.1
+    # via
+    #   papermill
+    #   plotly
 terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
-tifffile==2024.2.12
+tifffile==2024.6.18
     # via scikit-image
-tinycss2==1.2.1
+tinycss2==1.3.0
     # via nbconvert
 tomli==2.0.1
     # via
@@ -1082,15 +1085,15 @@ tomli==2.0.1
     #   jupyterlab
     #   numpydoc
     #   pip-tools
-    #   pyproject-hooks
     #   pytest
-tomlkit==0.12.4
+    #   sphinx
+tomlkit==0.12.5
     # via jupyter-packaging
 toolz==0.12.1
     # via
     #   dask
     #   partd
-tornado==6.4
+tornado==6.4.1
     # via
     #   bokeh
     #   ipykernel
@@ -1102,11 +1105,11 @@ tornado==6.4
     #   nbgitpuller
     #   notebook
     #   terminado
-tqdm==4.66.2
+tqdm==4.66.4
     # via
     #   -r /opt/environments/masterclass/masterclass.pip
     #   papermill
-traitlets==5.14.2
+traitlets==5.14.3
     # via
     #   bqplot
     #   comm
@@ -1121,7 +1124,6 @@ traitlets==5.14.2
     #   jupyter-events
     #   jupyter-server
     #   jupyter-server-proxy
-    #   jupyter-telemetry
     #   jupyterhub
     #   jupyterlab
     #   matplotlib-inline
@@ -1130,7 +1132,6 @@ traitlets==5.14.2
     #   nbformat
     #   nbsphinx
     #   pythreejs
-    #   qtconsole
     #   traittypes
     #   voila
 traittypes==0.2.1
@@ -1142,7 +1143,7 @@ tweakwcs==0.8.7
     # via jwst
 types-python-dateutil==2.9.0.20240316
     # via arrow
-typing-extensions==4.10.0
+typing-extensions==4.12.2
     # via
     #   aiosqlite
     #   alembic
@@ -1150,16 +1151,20 @@ typing-extensions==4.10.0
     #   async-lru
     #   black
     #   ipython
+    #   pydantic
+    #   pydantic-core
     #   sqlalchemy
 tzdata==2024.1
     # via pandas
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   botocore
     #   requests
-vispy==0.14.2
+utils==1.0.2
+    # via -r /opt/environments/masterclass/masterclass.pip
+vispy==0.14.3
     # via
     #   glue-vispy-viewers
     #   jdaviz
@@ -1169,14 +1174,14 @@ voila==0.4.4
     #   jdaviz
 wcwidth==0.2.13
     # via prompt-toolkit
-webcolors==1.13
+webcolors==24.6.0
     # via jsonschema
 webencodings==0.5.1
     # via
     #   bleach
     #   html5lib
     #   tinycss2
-websocket-client==1.7.0
+websocket-client==1.8.0
     # via jupyter-server
 websockets==12.0
     # via voila
@@ -1184,7 +1189,7 @@ wheel==0.43.0
     # via
     #   jupyter-packaging
     #   pip-tools
-widgetsnbextension==4.0.10
+widgetsnbextension==4.0.11
     # via
     #   -r /opt/common-env/jupyter.pip
     #   ipywidgets
@@ -1192,7 +1197,7 @@ wiimatch==0.3.2
     # via jwst
 xlrd==2.0.1
     # via glue-core
-xyzservices==2024.4.0
+xyzservices==2024.6.0
     # via bokeh
 y-py==0.6.2
     # via
@@ -1202,7 +1207,7 @@ yarl==1.9.4
     # via aiohttp
 ypy-websocket==0.12.4
     # via -r /opt/common-env/jupyter.pip
-zipp==3.18.1
+zipp==3.19.2
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:

@@ -9,7 +9,7 @@ roman_datamodels==0.19.2
 rad==0.19.4
 gwcs>=0.21.0
 asdf>=2.15.0
-numpy>=1.23
+numpy==1.26.4
 matplotlib
 galsim==2.5.2
 astropy>=6.0
