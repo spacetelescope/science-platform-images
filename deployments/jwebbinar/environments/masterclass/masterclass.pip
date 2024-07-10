@@ -14,3 +14,5 @@ stpipe
 scipy
 tqdm
 utils
+git+https://github.com/spacetelescope/poppy.git#egg=poppy
+git+https://github.com/spacetelescope/webbpsf.git#egg=webbpsf
