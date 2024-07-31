@@ -138,4 +138,4 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
 USER $NB_USER
 WORKDIR /home/$NB_USER
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
-CMD [ "start-notebook.sh" ]
+CMD [ "start-notebook.py" ]
