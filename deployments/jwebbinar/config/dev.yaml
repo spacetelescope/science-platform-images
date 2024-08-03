@@ -1,9 +1,0 @@
-jupyterhub:
-  scheduling:
-    userPlaceholder:
-      enabled: true
-      replicas: 1
-  prePuller:
-    continuous:
-      # Don't need continuous pre-puller on staging
-      enabled: true
