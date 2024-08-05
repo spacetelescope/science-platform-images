@@ -29,16 +29,16 @@ set +eu   # Do not let init failures block logins
 # Sync reference notebook directories / branches.
 # .............................................................................................
 
-TC=/home/jovyan/references/tike_content-ref
+TC=$HOME/references/tike_content-ref
 /opt/common-scripts/git-sync-v4  https://github.com/spacetelescope/tike_content.git  main  ${TC}
 
-MN=/home/jovyan/references/mast_notebooks-ref
+MN=$HOME/references/mast_notebooks-ref
 /opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/mast_notebooks.git   main  ${MN}
 
-HU=/home/jovyan/references/hellouniverse-ref
+HU=$HOME/references/hellouniverse-ref
 /opt/common-scripts/git-sync-v4   https://github.com/spacetelescope/hellouniverse.git   main   ${HU}
 
-PT=/home/jovyan/references/project-tikebook-ref
+PT=$HOME/references/project-tikebook-ref
 /opt/common-scripts/git-sync-v4   http://github.com/spacetelescope/project-tikebook.git main   ${PT}
 
 # .............................................................................................
@@ -161,17 +161,17 @@ find $TC/content/notebooks/webinar-series -name '*.ipynb'  | grep -v live > /opt
 # .............................................................................................
 # Remove VNC Desktop from Launcher
 # .............................................................................................
-rm -rf /home/jovyan/.user-dirs/Desktop
-rm -rf /home/jovyan/Desktop
+rm -rf $HOME/.user-dirs/Desktop
+rm -rf $HOME/Desktop
 
 # .............................................................................................
 # Configure lightkurve and astropy cache locations for automatic clearing
 # .............................................................................................
-rm -rf /home/jovyan/.lightkurve-cache
-mkdir -p /home/jovyan/.cache \
-      /home/jovyan/.lightkurve/cache \
-      /home/jovyan/.astropy/cache
-cd /home/jovyan/.cache
+rm -rf $HOME/.lightkurve-cache
+mkdir -p $HOME/.cache \
+      $HOME/.lightkurve/cache \
+      $HOME/.astropy/cache
+cd $HOME/.cache
 rm -f astropy lightkurve
-ln -s /home/jovyan/.astropy/cache  astropy
-ln -s /home/jovyan/.lightkurve/cache  lightkurve
+ln -s $HOME/.astropy/cache  astropy
+ln -s $HOME/.lightkurve/cache  lightkurve

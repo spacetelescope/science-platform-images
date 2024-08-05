@@ -37,7 +37,7 @@ set +e   # Do not let init failures block logins
 
 /opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/roman_notebooks \
                                 main \
-                                /home/jovyan/references/roman_notebooks
+                                $HOME/references/roman_notebooks
 
 # .............................................................................................
 # Remove old/unused kernels from UI selection

@@ -13,7 +13,7 @@ ENV MIRAGE_DATA=/data/mirage \
 
 # ----------------------------------------------------------------------
 
-ENV CRDS_PATH=/home/jovyan/crds_cache
+ENV CRDS_PATH=$HOME/crds_cache
 ENV CRDS_SERVER_URL=https://jwst-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20    # 0 or missing for normal output,  -1 for no INFO,  50 for default DEBUG
 
