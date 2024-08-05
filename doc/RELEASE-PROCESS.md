@@ -11,14 +11,14 @@ If for example we are setting up an image release where:
 do the following:
 
 ```bash
-scripts/image-configure roman --use-frozen=floating --freeze-chill=1 --cal-version=0.13.0
+scripts/image-configure roman --use-frozen=floating --freeze=1 --cal-version=0.13.0
 source setup-env
 ```
 
 This will prepare your environment for the "requirements capture" phase of the
 build which is driven by (a) specifying an explicit --cal-version and (b) doing
 a floating build (--use-frozen=floating) and saving the resulting frozen requirements
-(--freeze-chill=1).
+(--freeze=1).
 
 NOTE: the CAL s/w version amd DMS build number are only coincidentally similar as
 seen here,  generally they increase in lockstep but are otherwise unrelated.
@@ -64,9 +64,9 @@ image-build
 ```
 
 At present this will also automatically run image-update to update the kernel requirements
-as described previously.  Because we set --freeze-chill=1 when we configured,  af the
+as described previously.  Because we set --freeze=1 when we configured,  af the
 build completes the requirements for the conda environments will be dumped out into the
-deployments/roman/env-frozen and deployments/roman/env-chilly directory trees.
+deployments/roman/env-frozen directory tree.
 
 ## Test the floating image
 
@@ -94,7 +94,7 @@ potentially adding packages which don't conflict with the CAL release),  we reco
 to do a frozen build using the requirements we just saved:
 
 ```bash
-scripts/image-configure roman --use-frozen=frozen --freeze-chill=1 --cal-version=none
+scripts/image-configure roman --use-frozen=frozen --freeze=1 --cal-version=none
 source setup-env
 image-build
 image-test
@@ -104,7 +104,7 @@ Running in this mode,  the build will be repeated using requirements frozen by t
 framework.   Specifying `--cal-version=none` means that the `image-update` will not access Artifactory or touch the "floating" requirements which were already downloaded and saved.
 
 Specifying `--cal-version=latest` instead would switch back to development versions of
-roman-cal as the "floating" requirements.  Continuing to specify `--freeze-chill=1` will cause the framework to dump the as-built versions of the frozen build,  and while not intended to update the frozen requirements,  it can potentially show any drift between what was frozen and what was built.
+roman-cal as the "floating" requirements.  Continuing to specify `--freeze=1` will cause the framework to dump the as-built versions of the frozen build,  and while not intended to update the frozen requirements,  it can potentially show any drift between what was frozen and what was built.
 
 ## PR, merge, and tag on GitHub
 

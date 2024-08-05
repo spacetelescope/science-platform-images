@@ -1,5 +1,0 @@
-# Ideally put all version constraints in here vs. other .pip files which merely
-# indicate inclusion of *some* version.
-#
-# This doesn't always work out (and isn't now) but include this file anyway as
-# an empty placeholder for future work and/or to keep scripts from breaking.

@@ -66,7 +66,7 @@ installed in all conda environments.
 a mission image.  As implemented this is just concatenated to a mission's Dockerfile.custom
 to produce the mission image Dockerfile.
 
-It's noteworthy that at present the base image Ubuntu packages, npm installs, and `base` conda environment and `common-env` additions,  which (probably) define the notebook UI behind the scenes,  all float,  even for `frozen` or `chilly` builds. Whether it is better to track community work constantly or better to be able to pin,  the derivation of our base image from `jupyter/docker-stacks` places it largely outside our control,  unless we either accept image-bloat for retroactive version changes or Docker layer squashing becomes a standard capability.
+It's noteworthy that at present the base image Ubuntu packages, npm installs, and `base` conda environment and `common-env` additions,  which (probably) define the notebook UI behind the scenes,  all float,  even for `frozen` builds. Whether it is better to track community work constantly or better to be able to pin,  the derivation of our base image from `jupyter/docker-stacks` places it largely outside our control,  unless we either accept image-bloat for retroactive version changes or Docker layer squashing becomes a standard capability.
 
 ### Deployment/Mission Image
 
@@ -89,7 +89,7 @@ The Dockerfile workflow used to create a conda environment using pip-tools is ty
 /opt/common-scripts/env-update <env>     # Add .conda or .pip lists after other install steps, particulary for `base`
 ...
 ```
-These commands generally produce improved diagnostics relative to pip defaults and also do a better job with frozen builds.  They compile loosely constrained conda or pip requirements into fully pinned requirements.yml and requirements.txt. Ultimately a frozen or chilly environment is built with respect to requirements.* rather than on-the-fly dependency resolution.
+These commands generally produce improved diagnostics relative to pip defaults and also do a better job with frozen builds.  They compile loosely constrained conda or pip requirements into fully pinned requirements.yml and requirements.txt. Ultimately a frozen is built with respect to requirements.* rather than on-the-fly dependency resolution.
 
 `env-update` predates and does not use pip-tools so it may degrade or break earlier dependency solutions.  With the exception of retroactively updating the `base` environment `env-update` should be avoided unless called implicitly by other scripts.
 
@@ -97,7 +97,7 @@ These commands generally produce improved diagnostics relative to pip defaults a
 
 Fundamentally, resolving dependency conflicts entails changing loose requirements definitions as needed and recompiling the package version solutions.   It's both a mathematically precise specification process, and at the same time more of an art than a science.
 
-*IMPORTANT* historically we have solved pip dependency conflicts by directly changing the requirement spec where a bad requirement is first requested.    This left pins scattered throughout the codebase in ways which are difficult to keep tabs on and/or increased the likelihood of inter-mission conflicts.  Moreover,  with the advent of chilly builds,  build failures associated with not carrying over *required* version hints became an issue.   As a result,  to the degree possible,  .pip requirements needed to make builds work should be defined for each environment in a file named `build-hints.pip`.  `build-hints.pip` is the one .pip file carried over,  verbatim, to frozen or chilly builds.   All other .pip files should be versionless package lists.  It is OK to specify the same package with different constraints so packages added to `build-hints.pip` should not be removed from the spec which originally requests them.
+*IMPORTANT* historically we have solved pip dependency conflicts by directly changing the requirement spec where a bad requirement is first requested.    This left pins scattered throughout the codebase in ways which are difficult to keep tabs on and/or increased the likelihood of inter-mission conflicts.  As a result,  to the degree possible,  .pip requirements needed to make builds work should be defined for each environment in a file named `build-hints.pip`.  `build-hints.pip` is the one .pip file carried over,  verbatim, to frozen builds.   All other .pip files can then be versionless package lists.  It is OK to specify the same package with different constraints so packages added to `build-hints.pip` should not be removed from the spec which originally requests them.
 
 ##### Wrong Version of Python Supported
 
@@ -219,9 +219,9 @@ Note that if you modify test definitions by editing
 `notebooks` files.  Similarly, changing package definitions you need to
 re-install those package lists prior to seeing the effects.
 
-### Updating Frozen and Chilly Images
+### Updating Frozen Images
 
-Reproducing Docker images in a repeatable way requires freezing the versions of important packages.  To do this our build scripts output summation requirements.yml and requirements.txt files which govern consolidated environment installs for frozen and chilly builds.   A frozen build pins every package with package==version where version is typically `x.y.z`.  A chilly build pins x.y.z requirements with ~= when requirements are of the form `x.y.z` whiuch lets the .z float to the highest patch version.   Chilly generally lets oddball formats float because ~= won't work.
+Reproducing Docker images in a repeatable way requires freezing the versions of important packages.  To do this our build scripts output summation requirements.yml and requirements.txt files which govern consolidated environment installs for frozen builds.   A frozen build pins every package with package==version where version is typically `x.y.z`.
 
 #### USE_FROZEN
 
@@ -231,21 +231,18 @@ driven by the `USE_FROZEN` env var in setup-env.  `USE_FROZEN` defines which of
 
 1. Defining environment varaiable `USE_FROZEN=0` tells the environment install
 scripts to use floating dependency specs defined in `common-env/` and each
-mission's `environments/` directory.  Frozen and chilly specs are ignored.
+mission's `environments/` directory.  Frozen specs are ignored.
 
 2. Defining environment variable `USE_FROZEN=1` tells environment install scripts
 to use fully pinned requirements specs defined for each mission and kernel under `env-frozen/`.
 Floating dependency specs are ignored in this mode.
 
-3. Defining environment variable `USE_FROZEN=2` tells the environment install scripts
-to use ~= pinned requirements defined under `env-chilly`.
+#### FREEZE
 
-#### FREEZE_CHILL
+The `FREEZE` env vars has values of `0` and `1` and defines whether or not the `image-build`
+script should invoke the scripts that update the frozen requirements automatically afer a successul floating build.  `0` does not update and should typically be the developer setting.  `1` does update requirements but has the drawback of leading to git conflicts if multiple developers are working on the same mission at the same time.
 
-The `FREEZE_CHILL` env vars has values of `0` and `1` and defines whether or not the `image-build`
-script should invoke the scripts that update the frozen and chilly requirements automatically afer a successul floating build.  `0` does not update and should typically be the developer setting.  `1` does update requirements but has the drawback of leading to git conflicts if multiple developers are working on the same mission at the same time.
-
-As image CI/CD matures it seems likely we will be able to automatically update and commit frozen and chilly requirements as a result of a merge and successful post-merge floating build.
+As image CI/CD matures it seems likely we will be able to automatically update and commit frozen requirements as a result of a merge and successful post-merge floating build.
 
 ### Automatically updating and selecting release requirements
 
@@ -265,4 +262,4 @@ The `tools-update` script iterates over each environment defined for a mission. 
 
 #### update-requirements
 
-This is a mission and/or kernel-specific script and which,  if optionally defined,  is designed to update "floating" requirements with either a precise `x.y.z` release or a more lightly pinned `latest` version.  One might also consider using a CAL release as frozen env requirements because they are,  but OTOH they generally will only define part of the environment with extra packages added by Octarine,  and with this approach the remainder of the freezing and chilling machinery works normally.
+This is a mission and/or kernel-specific script and which,  if optionally defined,  is designed to update "floating" requirements with either a precise `x.y.z` release or a more lightly pinned `latest` version.  One might also consider using a CAL release as frozen env requirements because they are,  but OTOH they generally will only define part of the environment with extra packages added by Octarine,  and with this approach the remainder of the freezing machinery works normally.

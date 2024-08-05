@@ -64,7 +64,6 @@ ENV JH_DEFAULT_KERNEL=masterclass
 
 # BASE
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/masterclass/ /opt/env-frozen/masterclass/
-COPY --chown=${NB_UID}:${NB_GID} env-chilly/masterclass/ /opt/env-chilly/masterclass/
 COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/*.yml /opt/environments/masterclass/
 RUN /opt/common-scripts/env-conda masterclass
 
