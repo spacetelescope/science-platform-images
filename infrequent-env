@@ -44,6 +44,7 @@ export BUILDKIT_STEP_LOG_MAX_SIZE=10000000   # bytes
 export BUILDKIT_STEP_LOG_MAX_SPEED=10000000
 
 
+# Since these are "build-time" variables references to jovyan are ok
 export USER_CACHE_DIRS="/home/jovyan/.cache /opt/conda/pkgs /home/jovyan/.conda/pkgs"
 export SYSTEM_CACHE_DIRS="/var/cache/apt"
 export CACHE_DIRS="${USER_CACHE_DIRS} ${SYSTEM_CACHE_DIRS}"
