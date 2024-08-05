@@ -42,6 +42,11 @@ def create_setup_env_file(
         content = re.sub(r"CAL_VERSION=.+", f"CAL_VERSION={cal_version}", content)
 
         content = re.sub(r"OWNER=.+", f"OWNER={owner}", content)
+        if owner == "spacetelescope":
+            content = re.sub(r"REGISTRY=.+", f'REGISTRY=""', content)
+        else:
+            content = re.sub(r"REGISTRY=.+", f'REGISTRY="{owner}"', content)
+            
 
     with open("setup-env", "w+") as file:
         file.write(content)
@@ -93,8 +98,8 @@ def main():
         "--owner",
         type=str,
         default="spacetelescope",
-        choices=["spacetelescope", "jupyter"],
-        help="Repo used to build or pull scipy-notebook image,  spacetelescope(build) or jupyter(pull)",
+        choices=["spacetelescope", "quay.io/jupyter"],
+        help="Repo used to build or pull scipy-notebook image,  spacetelescope(build) or quay.io/jupyter(pull)",
     )
     args = parser.parse_args()
 
