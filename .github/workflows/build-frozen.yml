@@ -1,13 +1,13 @@
-name: Update Frozen Requirements
+name: Build Frozen
 on:
-  schedule:  # weekly
-    - cron: '0 0 * * 0'
-  workflow_dispatch:
-
+   pull_request:
+      branches:
+        - main
+   workflow_dispatch:
 
 jobs:
   docker:
-    name: "${{ matrix.DEPLOYMENT_NAME }} -- Image Build, Test"
+    name: "${{ matrix.DEPLOYMENT_NAME }} -- Frozen Build"
     runs-on: ubuntu-22.04
 
     strategy:
@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         DEPLOYMENT_NAME: [ tike, jwebbinar, roman ]
-        USE_FROZEN: [ chilly ]
+        USE_FROZEN: [ frozen ]
         FREEZE_CHILL: [ 1 ]
-        OWNER: [ jupyter ]
+        OWNER: [ quay.io/jupyter ]
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: main
 
@@ -80,14 +80,14 @@ jobs:
         run: |
            rm setup-env
 
-      - name: Commit & Push
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          author_email: mrfreeze@nowhere.com
-          author_name: Mr. Freeze
-          message: Automatic requirements update
-          branch: update-frozen-${{ matrix.DEPLOYMENT_NAME }}
-          directory: deployments/${{ matrix.DEPLOYMENT_NAME }}/image/env-frozen
-          force: true
-          tags: false
+      # - name: Commit & Push
+      #   uses: actions-js/push@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     author_email: mrfreeze@nowhere.com
+      #     author_name: Mr. Freeze
+      #     message: Automatic requirements update
+      #     branch: update-frozen-${{ matrix.DEPLOYMENT_NAME }}
+      #     directory: deployments/${{ matrix.DEPLOYMENT_NAME }}/image/env-frozen
+      #     force: true
+      #     tags: false
