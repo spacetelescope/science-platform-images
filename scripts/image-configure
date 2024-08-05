@@ -10,9 +10,7 @@ def create_setup_env_file(
 ):
     shutil.copy("setup-env.template", "setup-env")
 
-    use_frozen = {"floating": "0", "frozen": "1"}.get(
-        use_frozen, use_frozen
-    )
+    use_frozen = {"floating": "0", "frozen": "1"}.get(use_frozen, use_frozen)
 
     with open("setup-env", "r") as file:
         content = file.read()
@@ -43,10 +41,9 @@ def create_setup_env_file(
 
         content = re.sub(r"OWNER=.+", f"OWNER={owner}", content)
         if owner == "spacetelescope":
-            content = re.sub(r"REGISTRY=.+", f'REGISTRY=""', content)
+            content = re.sub(r"REGISTRY=.+", 'REGISTRY=""', content)
         else:
             content = re.sub(r"REGISTRY=.+", f'REGISTRY="{owner}"', content)
-            
 
     with open("setup-env", "w+") as file:
         file.write(content)
