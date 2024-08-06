@@ -85,10 +85,6 @@ jobs:
            docker image ls
            df -h
 
-      - name: Git Diffs (Frozen Version Specs)
-        shell: bash
-        run: git diff
-
       - name: Image Functional Tests
         shell: bash
         run: |
@@ -96,6 +92,10 @@ jobs:
            source setup-env
            scripts/image-test
            df -h
+
+      - name: Git Diffs (Frozen Version Specs)
+        shell: bash
+        run: git diff || true
 
       # XXXX Trivy missing config to run from built image, fails
 
