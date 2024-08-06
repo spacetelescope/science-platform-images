@@ -7,7 +7,7 @@ FROM $BASE_IMAGE AS build
 # ----------------------------------------------------------------------
 # Duplicated in config,  these are for standalone non-hub lab use.
 
-ENV CRDS_PATH=/home/jovyan/crds_cache
+ENV CRDS_PATH=$HOME/crds_cache
 ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 
@@ -90,12 +90,12 @@ RUN find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} || 
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.
 COPY default-home-contents/ /etc/default-home-contents
-RUN  cp -r /home/jovyan/.local /etc/default-home-contents && \
-     cp -r /home/jovyan/.jupyter /etc/default-home-contents
-COPY global_bashrc /home/jovyan
-RUN  cat /home/jovyan/global_bashrc >> /etc/bash.bashrc  && \
-     cat /home/jovyan/global_bashrc >> /etc/bash.env  && \
-     rm /home/jovyan/global_bashrc
+RUN  cp -r $HOME/.local /etc/default-home-contents && \
+     cp -r $HOME/.jupyter /etc/default-home-contents
+COPY global_bashrc $HOME
+RUN  cat $HOME/global_bashrc >> /etc/bash.bashrc  && \
+     cat $HOME/global_bashrc >> /etc/bash.env  && \
+     rm $HOME/global_bashrc
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/

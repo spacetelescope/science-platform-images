@@ -40,8 +40,8 @@ fi
 # .............................................................................................
 # Legacy feature cleanup:  Remove VNC Desktop from Launcher
 # .............................................................................................
-rm -rf /home/jovyan/.user-dirs/Desktop
-rm -rf /home/jovyan/Desktop
+rm -rf $HOME/.user-dirs/Desktop
+rm -rf $HOME/Desktop
 
 /opt/common-scripts/remove-kernel jwebbinar
 /opt/common-scripts/remove-kernel jdaviz
@@ -53,4 +53,4 @@ rm -rf /home/jovyan/Desktop
 cd $HOME
 /opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep \
                                 main \
-                                /home/jovyan/references/jwebbinar_prep-ref
+                                $HOME/references/jwebbinar_prep-ref

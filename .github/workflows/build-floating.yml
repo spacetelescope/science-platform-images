@@ -1,14 +1,11 @@
-env:
-  GITHUB_TOKEN: ${{ github.token }}
-name:  Image Build, Test
+name:  Build Floating
 on:
-   pull_request:
-      branches:
-        - main
+   schedule:  # weekly
+     - cron: '0 0 * * 0'
    workflow_dispatch:
 jobs:
   docker:
-    name: "${{ matrix.DEPLOYMENT_NAME }}  USE_FROZEN=${{ matrix.USE_FROZEN }} ${{ matrix.CAL_VERSION }} -- Image Build, Test"
+    name: "${{ matrix.DEPLOYMENT_NAME }}  USE_FROZEN=${{ matrix.USE_FROZEN }} ${{ matrix.CAL_VERSION }} -- Floating Build"
     runs-on: ubuntu-22.04
 
     strategy:
@@ -19,7 +16,7 @@ jobs:
         USE_FROZEN: [ 0 ]
         CAL_VERSION: [ none ]
         FREEZE_CHILL: [ 1 ]
-        OWNER: [ jupyter ]
+        OWNER: [ quay.io/jupyter ]
 
     permissions:
       actions: write
@@ -27,12 +24,12 @@ jobs:
     steps:
 
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.12
 
       - name: Configure
         shell: bash

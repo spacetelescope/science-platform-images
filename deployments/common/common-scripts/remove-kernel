@@ -5,7 +5,7 @@
 
 # one arg: name of kernel
 
-kernel_dir=/home/jovyan/.local/share/jupyter/kernels/$1
+kernel_dir=$HOME/.local/share/jupyter/kernels/$1
 
 if [ -d $kernel_dir ]; then
     rm -rf $kernel_dir

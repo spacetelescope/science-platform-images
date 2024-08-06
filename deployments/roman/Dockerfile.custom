@@ -7,7 +7,7 @@ FROM $BASE_IMAGE AS build
 # ----------------------------------------------------------------------
 # Duplicated in config,  these are for standalone non-hub lab use.
 
-ENV CRDS_PATH=/home/jovyan/crds_cache
+ENV CRDS_PATH=$HOME/crds_cache
 ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 
