@@ -62,11 +62,6 @@ jobs:
            docker image ls
            df -h
 
-      - name: Git Diffs (Frozen Specs)
-        shell: bash
-        run: |
-           git diff deployments/${{ matrix.DEPLOYMENT_NAME }}/image/env-frozen | grep -v '#' | grep -E '^[+-]'
-
       - name: Image Functional Tests
         shell: bash
         run: |
@@ -74,6 +69,11 @@ jobs:
            source setup-env
            scripts/image-test
            df -h
+
+      - name: Git Diffs (Frozen Specs)
+        shell: bash
+        run: |
+           git diff || true
 
       - name: Clear setup-env
         shell: bash
