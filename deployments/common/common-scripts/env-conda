@@ -9,7 +9,7 @@ pip packages will added later;  include as few pip packages as possible.
 
 If USE_FROZEN == 0:          # compile weak constraints <env>.yml to requirements.yml
 
-If USE_FROZEN == 1 or 2:     # install from requirements.yml
+If USE_FROZEN == 1:          # install from requirements.yml
 
 Nominal pip-tools workflow:
 
@@ -32,8 +32,6 @@ shopt -s extglob
 env_spec=/opt/environments/${env}/${env}.@(yml|explicit)
 
 env_frozen_yml=/opt/env-frozen/${env}/requirements.yml
-env_chilly_yml=/opt/env-chilly/${env}/requirements.yml
-hints=/opt/env-chilly/${env}/build-hints.conda
 
 . /etc/profile.d/conda.sh
 
@@ -55,14 +53,6 @@ case ${USE_FROZEN} in
        ;;
     1) echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
        env_create ${env_frozen_yml}
-       ;;
-    2) echo "===== Creating conda environment ${env} from chilly constraints ${env_chilly_yml}"
-       env_create ${env_chilly_yml}
-       # Only chilly needs build-hints.conda since frozen is an absolute pin and the floating build
-       # already incorporated build-hints.conda into requirements.yml and/or requirements.txt
-       if [ -e ${hints} ]; then
-           /opt/common-scripts/env-update ${env}  ${hints}
-       fi
        ;;
 esac
 

@@ -6,13 +6,11 @@ import shutil
 
 
 def create_setup_env_file(
-    platform, deployment_name, environment, use_frozen, freeze_chill, cal_version, owner
+    platform, deployment_name, environment, use_frozen, freeze, cal_version, owner
 ):
     shutil.copy("setup-env.template", "setup-env")
 
-    use_frozen = {"floating": "0", "frozen": "1", "chilly": "2"}.get(
-        use_frozen, use_frozen
-    )
+    use_frozen = {"floating": "0", "frozen": "1"}.get(use_frozen, use_frozen)
 
     with open("setup-env", "r") as file:
         content = file.read()
@@ -37,7 +35,7 @@ def create_setup_env_file(
 
         content = re.sub(r"USE_FROZEN=[\d]", f"USE_FROZEN={use_frozen}", content)
 
-        content = re.sub(r"FREEZE_CHILL=[\d]", f"FREEZE_CHILL={freeze_chill}", content)
+        content = re.sub(r"FREEZE=[\d]", f"FREEZE={freeze}", content)
 
         content = re.sub(r"CAL_VERSION=.+", f"CAL_VERSION={cal_version}", content)
 
@@ -77,16 +75,16 @@ def main():
     parser.add_argument(
         "--use-frozen",
         type=str,
-        choices=["0", "1", "2", "floating", "frozen", "chilly"],
+        choices=["0", "1", "floating", "frozen"],
         default="floating",
         help="Use floating (default: 0).",
     )
     parser.add_argument(
-        "--freeze-chill",
+        "--freeze",
         type=int,
         default=0,
         choices=[0, 1],
-        help="Don't freeze/chill requirements (default: 0).",
+        help="Don't freeze requirements, let them float to highest versions possible (default: 0).",
     )
     parser.add_argument(
         "--cal-version",
@@ -107,7 +105,7 @@ def main():
         args.deployment,
         args.environment,
         args.use_frozen,
-        args.freeze_chill,
+        args.freeze,
         args.cal_version,
         args.owner,
     )

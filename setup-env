@@ -11,9 +11,9 @@ export ENVIRONMENT=sandbox
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
-                                     # 1 for tagged production build, 2 for chilly
+                                     # 1 for tagged production build
 
-export FREEZE_CHILL=1                # capture new frozen and chilly requirements as
+export FREEZE=1                      # capture new frozen requirements as
                                      # modified files in this git repo
 
 export PLATFORM=linux/amd64

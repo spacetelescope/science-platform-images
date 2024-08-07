@@ -46,10 +46,7 @@ approximate versions) in order to create a working build.  Basically, there are
 dependency solutions that pip/pip-tools will not ordinarily find w/o hints.
 When these tweaks are required, they should be added to the special file
 "build-hints.pip".  build-hints.pip is used to define pip constraints which are
-always honored verbatim, whether a build is floating, frozen, or chilly.  Only
-requirements absolutely needed to create a working build should be included in
-build-hints.pip since they will also be enforced, exactly, during chilly
-builds.
+always honored verbatim, whether a build is floating or frozen.
 
 EOF
     exit 2
@@ -69,36 +66,15 @@ hints="/opt/environments/${env}/build-hints.pip"
 common_hints="/opt/environments/common-hints.pip"
 
 case ${USE_FROZEN} in
-
     # Original floating requirements,  some of which may be tightly constrained:
     # 1. From common-env (default) or the env-compile command line
     # 2. From the environments directory for ${env}
-    # Stash the floating build-hints requirements needed for chilly builds here since these
-    # are the ones used to compute the frozen build.
     0) all_constraints="${env_pip} ${extra_pkgs} ${common_hints}"
-       rm -f /opt/env-chilly/${env}/*.pip
-       if [ -f ${hints} ]; then
-           cp ${hints}  /opt/env-chilly/${env}
-       else
-           echo >/opt/env-chilly/${env}/build-hints.pip
-       fi
-       if [ -f ${common_hints} ]; then
-           cp ${common_hints}  /opt/env-chilly/${env}
-       else
-           echo >/opt/env-chilly/common-hints.pip
-       fi
        ;;
-
-    # Only floating and chilly builds compute a new versions soluton,  the frozen
-    # build only re-installs saved requirements later in env-sync.
+    # Only floating builds compute a new versions soluton,  for mission kernels
+    # the frozen build only re-installs saved requirements later in env-sync.
     1) echo "===== Frozen requirements.txt has already been compiled."
        exit 0
-       ;;
-
-    # The chilly build honors both the ~= fuzzed frozen requirements as well as the
-    # original floating requirements,  some of which may be stricter than ~=x.y.z
-    # and required to make the build work at all.
-    2) all_constraints="$(ls /opt/env-chilly/${env}/{requirements.txt,build-hints.pip,common-hints.pip})"
        ;;
 esac
 

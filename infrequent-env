@@ -2,8 +2,8 @@
 
 export PATH=`pwd`/scripts:${PATH}
 
-# By default,  do not export frozen/chilly requirements from image. If already set, use that value.
-export FREEZE_CHILL=${FREEZE_CHILL:-0}
+# By default,  do not export frozen requirements from image. If already set, use that value.
+export FREEZE=${FREEZE:-0}
 
 # ----------------- vvvv less frequently changed inputs vvvv -------------------------------
 #
@@ -72,8 +72,6 @@ function where () {
         info="${info}-floating"
     elif [[ "${USE_FROZEN}" == "1" ]]; then
         info="${info}-frozen"
-    elif [[ "${USE_FROZEN}" == "2" ]]; then
-        info="${info}-chilly"
     else
         info="${info}-ERROR"
     fi

@@ -31,7 +31,7 @@ RUN   /opt/common-scripts/install-common  base
 # ----------------------------------------------------------------------
 # Roman CAL
 #
-# Copy roman-cal conda environment requirements: floating, frozen, chilly
+# Copy roman-cal conda environment requirements: floating, frozen
 # All copies below are factored to enable Docker idempotence / build caching
 # e.g. changing tests should not result in re-installing conda
 
@@ -41,8 +41,6 @@ COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environ
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/roman-cal/  /opt/env-frozen/roman-cal/
-
-COPY --chown=${NB_UID}:${NB_GID} env-chilly/roman-cal/  /opt/env-chilly/roman-cal/
 
 # ----- Install roman-cal conda environment
 RUN /opt/common-scripts/env-conda roman-cal
