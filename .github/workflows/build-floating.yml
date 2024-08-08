@@ -15,7 +15,7 @@ jobs:
         DEPLOYMENT_NAME: [ jwebbinar, roman, tike ]
         USE_FROZEN: [ 0 ]
         CAL_VERSION: [ none ]
-        FREEZE_CHILL: [ 1 ]
+        FREEZE: [ 1 ]
         OWNER: [ quay.io/jupyter ]
 
     permissions:
@@ -34,7 +34,7 @@ jobs:
       - name: Configure
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }}  --use-frozen ${{ matrix.USE_FROZEN }} --freeze ${{ matrix.FREEZE }} --cal-version ${{ matrix.CAL_VERSION }}  --owner ${{ MATRIX.owner }}
 
       - name: Early exit for unaffected builds
         shell: bash

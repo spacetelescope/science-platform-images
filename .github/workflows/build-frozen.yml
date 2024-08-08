@@ -16,7 +16,7 @@ jobs:
       matrix:
         DEPLOYMENT_NAME: [ tike, jwebbinar, roman ]
         USE_FROZEN: [ frozen ]
-        FREEZE_CHILL: [ 1 ]
+        FREEZE: [ 1 ]
         OWNER: [ quay.io/jupyter ]
 
     steps:
@@ -48,7 +48,7 @@ jobs:
       - name: Set Up Environment
         shell: bash
         run: |
-           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }} --use-frozen ${{ matrix.USE_FROZEN }} --freeze-chill ${{ matrix.FREEZE_CHILL }} --owner ${{ matrix.OWNER }}
+           scripts/image-configure ${{ matrix.DEPLOYMENT_NAME }} --use-frozen ${{ matrix.USE_FROZEN }} --freeze ${{ matrix.FREEZE }} --owner ${{ matrix.OWNER }}
            df -h
 
       - name: Image Build
