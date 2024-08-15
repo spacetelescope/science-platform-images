@@ -8,7 +8,6 @@ asdf_astropy
 asdf_coordinates_schemas
 asdf_standard
 asdf_transform_schemas
-asdf_unit_schemas
 asdf_wcs_schemas
 astropy
 astroquery
@@ -71,7 +70,6 @@ nest_asyncio
 notebook
 numpy
 cv2
-opencv-python
 overrides
 pandocfilters
 parsley
@@ -104,16 +102,6 @@ dateutil
 pythonjsonlogger
 regions
 zmq
-zmq.backend.cython._device
-zmq.backend.cython._poll
-zmq.backend.cython._proxy_steerable
-zmq.backend.cython._version
-zmq.backend.cython.context
-zmq.backend.cython.error
-zmq.backend.cython.message
-zmq.backend.cython.socket
-zmq.backend.cython.utils
-zmq.devices.monitoredqueue
 referencing
 rfc3339_validator
 rfc3986_validator
