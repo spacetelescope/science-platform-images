@@ -65,6 +65,6 @@ ${CONDA_VER} env export --no-build -n ${env} > ${env_frozen_yml}
 # echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
 # env_create ${env_frozen_yml}
 
-env-clean
+/opt/common-scripts/env-clean
 
 fix-permissions $CONDA_DIR $HOME
