@@ -92,3 +92,4 @@ pip-compile  -v  --resolver=backtracking --output-file ${env_reqs} --pip-args "$
 
 /opt/common-scripts/env-clean
 
+fix-permissions $CONDA_DIR $HOME
