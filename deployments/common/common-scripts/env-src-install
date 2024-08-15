@@ -32,3 +32,5 @@ source /opt/common-scripts/env-activate $ENV
 pip install --verbose --no-deps --no-cache --no-binary ${PKG} --force-reinstall --no-build-isolation ${PKG}
 
 /opt/common-scripts/env-clean
+
+fix-permissions $CONDA_DIR $HOME

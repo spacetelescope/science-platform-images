@@ -21,3 +21,8 @@ ${CONDA_VER} env export --no-build -n base >/opt/env-frozen/base/requirements.ym
 if pip freeze | grep jupyter-server-proxy; then
     jupyter labextension install @jupyterlab/server-proxy
 fi
+
+
+env-clean
+
+fix-permissions $CONDA_DIR $HOME

@@ -85,8 +85,6 @@ COPY --chown=${NB_UID}:${NB_GID} environments/tess/ /opt/environments/tess/
 # YYYY SEC
 
 USER $NB_USER
-RUN  /opt/common-scripts/npm-audit  /opt/conda/envs/tess/lib/python3.8/site-packages/panel  fix  && \
-     /opt/common-scripts/env-clean
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
@@ -149,6 +147,17 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
       >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
+
+# For testing mutability of pre-installed environments once uidgid's are real, membership in users controls
+# mutability but fix-permissions must be called on files which need to be mutable, particularly those we install.
+#
+## USER root
+## RUN echo "jmiller:x:1001:1001::/home/jovyan:/bin/bash" >>/etc/passwd
+## RUN grep -v users /etc/group >tmp
+## RUN mv tmp /etc/group
+## RUN echo "users:x:100:jmiller" >>/etc/group
+## RUN echo "jmiller:x:1001:jmiller" >>/etc/group
+## USER $NB_USER
 
 USER $NB_USER
 WORKDIR /home/$NB_USER
