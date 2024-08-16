@@ -15,6 +15,6 @@ tensorflow
 tqdm
 
 bokeh
-dask
+# dask
 h5py
 requests
