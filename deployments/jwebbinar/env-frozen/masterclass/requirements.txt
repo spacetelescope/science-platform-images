@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=/opt/env-frozen/masterclass/requirements.txt --pip-args='--no-color --default-timeout 100' /opt/common-env/common.pip /opt/common-env/docs.pip /opt/common-env/jupyter.pip /opt/common-env/required.pip /opt/common-env/testing.pip /opt/environments/common-hints.pip /opt/environments/masterclass/build-hints.pip /opt/environments/masterclass/masterclass.pip
 #
-aiohappyeyeballs==2.3.5
+aiohappyeyeballs==2.3.6
     # via aiohttp
 aiohttp==3.10.3
     # via jupyter-server-proxy
@@ -140,9 +140,9 @@ bleach==6.1.0
     # via nbconvert
 bokeh==3.5.1
     # via jupyter-bokeh
-boto3==1.34.162
+boto3==1.35.0
     # via -r /opt/common-env/common.pip
-botocore==1.34.162
+botocore==1.35.0
     # via
     #   boto3
     #   s3transfer

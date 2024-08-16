@@ -14,7 +14,7 @@ aesara==2.9.3
     # via -r /opt/environments/tess/tess.pip
 aesara-theano-fallback==0.1.0
     # via -r /opt/environments/tess/tess.pip
-aiohappyeyeballs==2.3.5
+aiohappyeyeballs==2.3.6
     # via aiohttp
 aiohttp==3.10.3
     # via
@@ -136,11 +136,11 @@ bokeh==3.4.1
     #   -r /opt/environments/tess/tess.pip
     #   jupyter-bokeh
     #   lightkurve
-boto3==1.34.161
+boto3==1.35.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/tess/tess.pip
-botocore==1.34.161
+botocore==1.35.0
     # via
     #   boto3
     #   s3fs
