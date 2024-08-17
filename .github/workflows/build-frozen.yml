@@ -23,7 +23,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: main
+          fetch-depth: 0
 
       - name: Free Disk Space,  Enlarge Swapfile
         shell: bash
@@ -54,6 +54,7 @@ jobs:
       - name: Image Build
         shell: bash
         run: |
+           echo "Running on branch ${{ github.head_ref }}"
            source setup-env
            scripts/image-build
            df -h
@@ -65,6 +66,7 @@ jobs:
       - name: Image Functional Tests
         shell: bash
         run: |
+           echo "Running on branch ${{ github.head_ref }}"
            df -h
            source setup-env
            scripts/image-test
@@ -73,6 +75,7 @@ jobs:
       - name: Git Diffs (Frozen Specs)
         shell: bash
         run: |
+           echo "Running on branch ${{ github.head_ref }}"
            git diff || true
 
       - name: Clear setup-env
