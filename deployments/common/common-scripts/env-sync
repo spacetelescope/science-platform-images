@@ -28,3 +28,6 @@ echo "===== Installing required pip packages for environment ${env}..."
 pip-sync --verbose --pip-args "${PIP_SWITCHES}" --python-executable `which python`   /opt/env-frozen/${env}/requirements.txt
 
 /opt/common-scripts/env-clean
+
+fix-permissions $CONDA_DIR $HOME
+
