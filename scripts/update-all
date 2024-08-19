@@ -1,6 +1,6 @@
 #! /bin/bash -eu
 
-HERE=`dirname $0`
+HERE=$(dirname `realpath $0`)
 
 cd $HERE
 
@@ -9,8 +9,19 @@ DEPLOYMENTS=$(ls -1 | grep -v common)
 
 cd $HERE/..
 for deployment in $DEPLOYMENTS; do
-    $HERE/image-configure $deployment
+    $HERE/image-configure $deployment --freeze 1 --use-frozen 0
     source setup-env
-    image-update
+    case $1 in
+	--build)
+	    image-build
+	;;
+	--test)
+	    image-build
+	    image-test
+	;;
+	*)
+	    image-update
+	;;
+    esac
 done
 

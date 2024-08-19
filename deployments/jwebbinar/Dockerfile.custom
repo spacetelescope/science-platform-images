@@ -29,7 +29,8 @@ RUN mkdir /data && cd /data && \
     wget --quiet https://stsci.box.com/shared/static/qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
     tar zxf qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
     rm qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
-    chmod -R a+r /data/webbpsf-data
+    chmod -R a+r /data/webbpsf-data && \
+    fix-permissions $CONDA_DIR $HOME
 
 # Install sextractor under /usr/local
 # NOTE: using master because this fix is required:
@@ -41,8 +42,8 @@ RUN cd /tmp && \
     sh autogen.sh && \
     ./configure --prefix=/usr/local && \
     make && \
-    make install
-
+    make install && \
+    fix-permissions $CONDA_DIR $HOME
 
 
 # ----------------------------------------------------------------------
