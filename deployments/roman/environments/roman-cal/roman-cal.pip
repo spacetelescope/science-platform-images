@@ -15,7 +15,7 @@ galsim==2.5.2
 astropy>=6.0
 pandeia.engine==3.1
 bokeh==3.4.1
-scipy>=1.10.0
+scipy==1.11
 astroquery>=0.4.7
 pandas>=2.2.2
 photutils>=1.12.0
@@ -24,3 +24,4 @@ boto3
 xarray
 esutil
 astrocut>=0.11.1
+pysiaf==0.23.3

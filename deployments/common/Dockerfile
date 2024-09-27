@@ -29,7 +29,7 @@ ARG PIP_SWITCHES=""
 ENV PIP_SWITCHES=$PIP_SWITCHES
 
 # Enable easy swap of conda with e.g. mamba
-ARG CONDA_VER=conda
+ARG CONDA_VER=mamba
 ENV CONDA_VER=${CONDA_VER}
 
 ARG USER_CACHE_DIRS=""
