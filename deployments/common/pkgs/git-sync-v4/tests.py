@@ -35,6 +35,8 @@ chmod +w change-mode.md
 mkdir -p new-dir/sub-dir
 echo "Made up user file 1." >new-dir/made-up-1.txt
 echo "Made up user file 2." >new-dir/sub-dir/made-up-2.txt
+chmod 777 new-dir/*.txt
+chmod 777 new-dir/sub-dir/made-up-2.txt
 
 # User deletes file
 rm -f LICENSE
