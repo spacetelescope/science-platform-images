@@ -50,6 +50,11 @@ build_jh() {
            $*
 }
 
+sed -i '' -e "s/latest/1.5.10/g" ./images/docker-stacks-foundation/Dockerfile
+sed -i '' -e "s/'mamba' /'mamba==1.5.10' /g" ./images/docker-stacks-foundation/Dockerfile
+
+echo $(cat ./images/docker-stacks-foundation/Dockerfile)
+
 build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=${ROOT_CONTAINER}
 
 build_jh  base-notebook     --build-arg BASE_CONTAINER=${OWNER}/docker-stacks-foundation:latest
