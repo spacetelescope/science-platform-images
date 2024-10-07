@@ -35,14 +35,14 @@ def clear_cache():
         print(f"Clearing astropy cache {ap_cache}.")
         astropy.utils.data.clear_download_cache()
     except Exception:
-        print(f"Failed clearing astropy cache at {ap_cache}.")
+        pass
     try:
         import lightkurve.config
         lk_cache = lightkurve.config.get_cache_dir()
         print(f"Clearing lightkurve cache {lk_cache}.")
         rm_files(lk_cache)
     except Exception:
-        print(f"Failed clearing lightkurve cache at {lk_cache}.")
+        pass
 
 
 if __name__ == "__main__":
