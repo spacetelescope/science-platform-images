@@ -4,12 +4,14 @@ export TEST_DIR=$COMMON_IMAGE_DIR/pkgs/git-sync-v4
 
 cd $TEST_DIR
 
+# --doctest-continue-on-failure \
+
 python -m pytest -v -v -v  \
        --tb=short \
        --capture=no \
        --log-level INFO --log-cli-level INFO \
        --doctest-modules \
-       --doctest-continue-on-failure \
+       --pdb \
        --doctest-report cdiff \
        --cov=git_sync_v4 --cov-report=html:htmlcov  \
        tests.py tests.txt $*
