@@ -29,7 +29,7 @@ ARG PIP_SWITCHES=""
 ENV PIP_SWITCHES=$PIP_SWITCHES
 
 # Enable easy swap of conda with e.g. mamba
-ARG CONDA_VER=mamba
+ARG CONDA_VER=conda
 ENV CONDA_VER=${CONDA_VER}
 
 ARG USER_CACHE_DIRS=""
@@ -87,7 +87,7 @@ RUN /opt/common-scripts/apt-install \
         cmake \
         vim \
         emacs-nox \
-        fftw3-dev \
+        libfftw3-dev \
         libatlas-base-dev \
         libcurl4-openssl-dev \
         libxml2 \
@@ -96,7 +96,6 @@ RUN /opt/common-scripts/apt-install \
         libxslt1-dev \
         python3-libxml2 \
         python-dev-is-python3 \
-        python-setuptools \
         graphviz \
         libopenblas-dev
 

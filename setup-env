@@ -6,31 +6,37 @@
 
 # ----------------- basic inputs,  must set for deployment --------------
 
-export DEPLOYMENT_NAME=jwebbinar
+export DEPLOYMENT_NAME=tike
 export ENVIRONMENT=sandbox
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
-                                     # 1 for tagged production build
+                                     # 1 for tagged/frozen production build
 
-export FREEZE=1                      # capture new frozen requirements as
-                                     # modified files in this git repo
+export FREEZE=1                     # dump new frozen requirements in image to modified files in this git repo
 
 export PLATFORM=linux/amd64
 
-export REGISTRY=""                         # empty for DockerHub
-# export REGISTRY="quay.io/repository/"    # but jupyter/docker-stacks is now at quay.io/repository
+
+
+# Set to "" (empty) for source build,  or quay.io/jupyter/ for current docker-stacks image.
+# jupyter is now at quay.io/jupyter/  needed to obtain fresh builds.  trailing backslash required
+export REGISTRY=""
+# export REGISTRY=""
 
 
 
+# OWNER=spacetelescope
+# quay.io/jupyter has the official pre-built images,  no trailing backslash
 export OWNER=spacetelescope
-                                     # jupyter or spacetelescope base image repo
-                                     # jupyter will be pulled from DockerHub, stale, but quay.io TBD
+# export OWNER=spacetelescope
 
-export BASE_IMAGE=${OWNER}/scipy-notebook   # from jupyter/docker-stacks
+export BASE_IMAGE=${OWNER}/scipy-notebook   # see above
 
 export NOTEBOOK_TAG=latest
 export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
+
+export UBUNTU_TAG="24.04"	     # # Image scanning,  report Ubuntu status for this version of Ubuntu
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
