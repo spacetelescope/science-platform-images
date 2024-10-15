@@ -174,6 +174,7 @@ class FilePath(PosixPath):
 
 FileOrDirPath = Union[FilePath, DirPath]
 
+
 def file_or_dir_path(path: str) -> FileOrDirPath:
     """Return a FilePath or DirPath instance for the given path."""
     if os.path.isfile(path):
@@ -237,10 +238,14 @@ def now() -> str:
 
 
 def list_git_tree(repo_dir: str, branch: str) -> SortedSet[FileOrDirPath]:
-
     result = shell(f"git ls-tree --full-tree -r --name-status {branch}", cwd=repo_dir)
-    return SortedSet([ file_or_dir_path(DirPath(repo_dir) / obj.strip()) 
-            for obj in result.stdout.splitlines() if obj.strip() ])
+    return SortedSet(
+        [
+            file_or_dir_path(DirPath(repo_dir) / obj.strip())
+            for obj in result.stdout.splitlines()
+            if obj.strip()
+        ]
+    )
 
 
 def all_dirs(repo_dir: DirPath | str | PosixPath) -> SortedSet:
@@ -351,7 +356,7 @@ class Syncer:
     @property
     def backup_dir(self):
         return self.repo_dir / ".gsv4-backups"
-    
+
     @property
     def git_files(self) -> SortedSet:
         """Return the sorted set of files owned by the repo vs. the user."""
@@ -360,14 +365,19 @@ class Syncer:
     @property
     def git_dirs(self) -> SortedSet:
         """Return the sorted set of dirs owned by the repo vs. the user."""
-        return SortedSet([DirPath(obj.parent) for obj in self.git_files
-                if obj.parent != self.repo_dir])
+        return SortedSet(
+            [
+                DirPath(obj.parent)
+                for obj in self.git_files
+                if obj.parent != self.repo_dir
+            ]
+        )
 
     @property
     def user_files(self) -> SortedSet:
         """Return the sorted set of files owned by the user."""
         return all_files(self.repo_dir) - self.git_files
-    
+
     @property
     def user_dirs(self) -> SortedSet:
         """Return the sorted set of dirs owned by the user."""
@@ -490,8 +500,6 @@ class Syncer:
         self.repo.git.config("safe.directory", self.repo_dir, "--global")
         self.repo.git.fetch("origin", self.branch)
 
-    
-
     def add_sync_instructions(self) -> None:
         """Add the sync instructions file to the repo and the root directory."""
         sync_file = FilePath("SYNC-INSTRUCTIONS.md")
@@ -592,15 +600,16 @@ class Syncer:
         backup to a parallel  artifact with a time-based suffix addded to make
         it distinct from the original.
         """
-        log.info(f"Restoring backups.")
+        log.info("Restoring backups.")
         if not len(self.backups):
             log.warning("No backups to restore.")
         self.restores = SortedSet()
         for backup in self.backups:
             original = self.repo_dir / backup.relative_to(self.backup_dir)
             restored = (
-                original.with_suffix(original.suffix + "." + now()) 
-                if original.exists() else original
+                original.with_suffix(original.suffix + "." + now())
+                if original.exists()
+                else original
             )
             log.debug(f"Restoring backup {backup} to {restored}")
             backup.rename(restored)
