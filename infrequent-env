@@ -16,16 +16,13 @@ export CONDA_VER=conda  # switch to conda while "mamba env export" in install-co
 # Additional parameters for image-exec Docker run command, e.g. add mounts here
 export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
 
-# Image scanning,  report Ubuntu status for this version of Ubuntu
-export UBUNTU_TAG="20.04"
-
 # Image scanning,  report CVE's at this severity level and  higher
 export IMAGE_VULNERABILITY_LEVEL="medium"
 
 # Extra standard parameters to docker build commands
-export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM}"
+export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg ${CONDA_VER}"
 
-export ROOT_CONTAINER=ubuntu:${UBUNTU_TAG}
+export ROOT_IMAGE=ubuntu:${UBUNTU_TAG}
 
 # -------------------------------------------------------------------
 # Docker Buildkit has two killer features:

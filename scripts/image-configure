@@ -43,7 +43,7 @@ def create_setup_env_file(
         if owner == "spacetelescope":
             content = re.sub(r"REGISTRY=.+", 'REGISTRY=""', content)
         else:
-            content = re.sub(r"REGISTRY=.+", f'REGISTRY="{owner}"', content)
+            content = re.sub(r"REGISTRY=.+", f'REGISTRY="{owner}/"', content)
 
     with open("setup-env", "w+") as file:
         file.write(content)

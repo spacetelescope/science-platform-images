@@ -15,20 +15,28 @@ export USE_FROZEN=0                  # use 0 for loosely pinned package versions
 
 export FREEZE=1                     # dump new frozen requirements in image to modified files in this git repo
 
-export PLATFORM="linux/amd64"        # os / instruction-set for built image: linux/amd64 or linux/aarch64
-
-export REGISTRY=""                      # empty for DockerHub or source build,  quay.io/jupyter for current docker-stacks image.
-# export REGISTRY="quay.io/jupyter/"    # but jupyter is now at quay.io/jupyter
+export PLATFORM="linux/amd64"       # os / instruction-set for built image: linux/amd64 or linux/aarch64
 
 
 
-export OWNER="spacetelescope"        # spacetelescope will be built from source code
-                                     # quay.io/jupyter image or spacetelescope for github/jupyter/docker-stacks code
+# Set to "" (empty) for source build,  or quay.io/jupyter/ for current docker-stacks image.
+# jupyter is now at quay.io/jupyter/  needed to obtain fresh builds.  trailing backslash required
+export REGISTRY=""
+# export REGISTRY="quay.io/jupyter/" 
+
+
+
+# OWNER=spacetelescope will be built from docker-stacks source code
+# quay.io/jupyter has the official pre-built images,  no trailing backslash
+export OWNER="spacetelescope"
+# export OWNER="quay.io/jupyter"
 
 export BASE_IMAGE=${OWNER}/scipy-notebook   # see above
 
 export NOTEBOOK_TAG=latest
 export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
+
+export UBUNTU_TAG="24.04"	     # # Image scanning,  report Ubuntu status for this version of Ubuntu
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
