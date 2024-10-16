@@ -684,6 +684,7 @@ numpy==1.25.2
     #   spherical-geometry
     #   stcal
     #   stdatamodels
+    #   stsci-image
     #   stsci-imagestats
     #   stsci-stimage
     #   synphot
@@ -960,6 +961,7 @@ scipy==1.14.1
     #   scikit-image
     #   specutils
     #   stcal
+    #   stsci-image
     #   synphot
     #   webbpsf
     #   wiimatch
@@ -1073,6 +1075,8 @@ stpipe==0.7.0
     #   jwst
 stsci-announce @ git+https://github.com/spacetelescope/stsci-announce
     # via -r /opt/common-env/jupyter.pip
+stsci-image==2.3.9
+    # via -r /opt/environments/masterclass/masterclass.pip
 stsci-imagestats==1.8.3
     # via
     #   jwst
