@@ -30,3 +30,5 @@ y-py
 ypy-websocket
 #jupyter_collaboration
 jupyter_bokeh
+voila
+ipypopout
