@@ -51,7 +51,7 @@ build_jh() {
 }
 
 
-build_jh  docker-stacks-foundation  --build-arg ROOT_CONTAINER=${ROOT_CONTAINER}
+build_jh  docker-stacks-foundation  --build-arg ROOT_IMAGE=${ROOT_IMAGE}
 
 build_jh  base-notebook     --build-arg BASE_IMAGE=${OWNER}/docker-stacks-foundation:latest
 

@@ -22,7 +22,7 @@ export IMAGE_VULNERABILITY_LEVEL="medium"
 # Extra standard parameters to docker build commands
 export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg ${CONDA_VER}"
 
-export ROOT_CONTAINER=ubuntu:${UBUNTU_TAG}
+export ROOT_IMAGE=ubuntu:${UBUNTU_TAG}
 
 # -------------------------------------------------------------------
 # Docker Buildkit has two killer features:
