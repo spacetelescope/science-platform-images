@@ -2,7 +2,7 @@ stips==2.2.1
 webbpsf==1.2.1
 synphot>=1.3.0
 stsynphot>=1.3.0
-jdaviz==3.10
+jdaviz==4.0.0
 romanisim==0.5.1
 romancal==0.15.0
 roman_datamodels==0.19.2
@@ -25,3 +25,5 @@ xarray
 esutil
 astrocut>=0.11.1
 pysiaf==0.23.3
+ipypopout==2.0.0
+solara

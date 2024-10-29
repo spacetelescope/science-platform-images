@@ -74,7 +74,8 @@ RUN /opt/common-scripts/apt-install \
         htop \
         sysstat \
         net-tools \
-        rename
+        rename \
+        stress-ng
         #        libexpat1
 
 # S/W Development Tools
