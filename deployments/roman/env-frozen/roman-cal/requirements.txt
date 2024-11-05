@@ -118,7 +118,7 @@ astropy==6.1.4
     #   synphot
     #   tweakwcs
     #   webbpsf
-astropy-iers-data==0.2024.10.21.0.33.21
+astropy-iers-data==0.2024.11.4.0.33.34
     # via astropy
 astroquery==0.4.7
     # via
@@ -144,7 +144,7 @@ beautifulsoup4==4.12.3
     #   astroquery
     #   nbconvert
     #   stsynphot
-bleach==6.1.0
+bleach==6.2.0
     # via nbconvert
 bokeh==3.4.1
     # via -r /opt/environments/roman-cal/roman-cal.pip
@@ -240,7 +240,7 @@ entrypoints==0.4
     # via papermill
 esutil==0.6.14
     # via -r /opt/environments/roman-cal/roman-cal.pip
-et-xmlfile==1.1.0
+et-xmlfile==2.0.0
     # via openpyxl
 executing==2.1.0
     # via stack-data
@@ -289,7 +289,7 @@ glue-core==1.21.1
     #   glue-jupyter
     #   glue-vispy-viewers
     #   jdaviz
-glue-jupyter==0.23.0
+glue-jupyter==0.23.1
     # via
     #   glue-vispy-viewers
     #   jdaviz
@@ -357,7 +357,7 @@ ipypopout==2.0.0
     #   jdaviz
 ipysplitpanes==0.2.0
     # via jdaviz
-ipython==8.28.0
+ipython==8.29.0
     # via
     #   glue-core
     #   ipykernel
@@ -487,7 +487,7 @@ jupyterlab-widgets==3.0.13
     # via
     #   ipywidgets
     #   jupyter-rfb
-keyring==25.4.1
+keyring==25.5.0
     # via astroquery
 kiwisolver==1.4.7
     # via
@@ -682,7 +682,7 @@ partd==1.4.2
     # via dask
 pexpect==4.9.0
     # via ipython
-photutils==2.0.1
+photutils==2.0.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jdaviz
@@ -731,7 +731,7 @@ pygments==2.18.0
     #   nbconvert
     #   rich
     #   solara-ui
-pymdown-extensions==10.11.2
+pymdown-extensions==10.12
     # via solara-ui
 pyopengl==3.1.7
     # via glue-vispy-viewers
@@ -757,7 +757,7 @@ pythreejs==2.4.2
     # via ipyvolume
 pytz==2024.2
     # via pandas
-pyvo==1.5.3
+pyvo==1.6
     # via astroquery
 pyyaml==6.0.2
     # via
@@ -816,7 +816,7 @@ rfc3986-validator==0.1.1
     # via
     #   jsonschema
     #   jupyter-events
-rich==13.9.3
+rich==13.9.4
     # via rich-click
 rich-click==1.8.3
     # via solara-server
@@ -831,7 +831,7 @@ romancal==0.15.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 romanisim==0.5.1
     # via -r /opt/environments/roman-cal/roman-cal.pip
-rpds-py==0.20.0
+rpds-py==0.20.1
     # via
     #   jsonschema
     #   referencing
@@ -884,7 +884,6 @@ sidecar==0.7.0
 six==1.16.0
     # via
     #   asttokens
-    #   bleach
     #   html5lib
     #   python-dateutil
     #   rfc3339-validator
@@ -901,13 +900,13 @@ soc-roman-tools==0.1.0
     # via
     #   stips
     #   webbpsf
-solara==1.40.0
+solara==1.41.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jdaviz
-solara-server[dev,starlette]==1.40.0
+solara-server[dev,starlette]==1.41.0
     # via solara
-solara-ui[all,cache,extra,markdown]==1.40.0
+solara-ui[all,cache,extra,markdown]==1.41.0
     # via
     #   solara
     #   solara-server
@@ -919,7 +918,7 @@ specreduce==1.4.1
     #   jdaviz
 spectral-cube==0.6.5
     # via glue-astronomy
-specutils==1.18.0
+specutils==1.19.0
     # via
     #   glue-astronomy
     #   jdaviz
@@ -930,7 +929,7 @@ spherical-geometry==1.3.2
     #   tweakwcs
 stack-data==0.6.3
     # via ipython
-starlette==0.41.0
+starlette==0.41.2
     # via solara-server
 stcal==1.9.0
     # via romancal
@@ -981,7 +980,7 @@ tornado==6.4.1
     #   jupyterlab
     #   notebook
     #   terminado
-tqdm==4.66.5
+tqdm==4.66.6
     # via papermill
 traitlets==5.14.3
     # via
@@ -1034,7 +1033,7 @@ vispy==0.14.3
     # via
     #   glue-vispy-viewers
     #   jdaviz
-watchdog==5.0.3
+watchdog==6.0.0
     # via solara-server
 watchfiles==0.24.0
     # via solara-server
@@ -1063,13 +1062,13 @@ wrapt==1.16.0
     # via
     #   aiobotocore
     #   smart-open
-xarray==2024.9.0
+xarray==2024.10.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 xlrd==2.0.1
     # via glue-core
 xyzservices==2024.9.0
     # via bokeh
-yarl==1.16.0
+yarl==1.17.1
     # via aiohttp
 zipp==3.20.2
     # via importlib-metadata

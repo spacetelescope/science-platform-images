@@ -4,7 +4,7 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1
   - _openmp_mutex=4.5
-  - alembic=1.13.3
+  - alembic=1.14.0
   - altair=5.4.1
   - annotated-types=0.7.0
   - anyio=4.6.2.post1
@@ -17,18 +17,18 @@ dependencies:
   - async-lru=2.0.4
   - async_generator=1.10
   - attrs=24.2.0
-  - aws-c-auth=0.7.31
-  - aws-c-cal=0.7.4
-  - aws-c-common=0.9.30
-  - aws-c-compression=0.2.19
-  - aws-c-event-stream=0.4.3
-  - aws-c-http=0.8.10
-  - aws-c-io=0.14.20
-  - aws-c-mqtt=0.10.7
-  - aws-c-s3=0.6.7
-  - aws-c-sdkutils=0.1.19
-  - aws-checksums=0.1.20
-  - aws-crt-cpp=0.28.5
+  - aws-c-auth=0.8.0
+  - aws-c-cal=0.8.0
+  - aws-c-common=0.9.31
+  - aws-c-compression=0.3.0
+  - aws-c-event-stream=0.5.0
+  - aws-c-http=0.9.0
+  - aws-c-io=0.15.0
+  - aws-c-mqtt=0.11.0
+  - aws-c-s3=0.7.0
+  - aws-c-sdkutils=0.2.0
+  - aws-checksums=0.2.0
+  - aws-crt-cpp=0.29.0
   - aws-sdk-cpp=1.11.407
   - azure-core-cpp=1.14.0
   - azure-identity-cpp=1.10.0
@@ -39,7 +39,7 @@ dependencies:
   - beautifulsoup4=4.12.3
   - blas=2.125
   - blas-devel=3.9.0
-  - bleach=6.1.0
+  - bleach=6.2.0
   - blinker=1.8.2
   - blosc=1.21.6
   - bokeh=3.6.0
@@ -87,7 +87,7 @@ dependencies:
   - distributed=2024.10.0
   - distro=1.9.0
   - entrypoints=0.4
-  - et_xmlfile=1.1.0
+  - et_xmlfile=2.0.0
   - exceptiongroup=1.2.2
   - executing=2.1.0
   - fmt=11.0.2
@@ -121,7 +121,7 @@ dependencies:
   - importlib_resources=6.4.5
   - ipykernel=6.29.5
   - ipympl=0.9.4
-  - ipython=8.28.0
+  - ipython=8.29.0
   - ipython_genutils=0.2.0
   - ipywidgets=8.1.5
   - isoduration=20.11.0
@@ -145,7 +145,7 @@ dependencies:
   - jupyterhub=5.2.1
   - jupyterhub-base=5.2.1
   - jupyterlab=4.2.5
-  - jupyterlab-git=0.50.1
+  - jupyterlab-git=0.50.2
   - jupyterlab_pygments=0.3.0
   - jupyterlab_server=2.27.3
   - jupyterlab_widgets=3.0.13
@@ -161,10 +161,10 @@ dependencies:
   - libabseil=20240722.0
   - libaec=1.1.3
   - libarchive=3.7.4
-  - libarrow=17.0.0
-  - libarrow-acero=17.0.0
-  - libarrow-dataset=17.0.0
-  - libarrow-substrait=17.0.0
+  - libarrow=18.0.0
+  - libarrow-acero=18.0.0
+  - libarrow-dataset=18.0.0
+  - libarrow-substrait=18.0.0
   - libavif16=1.1.1
   - libblas=3.9.0
   - libbrotlicommon=1.1.0
@@ -187,7 +187,7 @@ dependencies:
   - libgomp=14.2.0
   - libgoogle-cloud=2.30.0
   - libgoogle-cloud-storage=2.30.0
-  - libgrpc=1.65.5
+  - libgrpc=1.67.1
   - libhwy=1.1.0
   - libiconv=1.17
   - libjpeg-turbo=3.0.0
@@ -200,9 +200,9 @@ dependencies:
   - libnghttp2=1.64.0
   - libnsl=2.0.1
   - libopenblas=0.3.28
-  - libparquet=17.0.0
+  - libparquet=18.0.0
   - libpng=1.6.44
-  - libprotobuf=5.27.5
+  - libprotobuf=5.28.2
   - libre2-11=2024.07.02
   - libsodium=1.0.20
   - libsolv=0.7.30
@@ -218,10 +218,10 @@ dependencies:
   - libwebp-base=1.4.0
   - libxcb=1.17.0
   - libxcrypt=4.4.36
-  - libxml2=2.12.7
+  - libxml2=2.13.4
   - libzlib=1.3.1
   - libzopfli=1.0.3
-  - llvm-openmp=19.1.2
+  - llvm-openmp=19.1.3
   - llvmlite=0.43.0
   - locket=1.0.0
   - lz4=4.3.3
@@ -239,7 +239,7 @@ dependencies:
   - mpmath=1.3.0
   - msgpack-python=1.1.0
   - munkres=1.1.4
-  - narwhals=1.10.0
+  - narwhals=1.13.1
   - nbclassic=1.1.0
   - nbclient=0.10.0
   - nbconvert-core=7.16.4
@@ -272,20 +272,20 @@ dependencies:
   - pexpect=4.9.0
   - pickleshare=0.7.5
   - pillow=11.0.0
-  - pip=24.2
+  - pip=24.3.1
   - pip-tools=7.4.1
   - pkgutil-resolve-name=1.3.10
   - platformdirs=4.3.6
   - pluggy=1.5.0
   - prometheus_client=0.21.0
   - prompt-toolkit=3.0.48
-  - protobuf=5.27.5
+  - protobuf=5.28.2
   - pthread-stubs=0.4
   - ptyprocess=0.7.0
   - pure_eval=0.2.3
   - py-cpuinfo=9.0.0
-  - pyarrow=17.0.0
-  - pyarrow-core=17.0.0
+  - pyarrow=18.0.0
+  - pyarrow-core=18.0.0
   - pybind11-abi=4
   - pycosat=0.6.6
   - pycparser=2.22
@@ -319,17 +319,17 @@ dependencies:
   - requests=2.32.3
   - rfc3339-validator=0.1.4
   - rfc3986-validator=0.1.1
-  - rpds-py=0.20.0
+  - rpds-py=0.20.1
   - ruamel.yaml=0.18.6
   - ruamel.yaml.clib=0.2.8
-  - s2n=1.5.5
+  - s2n=1.5.6
   - scikit-image=0.24.0
   - scikit-learn=1.5.2
   - scipy=1.14.1
   - seaborn=0.13.2
   - seaborn-base=0.13.2
   - send2trash=1.8.3
-  - setuptools=75.1.0
+  - setuptools=75.3.0
   - six=1.16.0
   - smmap=5.0.0
   - snappy=1.2.1
@@ -339,19 +339,19 @@ dependencies:
   - sqlalchemy=2.0.36
   - stack_data=0.6.2
   - statsmodels=0.14.4
-  - svt-av1=2.2.1
+  - svt-av1=2.3.0
   - sympy=1.13.3
   - tblib=3.0.0
   - terminado=0.18.1
   - threadpoolctl=3.5.0
   - tifffile=2024.9.20
-  - tinycss2=1.3.0
+  - tinycss2=1.4.0
   - tk=8.6.13
   - tomli=2.0.2
   - tomlkit=0.13.2
   - toolz=1.0.0
   - tornado=6.4.1
-  - tqdm=4.66.5
+  - tqdm=4.66.6
   - traitlets=5.14.3
   - truststore=0.10.0
   - types-python-dateutil=2.9.0.20241003
@@ -394,11 +394,11 @@ dependencies:
       - asdf-standard==1.1.1
       - asdf-transform-schemas==0.5.0
       - astropy==6.1.4
-      - astropy-iers-data==0.2024.10.21.0.33.21
+      - astropy-iers-data==0.2024.11.4.0.33.34
       - astropy-sphinx-theme==1.1
       - black==24.10.0
-      - boto3==1.35.47
-      - botocore==1.35.47
+      - boto3==1.35.54
+      - botocore==1.35.54
       - bqplot==0.12.43
       - bqplot-gl==0.0.0
       - bqplot-image-gl==1.5.0
@@ -415,7 +415,7 @@ dependencies:
       - frozenlist==1.5.0
       - glfw==2.7.0
       - glue-core==1.21.1
-      - glue-jupyter==0.23.0
+      - glue-jupyter==0.23.1
       - glue-vispy-viewers==1.2.2
       - hsluv==5.0.4
       - humanize==4.11.0
@@ -435,6 +435,7 @@ dependencies:
       - jupyter-resource-usage==1.1.0
       - jupyter-rfb==0.4.4
       - jupyter-server-proxy==4.4.0
+      - jupyterlab-tour==4.0.1
       - markdown==3.7
       - markdown-it-py==3.0.0
       - mccabe==0.7.0
@@ -456,7 +457,7 @@ dependencies:
       - pyds9==1.8.1
       - pyerfa==2.0.1.4
       - pyflakes==3.2.0
-      - pymdown-extensions==10.11.2
+      - pymdown-extensions==10.12
       - pyopengl==3.1.7
       - pytest==8.3.3
       - pytest-doctestplus==1.2.1
@@ -464,7 +465,7 @@ dependencies:
       - pythreejs==2.4.2
       - reacton==1.8.3
       - requests-mock==1.12.1
-      - rich==13.9.3
+      - rich==13.9.4
       - rich-click==1.8.3
       - s3transfer==0.10.3
       - semantic-version==2.10.0
@@ -472,9 +473,9 @@ dependencies:
       - sidecar==0.7.0
       - simpervisor==1.0.0
       - snowballstemmer==2.2.0
-      - solara==1.40.0
-      - solara-server==1.40.0
-      - solara-ui==1.40.0
+      - solara==1.41.0
+      - solara-server==1.41.0
+      - solara-ui==1.41.0
       - sphinx==8.1.3
       - sphinx-astropy==1.9.1
       - sphinx-automodapi==0.18.0
@@ -487,7 +488,7 @@ dependencies:
       - sphinxcontrib-jsmath==1.0.1
       - sphinxcontrib-qthelp==2.0.0
       - sphinxcontrib-serializinghtml==2.0.0
-      - starlette==0.41.0
+      - starlette==0.41.2
       - stdlib-list==0.11.0
       - stsci-announce==0.5.0
       - stsci-rtd-theme==1.0.1
@@ -496,10 +497,10 @@ dependencies:
       - traittypes==0.2.1
       - uvicorn==0.32.0
       - vispy==0.14.3
-      - watchdog==5.0.3
+      - watchdog==6.0.0
       - watchfiles==0.24.0
       - websockets==13.1
       - y-py==0.6.2
-      - yarl==1.16.0
+      - yarl==1.17.1
       - ypy-websocket==0.12.4
 prefix: /opt/conda
