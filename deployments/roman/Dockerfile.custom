@@ -1,4 +1,3 @@
-
 # ========================= vvvvv Custom  vvvvv =========================
 
 ARG BASE_IMAGE
@@ -11,14 +10,12 @@ ENV CRDS_PATH=$HOME/crds_cache
 ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 
-# ----------------------------------------------------------------------
-USER root
-
 # ------------------------------------------------------------------------------
 # Install environments
 
 # All specs for frozen builds need to be available before their normal installs
-USER ${NB_UID}
+USER ${NB_UID}:${NB_GID}
+# USER root
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.
@@ -26,7 +23,7 @@ USER ${NB_UID}
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
-RUN   /opt/common-scripts/install-common  base
+RUN /opt/common-scripts/install-common  base
 
 # ----------------------------------------------------------------------
 # Roman CAL
@@ -37,9 +34,7 @@ RUN   /opt/common-scripts/install-common  base
 
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environments/roman-cal/
-
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/
-
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/roman-cal/  /opt/env-frozen/roman-cal/
 
 # ----- Install roman-cal conda environment
@@ -51,13 +46,13 @@ COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.pip  /opt/environments
 
 # ----  Compile roman-cal pip requirements to dependency solution
 #       Normally this includes *.pip from common/common-env automatically.
-# RUN /opt/common-scripts/env-compile roman-cal
+RUN /opt/common-scripts/env-compile roman-cal
 
 # ----  If common-env causes conflicts,  it can be omitted and/or reduced if necessary
 #       by specifying alternate package lists such as /opt/common-env/required.pip
 #       which should be the minimum installed to avoid breaking our framework in places,
 #       particularly for testing.
-RUN /opt/common-scripts/env-compile roman-cal  /opt/common-env/required.pip
+# RUN /opt/common-scripts/env-compile roman-cal  /opt/common-env/required.pip
 
 # ----- Install compiled roman-cal pip dependency solution
 RUN /opt/common-scripts/env-sync roman-cal

@@ -25,4 +25,4 @@ fi
 
 /opt/common-scripts/env-clean
 
-fix-permissions $CONDA_DIR $HOME
+# fix-permissions $CONDA_DIR $HOME   # requires root!

@@ -11,7 +11,8 @@ export FREEZE=${FREEZE:-0}
 # Select "conda" tool used to install conda package and environments: conda or mamba
 #   mamba is largely a drop-in replacement for conda with improved dependency resolution,
 #   parallel downloads, and C++ implementation.
-export CONDA_VER=conda  # switch to conda while "mamba env export" in install-common is broken
+export CONDA_VER=mamba  # switch to conda while "mamba env export" in install-common is broken
+export MAMBA_ROOT_PREFIX=/opt/conda
 
 # Additional parameters for image-exec Docker run command, e.g. add mounts here
 export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
@@ -20,7 +21,7 @@ export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
 export IMAGE_VULNERABILITY_LEVEL="medium"
 
 # Extra standard parameters to docker build commands
-export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg ${CONDA_VER}"
+export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg CONDA_VER=${CONDA_VER} --build-arg MAMBA_ROOT_PREFIX=${MAMBA_ROOT_PREFIX}"
 
 export ROOT_IMAGE=ubuntu:${UBUNTU_TAG}
 
@@ -42,7 +43,7 @@ export BUILDKIT_STEP_LOG_MAX_SPEED=10000000
 
 
 # Since these are "build-time" variables references to jovyan are ok
-export USER_CACHE_DIRS="/home/jovyan/.cache /opt/conda/pkgs /home/jovyan/.conda/pkgs"
+export USER_CACHE_DIRS="/home/jovyan/.cache /opt/conda/pkgs"  # /home/jovyan/.conda/pkgs"
 export SYSTEM_CACHE_DIRS="/var/cache/apt"
 export CACHE_DIRS="${USER_CACHE_DIRS} ${SYSTEM_CACHE_DIRS}"
 

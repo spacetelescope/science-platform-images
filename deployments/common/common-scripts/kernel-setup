@@ -25,7 +25,7 @@ EOF
 
 # Potentially among other things,  these are needed so that image-test will run.
 
-for kernel in `${CONDA_VER} env list | grep -v '#' | grep -v base | cut -d' ' -f1`; do
+for kernel in `conda env list | grep -v '#' | grep -v base | cut -d' ' -f1`; do
 
     echo "================== Adding kernel $kernel ====================="
 
