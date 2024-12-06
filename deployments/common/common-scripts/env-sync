@@ -29,5 +29,5 @@ pip-sync --verbose --pip-args "${PIP_SWITCHES}" --python-executable `which pytho
 
 /opt/common-scripts/env-clean
 
-# fix-permissions $CONDA_DIR $HOME  # requires root!
+fix-permissions $CONDA_DIR $HOME
 

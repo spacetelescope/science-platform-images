@@ -47,4 +47,8 @@ for filepath in $*; do
 
 done
 
+/opt/common-scripts/env-clean
+
 source /opt/common-scripts/env-deactivate ${env}
+
+fix-permissions $CONDA_DIR  $HOME
