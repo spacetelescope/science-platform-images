@@ -8,7 +8,7 @@ aiobotocore==2.15.2
     # via s3fs
 aiohappyeyeballs==2.4.4
     # via aiohttp
-aiohttp==3.11.9
+aiohttp==3.11.10
     # via
     #   aiobotocore
     #   fsspec
@@ -363,7 +363,7 @@ html5lib==1.1
     # via astroquery
 httpcore==1.0.7
     # via httpx
-httpx==0.28.0
+httpx==0.28.1
     # via jupyterlab
 humanize==4.11.0
     # via solara-ui
@@ -1275,7 +1275,7 @@ tweakwcs==0.8.9
     # via
     #   romancal
     #   stcal
-types-python-dateutil==2.9.0.20241003
+types-python-dateutil==2.9.0.20241206
     # via arrow
 typing-extensions==4.12.2
     # via
