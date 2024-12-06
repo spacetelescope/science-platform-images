@@ -49,7 +49,7 @@ RUN cd /tmp && \
 # ----------------------------------------------------------------------
 # Install environments
 
-USER ${NB_UID}
+USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.
@@ -79,7 +79,7 @@ RUN /opt/common-scripts/env-sync masterclass
 COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/ /opt/environments/masterclass/
 # ========================= vvvvv Generic vvvvv  =========================
 
-USER $NB_UID
+USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 
@@ -90,8 +90,6 @@ RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
 # perspective of the deployment image directory,  not common.
 
 USER root
-
-RUN find /home/${NB_USER} ! -uid ${NB_UID} | xargs chown ${NB_UID}:${NB_GID} || true
 
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.
@@ -112,15 +110,6 @@ COPY --chown=${NB_UID}:${NB_GID}  MISSION_VERSION /opt
 COPY --chown=${NB_UID}:${NB_GID}  MISSION_HASH /opt
 
 # ----------------------------------------------------------------------
-# YYYY SEC
-
-USER root
-#RUN  /opt/common-scripts/npm-audit  /usr/share/npm/node_modules/socks-proxy-agent  fix  && \
-#RUN   /opt/common-scripts/env-clean
-
-#RUN  find /opt/conda -name yarn.lock | grep jupyterlab/staging | xargs rm -f || true
-
-# ----------------------------------------------------------------------
 # For standalone operation outside JupyterHub,  note that  /etc also includes
 # common home directory files.   post-start-hook may not include everything required
 # for running on AWS,  just common functions needed for both AWS and standalone/CI.
@@ -135,18 +124,10 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
-# For testing mutability of pre-installed environments once uidgid's are real, membership in users controls
-# mutability but fix-permissions must be called on files which need to be mutable, particularly those we install.
-#
-## USER root
-## RUN echo "jmiller:x:1001:1001::/home/jovyan:/bin/bash" >>/etc/passwd
-## RUN grep -v users /etc/group >tmp
-## RUN mv tmp /etc/group
-## RUN echo "users:x:100:jmiller" >>/etc/group
-## RUN echo "jmiller:x:1001:jmiller" >>/etc/group
-## USER $NB_USER
+USER root
+RUN fix-permissions $CONDA_DIR $HOME
+USER ${NB_UID}:${NB_GID}
 
-USER $NB_USER
-WORKDIR /home/$NB_USER
+WORKDIR $HOME
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 CMD [ "start-notebook.py" ]

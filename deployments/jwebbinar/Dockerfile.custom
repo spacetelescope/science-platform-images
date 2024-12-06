@@ -49,7 +49,7 @@ RUN cd /tmp && \
 # ----------------------------------------------------------------------
 # Install environments
 
-USER ${NB_UID}
+USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.

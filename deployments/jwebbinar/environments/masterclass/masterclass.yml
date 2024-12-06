@@ -1,7 +1,6 @@
 name: masterclass
 channels:
   - defaults
-  - conda-forge
   # - http://ssb.stsci.edu/astroconda
 dependencies:
   - astropy=5.3.4
