@@ -32,6 +32,9 @@ ENV PIP_SWITCHES=$PIP_SWITCHES
 ARG CONDA_VER=conda
 ENV CONDA_VER=${CONDA_VER}
 
+ARG MAMBA_ROOT_PREFIX=/opt/conda
+ENV MAMBA_ROOT_PREFIX=${MAMBA_ROOT_PREFIX}
+
 ARG USER_CACHE_DIRS=""
 ENV USER_CACHE_DIRS=${USER_CACHE_DIRS}
 
@@ -58,10 +61,8 @@ RUN /opt/common-scripts/apt-install \
     ca-certificates \
     openssl \
     wget \
-    vim \
-    npm \
-    nodejs
-
+    vim
+    
 # Misc system tools
 RUN /opt/common-scripts/apt-install \
         tree \
@@ -76,7 +77,6 @@ RUN /opt/common-scripts/apt-install \
         net-tools \
         rename \
         stress-ng
-        #        libexpat1
 
 # S/W Development Tools
 RUN /opt/common-scripts/apt-install \
@@ -95,8 +95,6 @@ RUN /opt/common-scripts/apt-install \
         libxml2-dev \
         libxslt1.1 \
         libxslt1-dev \
-        python3-libxml2 \
-        python-dev-is-python3 \
         graphviz \
         libopenblas-dev
 
@@ -156,18 +154,14 @@ COPY bash.env /etc/bash.env
 ENV BASH_ENV=/etc/bash.env
 
 # ----------------------------------------------------------------------
-# Common conda environments
-#USER ${NB_UID}
-#COPY environments/ /opt/environments/
-
-# ----------------------------------------------------------------------
 # Set up astroquery and ds9 desktop short-cut, will be further
 # augmented by specific deployments
-USER ${NB_UID}
+USER ${NB_UID}:${NB_GID}
 COPY default-home-contents/   /etc/default-home-contents
 
 ENV  PIP_TOOLS_CACHE_DIR=$HOME/.cache/pip
 
+<<<<<<< HEAD
 # ----------------------------------------------------------------------
 # YYYY SEC
 
@@ -177,6 +171,14 @@ ENV  PIP_TOOLS_CACHE_DIR=$HOME/.cache/pip
 #     npm cache clean --force && \
 #     yarn cache clean --force
 
+=======
+>>>>>>> main
 COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
 COPY --chown=${NB_UID}:${NB_GID} VERSION /opt
 COPY --chown=${NB_UID}:${NB_GID} HASH /opt
+
+USER root
+RUN fix-permissions $HOME /opt/conda
+USER ${NB_UID}:${NB_GID}
+
+

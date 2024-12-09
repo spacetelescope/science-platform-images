@@ -1,5 +1,5 @@
 pip
 pip-tools
 setuptools
-nodejs
 jupyter-packaging
+nodejs>=22.0

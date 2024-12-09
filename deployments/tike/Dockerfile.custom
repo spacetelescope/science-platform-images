@@ -39,7 +39,7 @@ RUN git clone https://github.com/JohannesBuchner/cuba/ &&\
 # ----------------------------------------------------------------------
 # Install environments
 
-USER ${NB_UID}
+USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.
@@ -80,11 +80,6 @@ COPY --chown=${NB_UID}:${NB_GID} environments/tess/ /opt/environments/tess/
 # ellc is a dependency of allesfitter
 # RUN /opt/common-scripts/env-src-install  tess  ellc
 # RUN /opt/common-scripts/env-src-install  tess  allesfitter
-
-# ----------------------------------------------------------------------
-# YYYY SEC
-
-USER $NB_USER
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2

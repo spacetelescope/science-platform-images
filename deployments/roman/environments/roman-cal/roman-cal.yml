@@ -2,7 +2,6 @@
 name: roman-cal
 channels:
     - conda-forge
-    - defaults
 dependencies:
     - freetds
     - fftw
