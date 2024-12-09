@@ -7,7 +7,7 @@
 # ----------------- basic inputs,  must set for deployment --------------
 
 export DEPLOYMENT_NAME=tike
-export ENVIRONMENT=sandbox
+export ENVIRONMENT=test
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,

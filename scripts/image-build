@@ -53,7 +53,7 @@ rm Dockerfile.cached
 
 cd ${IMAGE_DIR}
 echo "========================= Building $NOTEBOOK_ID USE_FROZEN=${USE_FROZEN} =========================="
-add-caching Dockerfile >Dockerfile.cached
+# add-caching Dockerfile >Dockerfile.cached
 time docker build \
      ${DOCKER_BUILD_ARGS} \
      --tag "notebook-${DEPLOYMENT_NAME}-dirty" \

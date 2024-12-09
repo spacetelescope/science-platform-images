@@ -171,11 +171,11 @@ ENV  PIP_TOOLS_CACHE_DIR=$HOME/.cache/pip
 # ----------------------------------------------------------------------
 # YYYY SEC
 
-RUN npm install -g --prod yarn             && \
-    npm install -g --prod yarn-audit-fix   && \
-    npm install -g minimist                && \
-    npm cache clean --force && \
-    yarn cache clean --force
+# RUN npm install -g --prod yarn             && \
+#     npm install -g --prod yarn-audit-fix   && \
+#     npm install -g minimist                && \
+#     npm cache clean --force && \
+#     yarn cache clean --force
 
 COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
 COPY --chown=${NB_UID}:${NB_GID} VERSION /opt
