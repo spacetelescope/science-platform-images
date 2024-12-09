@@ -1,14 +1,21 @@
-#!/bin/bash
+#! /bin/bash
 
 # NO set -eu for source script
 
 ENVROOT=${ENVROOT:-${HOME}/envs}
-ENVROOTS=${ENVROOTS:-${ENVROOT} /opt/conda/envs}   # To add team conda environments?
+ENVROOTS=${ENVROOTS:-"${ENVROOT} /opt/conda/envs"}   # To add team conda environments?
+
+KERNEL_SHELL=${KERNEL_SHELL:-bash}   # shell nominally used for conda init
 
 function usage() {
-   if `eval [[ $1 ]]`; then
-      shift
+   local condition=$1
+   shift
+   if [ ${condition} ]; then
+      echo
       echo "usage: `basename $0` $*"
+      echo
+      echo "$(cat)"
+      echo
       exit 2
    fi
 }
@@ -16,5 +23,4 @@ function usage() {
 function banner() {
     echo "---------------------------------------------------------------"
     echo $*
-    echo "---------------------------------------------------------------"
 }

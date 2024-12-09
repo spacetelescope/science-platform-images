@@ -4,7 +4,11 @@ set -eu
 
 source `dirname $0`/kernel-utils
 
-usage "$# -lt 1" "<name> [<jh-display-name>] [<env-root>]"
+usage "$# -lt 1" "<environment-name> [<display-name>] [<env-root>]"  <<EOU
+Create virtual environment <environment-name> and add a JupyterLab kernel <display-name> corresponding to it.
+If <display-name> is not specified, defaults to <environment-name>.
+<env-root> is the root directory for collections of environments, defaulting to $HOME/envs.
+EOU
 
 ENVNAME=$1
 DISPNAME=${2:-${ENVNAME}}
@@ -17,5 +21,5 @@ source kernel-activate ${ENVNAME} "${ENVROOT}"
 pip install --upgrade ipykernel pip
 
 echo "---------------------------------------------------------------"
-python -m ipykernel install --user --name=${ENVNAME}  --display-name "${DISPNAME}"
+kernel-install "${ENVNAME}"  "${DISPNAME}"
 banner "Activate virtual environment with: 'source kernel-activate ${ENVNAME}'"
