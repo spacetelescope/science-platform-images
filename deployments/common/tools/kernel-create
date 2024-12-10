@@ -4,7 +4,40 @@ set -eu
 
 source `dirname $0`/kernel-utils
 
-usage "$# -lt 1" "<name> [<python-version>] [<jh-display-name>] [<kernel-root-dir>]"
+usage "$# -lt 1" "<environment-name> [<python-version>|environment.yml] [<display-name>] [<kernel-root-dir>]" <<EOU
+Create a compute environment <environment-name> and add a JupyterLab kernel corresponding to it.
+
+If nothing is specified or a <python-version> is specified,  then the contents of the environment will be a 
+minimal Python environment with either the current or specified Python version.
+
+If an <environment.yml> file is given instead,  an environment with the specified packages and properties will be created.
+
+The menu item for selecting this kernel in Jupyter Lab will be <display-name> if specified, 
+otherwise <environment-name>.
+
+<kernel-root-dir> is the root directory for collections of environments, defaulting to \$HOME/envs.
+
+Examples:
+
+Building a minimal Python environment with Python 3.13 named test-1,  which appears
+in the JupyterLab menu as "Menu Item Test 1" for selection for notebook use:
+
+$ kernel-create test-1  3.13  "Menu Item Test 1"
+$ source kernel-activate test-1
+$ conda install cpkg1 cpkg2...
+$ pip install pkg1 pkg2 ... -r requirements.txt
+
+Building a complete environment based on the conda spec file friends-export-environment.yml
+named test-2,  which appears in the JupyterLab menu as "Menu Item Test 2" for selection.
+NOTE: that this is overriding the spec's name for the environment,  whatever it is:
+
+$ kernel-create test-2  friends-export-environment.yml "Menu Item Test 2"
+$ source kernel-activate test-2
+
+You can change it of course,  but presumably you now have your friends full environment!
+
+See kernel-export for how to export an environment to a spec file.
+EOU
 
 ENVNAME=$1
 PYVER=${2:-`python --version | cut -d' ' -f2`}
@@ -13,12 +46,27 @@ ENVROOT="${4:-${ENVROOT}}"
 
 ENVDIR="${ENVROOT}/conda/${ENVNAME}"
 
-banner "Creating kernel ${ENVNAME} with Python ${PYVER} at ${ENVDIR}"
-conda create --quiet --yes --prefix="${ENVDIR}" python=${PYVER} ipykernel
-conda init --quiet  bash
 
-source kernel-activate ${ENVNAME}  ${ENVROOT}
+case "${PYVER}" in
+    *.yml|*.yaml)
+        banner "Creating environment ${ENVNAME} from conda spec ${PYVER} at ${ENVDIR}"
+        conda env create --quiet --yes --prefix="${ENVDIR}" --file="${PYVER}"
+        source kernel-activate ${ENVNAME} >& /dev/null
+        conda install --prefix "${ENVDIR}"   --quiet --yes ipykernel
+    ;;
+    [0-9]*)
+        banner "Creating environment ${ENVNAME} with Python ${PYVER} at ${ENVDIR}"
+        conda create --quiet --yes --prefix="${ENVDIR}" python=${PYVER} ipykernel
+    ;;
+    *)
+        banner "Invalid input for Python version/environment.yml: ${PYVER}"
+        echo "Specify either python-<version> or a conda environment.yml file"
+        exit 1
+    ;;
+esac
 
-echo "---------------------------------------------------------------"
-python -m ipykernel install --user --name="${ENVNAME}"  --display-name "${DISPNAME}"
+conda init --quiet  ${KERNEL_SHELL}   >& /dev/null
+
+kernel-install  "${ENVNAME}"  "${DISPNAME}"  
+
 banner "Activate environment with:  source kernel-activate ${ENVNAME}"
