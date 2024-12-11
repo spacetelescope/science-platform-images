@@ -10,4 +10,4 @@ cd $IMAGE_DIR
 
 rm -rf env-frozen
 image-cp /opt/env-frozen
-
+release-hashes

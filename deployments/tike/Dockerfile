@@ -116,6 +116,7 @@ COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
 
 COPY --chown=${NB_UID}:${NB_GID}  MISSION_VERSION /opt
 COPY --chown=${NB_UID}:${NB_GID}  MISSION_HASH /opt
+RUN  [ $USE_FROZEN -eq "1" ] && echo >/opt/FROZEN || echo >/opt/FLOATING
 
 # ----------------------------------------------------------------------
 # For standalone operation outside JupyterHub,  note that  /etc also includes

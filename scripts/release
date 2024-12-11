@@ -1,0 +1,80 @@
+#! /bin/bash
+
+if [ $# -lt 2 ]; then
+    usage: "`basename $0`  <common-version>  <mission-version>"
+    cat <<EOU
+<common-version> tags the generic code and relates this repo with
+the similarly tagged IAC repos currently in CodeCommit.  It is
+specified simply as semver,  e.g. 2.0.0
+
+<mission-version> tags a particular deployment with a build version
+unique to that mission.  the value input on the command line should
+be the simple numerical version which corresponds directly to a DMS
+release version (where applicable),  e.g. 16.0.0.  The value stored
+in the version file will include the mission/deployment-name,
+e.g. roman-16.0.0
+
+git hash updates:  this script also updates common and mission-specific
+hash files to their current values at the time of this commit.  Minus
+versions,  this enables trivial recall of exactly the code which was
+tagged here.
+
+Example command for initial build release:
+
+release 2.1.0  16.0.0
+
+EOU
+fi
+
+cd $JUPYTERHUB_DIR
+
+source ./setup-env
+
+COMMON_VER=$1
+MISSION_VER=${DEPLOYMENT_NAME}-$2
+
+git fetch upstream
+git checkout upstream/main
+git branch -D update-versions
+git checkout -b update-versions
+
+echo "Clearing any pending commit files."
+git reset HEAD
+
+echo "Updating release version for common and ${DEPLOYMENT_NAME}."
+
+echo $COMMON_VER  >deployments/common/VERSION
+echo $MISSION_VER  >deployments/${DEPLOYMENT_NAME}/MISSION_VERSION
+
+release-hashes
+
+echo "The repo status is:"
+git status
+echo "The version file update diffs are:"
+git diff
+echo
+echo "The next step will add, commit, and push the update-versions branch"
+echo "with only the 4 mission and common hash and version files."
+
+echo ======================================================================
+git add deployments/common/{HASH,VERSION} deployments/${DEPLOYMENT_NAME}/{MISSION_HASH,MISSION_VERSION}
+echo ======================================================================
+git status
+echo ======================================================================
+echo 
+
+read -p"If the above looks OK,  enter 'y' otherwise enter 'n' to abort:"  ans
+case $ans in
+    y|Y|yes|YES|Yes)
+	echo "Finalizing release update and push."
+	git commit -m "Updated versions to $COMMON_VER and $MISSION_VER"
+	echo ======================================================================
+	echo "Push the branch updated versions to GitHub and PR to spacetelescope/science-platform-versions@main"
+	echo "Review and merge the PR before proceeding to release-post-merge to finish tagging."
+	;;
+    *)
+	echo "Aborting release versions update."
+	git reset HEAD
+	git checkout -- deployments/common/{HASH,VERSION} deployments/${DEPLOYMENT_NAME}/{MISSION_HASH,MISSION_VERSION}
+	;;
+esac

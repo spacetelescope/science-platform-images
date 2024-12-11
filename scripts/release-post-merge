@@ -1,0 +1,8 @@
+#! /bin/bash
+
+git fetch upstream
+git checkout upstream/main
+read MISSION_VER  <deployments/${DEPLOYMENT_NAME}/MISSION_VERSION
+read COMMON_VER   <deployments/common/VERSION
+git tag ${MISSION_VER}-c-${COMMON_VER}
+git push --tags upstream
