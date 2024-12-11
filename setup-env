@@ -6,13 +6,8 @@
 
 # ----------------- basic inputs,  must set for deployment --------------
 
-<<<<<<< HEAD
-export DEPLOYMENT_NAME=tike
-export ENVIRONMENT=test
-=======
 export DEPLOYMENT_NAME=roman
 export ENVIRONMENT=sandbox
->>>>>>> main
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
