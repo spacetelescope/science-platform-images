@@ -1,0 +1,31 @@
+#! /bin/bash
+
+set -eu
+
+source `dirname $0`/kernel-utils
+
+usage "$# -lt 2"  "<environment-name>   <specname.yaml>"  <<EOU
+Generate a conda installation YAML spec for <environment-name> which can be used
+to install it somewhere else with its full complement of installed packages.
+
+Save environment to <specname.yaml>:
+
+$ kernel-export  test-1  test-1-env-spec.yml
+
+Rebuild it somewhere else where conda is already installed,  e.g. the science platform
+in a different account:
+
+$ kernel-create  test-1  test-1-env-spec.yml
+EOU
+
+ENVNAME="$1"
+SPECNAME="$2"
+
+source kernel-activate ${ENVNAME}  >& /dev/null
+
+echo "Exporting environment ${ENVNAME} to ${SPECNAME}"
+# --from-history 
+
+conda env export -p  $CONDA_PREFIX  | grep -v "^prefix:"  > ${SPECNAME}
+
+

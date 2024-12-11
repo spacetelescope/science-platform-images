@@ -1,11 +1,18 @@
 #! /bin/bash
 
-# NO set -eu for source script
+# NO set -e for source script
 
-source /opt/tools/kernel-utils
+# set -u
+
+KERNEL_TOOLS_ROOT=${KERNEL_TOOLS_ROOT:-/opt/tools}
+
+source  ${KERNEL_TOOLS_ROOT}/kernel-utils
 
 if [ $# -lt 1 ]; then
-    echo "usage:  source kernel-deactivate <env-name>  <env-root... (ignored)>"
+    echo "usage:  source kernel-deactivate <environment-name>  <env-root... (ignored)>"
+    echo
+    echo "source the output of this script to deactivate your current environment."
+    echo
     # no exit for source script.
 else
     ENVNAME=$1
@@ -15,7 +22,7 @@ else
     for ENVROOT in ${ENVROOTS}; do
         if [ ! -d ${ENVROOT} ]; then
             banner "WARNING:  ${ENVROOT} is not a directory"
-	        # some other root may hit though
+            continue
         elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
             deactivate
             deactivated=true

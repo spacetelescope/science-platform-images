@@ -4,7 +4,18 @@ set -eu
 
 source `dirname $0`/kernel-utils
 
-usage "$# -lt 1" "kernel-delete <env-name>  [<env-roots...>]"
+usage  "$# -lt 1"  "<environment-name>  [<env-roots...>]" <<EOU
+Delete the JupyterLab kernel and associated compute environment <environment-name> in one step.
+
+<env-roots...> are the root directories for collections of environments, defaulting to \$HOME/envs and /opt/conda/envs.
+
+A *kernel* defines a compute environment as something JupyterLab should offer to users in the kernel menu to e.g. run notebooks.
+
+The *environment* itself is a conda environment or Python virtualenv and the associated installed programs and packages.
+
+See also: *kernel-install* and *kernel-uninstall* for information on creating and removing kernels in JupyterLab
+without also creating or removing the underlying environment.
+EOU
 
 ENVNAME=$1
 shift;
@@ -15,20 +26,22 @@ for ENVROOT in ${ENVROOTS}; do
         banner "Kernel environments directory ${ENVROOT} does not exist."
         continue
     elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
-        banner "Removing virtual env ${ENVNAME} at ${${ENVROOT}/venv/${ENVNAME}}"
+        banner "Removing virtual env ${ENVNAME} at ${ENVROOT}/venv/${ENVNAME}"
         rm -rf ${ENVROOT}/venv/${ENVNAME}
+        kernel-uninstall "${ENVNAME}"
         exit 0
     elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
         banner "Removing conda env ${ENVNAME} at ${ENVROOT}/conda/${ENVNAME}"
         conda env remove --prefix  ${ENVROOT}/conda/${ENVNAME} --yes --quiet
+        kernel-uninstall "${ENVNAME}"
         exit 0
     elif [ -d ${ENVROOT}/${ENVNAME} ]; then
         banner "Removing conda env ${ENVNAME} at ${ENVROOT}/${ENVNAME}"
         conda env remove --prefix ${ENVROOT}/${ENVNAME} --yes --quiet
+        kernel-uninstall "${ENVNAME}"
         exit 0
     fi
 done
 
 banner "No env ${ENVNAME} found under ${ENVROOTS}"
 exit 1
-

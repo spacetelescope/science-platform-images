@@ -1,0 +1,13 @@
+#! /bin/bash
+
+set -eu
+
+# List the kernels which are configured for use by JupyterLab.
+
+source `dirname $0`/kernel-utils
+
+source kernel-activate base  >& /dev/null # must have jupyter
+
+jupyter kernelspec list | tail -n +2 | perl -p -e 's/[\t ]+/ /g' | perl -p -e 's/^ //g'
+
+

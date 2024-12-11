@@ -1,36 +1,50 @@
 #! /bin/bash
 
-source /opt/tools/kernel-utils
+# set -u   # no -e for source'd script
+
+KERNEL_TOOLS_ROOT=${KERNEL_TOOLS_ROOT:-/opt/tools}
+
+source  ${KERNEL_TOOLS_ROOT}/kernel-utils
 
 if [ $# -lt 1 ]; then
-    echo "usage:  source kernel-activate <env-name> [<env-root...>]"
-    # can't exit in source'd script
+    echo "usage:  source kernel-activate <environment-name> [<env-root...>]"
+    echo
+    echo "You must 'source' the output of this script into your shell to use <environment-name>."
+    echo
+    # can't exit in source'd script or sourcing script will exit
 else
-	source /opt/conda/etc/profile.d/conda.sh
+    source /opt/conda/etc/profile.d/conda.sh
 
-    ENVNAME=$1
+    envname=$1
     shift;
     ENVROOTS=${*:-${ENVROOTS}}  # Add team env roots here
-	activated=false
-    for ENVROOT in ${ENVROOTS}; do
-	    if [ ! -d ${ENVROOT} ]; then
-			banner "Kernel environments directory ${ENVROOT} does not exist."
-			continue
-	    elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
-			source ${ENVROOT}/venv/${ENVNAME}/bin/activate
-			activated=true
-			break
-	    elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
-			conda activate ${ENVROOT}/conda/${ENVNAME}
-			activated=true
-			break
-	    elif [ -d ${ENVROOT}/${ENVNAME} ]; then
-			conda activate ${ENVNAME}
-			activated=true
-			break
-	    fi
+    activated=false
+
+    conda init --quiet  ${KERNEL_SHELL} >& /dev/null
+
+    for envroot in ${ENVROOTS}; do
+            if [ ! -d ${envroot} ]; then
+                        banner "Kernel environments directory ${envroot} does not exist."
+                        continue
+            elif [ -d ${envroot}/venv/${envname} ]; then
+                        source ${envroot}/venv/${envname}/bin/activate
+                        activated=true
+                        break
+            elif [ -d ${envroot}/conda/${envname} ]; then
+                        conda activate ${envroot}/conda/${envname}
+                        activated=true
+                        break
+            elif [ -d ${envroot}/${envname} ]; then  # normal layout w/o venv + conda
+                        conda activate ${envname}
+                        activated=true
+                        break
+            elif [ -f ${envroot}/../bin/conda ]; then   # base
+                        conda activate ${envname}
+                        activated=true
+                        break
+            fi
     done
-	if [ "${activated}" == "false" ]; then
-		banner "Kernel environment ${ENVNAME} not found under ${ENVROOTS}."
-	fi
+    if ! ${activated}; then
+        banner "Kernel environment ${envname} not found under ${ENVROOTS}."
+    fi
 fi
