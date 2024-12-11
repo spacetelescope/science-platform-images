@@ -10,7 +10,7 @@ arrow==1.3.0
 arviz @ https://github.com/ttdu/arviz/archive/main.zip#sha256=72e6a63f33fe0025ac6ac5549aa4bf9775478b7f2095c07f52b703ff7af6f253
 astropy==6.0.0
 astropy-iers-data==0.2024.6.10.0.30.47
-astroquery==0.4.7
+git+https://github.com/astropy/astroquery.git
 asttokens==2.4.1
 astunparse==1.6.3
 async-lru==2.0.4
@@ -246,10 +246,10 @@ astrocut
 jdaviz
 
 lcviz==1.0.0
-# lkprf
-# lksearch
-# tesscube
-# tess-point
-# tesswcs
-# juliet
-# triceratops
+lkprf
+lksearch==1.1.0
+tesscube==1.0.5
+tess-point
+tesswcs==1.1.9
+juliet
+triceratops

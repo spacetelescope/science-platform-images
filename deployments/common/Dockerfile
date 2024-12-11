@@ -96,7 +96,8 @@ RUN /opt/common-scripts/apt-install \
         libxslt1.1 \
         libxslt1-dev \
         graphviz \
-        libopenblas-dev
+        libopenblas-dev \
+        zlib1g-dev
 
 # Install Rust language
 RUN /opt/common-scripts/apt-install cargo rustc
@@ -161,18 +162,6 @@ COPY default-home-contents/   /etc/default-home-contents
 
 ENV  PIP_TOOLS_CACHE_DIR=$HOME/.cache/pip
 
-<<<<<<< HEAD
-# ----------------------------------------------------------------------
-# YYYY SEC
-
-# RUN npm install -g --prod yarn             && \
-#     npm install -g --prod yarn-audit-fix   && \
-#     npm install -g minimist                && \
-#     npm cache clean --force && \
-#     yarn cache clean --force
-
-=======
->>>>>>> main
 COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
 COPY --chown=${NB_UID}:${NB_GID} VERSION /opt
 COPY --chown=${NB_UID}:${NB_GID} HASH /opt
