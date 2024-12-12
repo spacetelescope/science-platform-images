@@ -10,7 +10,7 @@ dependencies:
   - colorama=0.4.6
   - deprecation=2.1.0
   - fftw=3.3.10
-  - freetds=1.4.23
+  - freetds=1.4.24
   - icu=75.1
   - importlib-metadata=8.5.0
   - jupyter-packaging=0.12.3
@@ -30,7 +30,7 @@ dependencies:
   - liblzma=5.6.3
   - libnsl=2.0.1
   - libopenblas=0.3.28
-  - libsqlite=3.47.0
+  - libsqlite=3.47.2
   - libstdcxx=14.2.0
   - libstdcxx-ng=14.2.0
   - libuuid=2.38.1
@@ -50,7 +50,7 @@ dependencies:
   - python-build=1.2.2.post1
   - readline=8.2
   - setuptools=75.6.0
-  - sqlite=3.47.0
+  - sqlite=3.47.2
   - tk=8.6.13
   - tomli=2.2.1
   - tomlkit=0.13.2

@@ -13,7 +13,7 @@ export CAL_VERSION=none
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
                                      # 1 for tagged/frozen production build
 
-export FREEZE=1                     # dump new frozen requirements in image to modified files in this git repo
+export FREEZE=0                     # dump new frozen requirements in image to modified files in this git repo
 
 export PLATFORM=linux/amd64
 
