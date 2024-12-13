@@ -1,0 +1,10 @@
+#! /bin/bash
+
+cd $JUPYTERHUB_DIR
+
+source ./setup-env
+echo "Updating saved git hashes for" `where`
+
+git rev-parse HEAD  >deployments/common/HASH
+
+git rev-parse HEAD  >deployments/${DEPLOYMENT_NAME}/MISSION_HASH
