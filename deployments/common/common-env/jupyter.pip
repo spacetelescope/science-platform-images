@@ -24,7 +24,6 @@ ipyvuetify
 ipywebrtc
 ipykernel
 jupyter-resource-usage
-git+https://github.com/spacetelescope/stsci-announce
 sidecar
 y-py
 ypy-websocket
