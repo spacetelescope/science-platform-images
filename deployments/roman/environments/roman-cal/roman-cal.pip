@@ -2,7 +2,7 @@ stips==2.2.2
 webbpsf==1.5.0
 synphot==1.5.0
 stsynphot==1.4.0
-jdaviz>=4.0.0 # revisit
+jdaviz>=4.0.0
 romanisim==0.7.0
 romancal==0.17.0
 roman_datamodels==0.22.0
