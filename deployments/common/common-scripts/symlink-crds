@@ -2,12 +2,12 @@
 
 set -u
 
-cd /home/shared/preloaded-crds
+cd /data/preloaded-crds
 
 for dir in `find . -type d`; do
     mkdir -p $HOME/crds_cache/${dir}
 done
 
 for f in `find . -type f | sed -e's%^./%%g'`; do
-    ln -fs  /home/shared/preloaded-crds/${f}   $HOME/crds_cache/${f}
+    ln -fs  /data/preloaded-crds/${f}   $HOME/crds_cache/${f}
 done
