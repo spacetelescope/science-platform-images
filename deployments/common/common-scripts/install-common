@@ -22,6 +22,9 @@ if pip freeze | grep jupyter-server-proxy; then
     jupyter labextension install @jupyterlab/server-proxy
 fi
 
+if [[ "${env}" == "base" ]]; then
+    pip install git+https://github.com/spacetelescope/stsci-announce
+fi
 
 /opt/common-scripts/env-clean
 
