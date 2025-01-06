@@ -2,7 +2,9 @@
 
 set -u
 
+set -e
 cd /data/preloaded-crds
+set +e
 
 for dir in `find . -type d`; do
     mkdir -p $HOME/crds_cache/${dir}
