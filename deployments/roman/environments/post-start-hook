@@ -24,9 +24,18 @@ HUB_FLAG=${1:-"on-hub"}
 set +e   # Do not let init failures block logins
 
 # .............................................................................................
-# Initialization of the shared CRDS cache if it exists for this mission.
+# # CRDS cache setup and sharing
+#
+# Only a hub installation is guaranteed to have a shared CRDS cache
+# which can be exploited by symlinking.  Note that this symlinking
+# process is a definite improvement over normal CRDS caching since a
+# user's cache can share system files while remaining writable for
+# files which are not available globally.
 # .............................................................................................
-
+if [[ $HUB_FLAG == "on-hub" ]]; then
+    /opt/common-scripts/symlink-crds
+    # /opt/common-scripts/kernel-setup
+fi
 # .............................................................................................
 # Sync reference notebook directories / branches.
 # .............................................................................................
@@ -43,7 +52,7 @@ set +e   # Do not let init failures block logins
 # Remove old/unused kernels from UI selection
 # .............................................................................................
 /opt/common-scripts/remove-kernel jdaviz
-                            
+
 # .............................................................................................
 # Test notebook setup if applicable
 # .............................................................................................
