@@ -387,9 +387,9 @@ dependencies:
   - pip:
     - Sphinx==8.1.3
     - black==24.10.0
-    - boto3==1.35.84
-    - bqplot==0.12.43
-    - bqplot-image-gl==1.5.0
+    - boto3==1.35.94
+    - bqplot==0.12.44
+    - bqplot-image-gl==1.6.0
     - ci_watson==0.8.0
     - distlib==0.3.9
     - flake8==7.1.1
@@ -407,10 +407,10 @@ dependencies:
     - jupyter_server_proxy==4.4.0
     - jupyterlab_tour==4.0.1
     - nbgitpuller==1.2.1
-    - nbsphinx==0.9.5
+    - nbsphinx==0.9.6
     - papermill==2.6.0
     - pipdeptree==2.24.0
-    - pydeps==2.0.1
+    - pydeps==3.0.0
     - pyds9==1.8.1
     - pytest-openfiles==0.6.0
     - requests-mock==1.12.1
@@ -420,7 +420,6 @@ dependencies:
     - sphinx-automodapi==0.18.0
     - sphinx-rtd-theme==3.0.2
     - stsci-rtd-theme==1.0.1
-    - stsci_announce==0.6.0
     - y-py==0.6.2
     - ypy-websocket==0.12.4
 

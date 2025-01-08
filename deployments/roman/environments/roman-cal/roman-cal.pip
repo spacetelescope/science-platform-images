@@ -24,6 +24,6 @@ xarray>=2024.11.0
 esutil>=0.6.16
 boto3
 astrocut>=0.11.1
-pysiaf==0.23.3
+pysiaf>=0.24.1
 ipypopout==2.0.0
 solara
