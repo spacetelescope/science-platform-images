@@ -96,7 +96,8 @@ RUN /opt/common-scripts/apt-install \
         libxslt1.1 \
         libxslt1-dev \
         graphviz \
-        libopenblas-dev
+        libopenblas-dev \
+        zlib1g-dev
 
 # Install Rust language
 RUN /opt/common-scripts/apt-install cargo rustc
