@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file=/opt/env-frozen/roman-cal/requirements.txt --pip-args='--no-color --default-timeout 100' /opt/common-env/common.pip /opt/common-env/docs.pip /opt/common-env/jupyter.pip /opt/common-env/required.pip /opt/common-env/testing.pip /opt/environments/common-hints.pip /opt/environments/roman-cal/build-hints.pip /opt/environments/roman-cal/roman-cal.pip
 #
-aiobotocore==2.16.0
+aiobotocore==2.17.0
     # via s3fs
 aiohappyeyeballs==2.4.4
     # via aiohttp
@@ -28,7 +28,7 @@ annotated-types==0.7.0
     # via pydantic
 ansicolors==1.1.8
     # via papermill
-anyio==4.7.0
+anyio==4.8.0
     # via
     #   httpx
     #   jupyter-server
@@ -128,7 +128,7 @@ astropy==7.0.0
     #   synphot
     #   tweakwcs
     #   webbpsf
-astropy-iers-data==0.2024.12.16.0.35.48
+astropy-iers-data==0.2025.1.6.0.33.42
     # via astropy
 astropy-sphinx-theme==1.1
     # via sphinx-astropy
@@ -160,23 +160,23 @@ beautifulsoup4==4.12.3
     #   stsynphot
 black==24.10.0
     # via -r /opt/common-env/common.pip
-bleach==6.2.0
+bleach[css]==6.2.0
     # via nbconvert
 bokeh==3.6.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-bokeh
-boto3==1.35.81
+boto3==1.35.93
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   s3path
-botocore==1.35.81
+botocore==1.35.93
     # via
     #   aiobotocore
     #   boto3
     #   s3transfer
-bqplot==0.12.43
+bqplot==0.12.44
     # via
     #   -r /opt/common-env/jupyter.pip
     #   bqplot-gl
@@ -186,7 +186,7 @@ bqplot==0.12.43
     #   jdaviz
 bqplot-gl==0.0.0
     # via glue-jupyter
-bqplot-image-gl==1.5.0
+bqplot-image-gl==1.6.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -207,11 +207,11 @@ cffi==1.17.1
     # via
     #   argon2-cffi-bindings
     #   cryptography
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via requests
 ci-watson==0.8.0
     # via -r /opt/common-env/testing.pip
-click==8.1.7
+click==8.1.8
     # via
     #   black
     #   dask
@@ -232,7 +232,7 @@ contourpy==1.3.1
     # via
     #   bokeh
     #   matplotlib
-crds==12.0.8
+crds==12.0.9
     # via
     #   ci-watson
     #   romancal
@@ -308,7 +308,7 @@ frozenlist==1.5.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec[http]==2024.10.0
+fsspec[http]==2024.12.0
     # via
     #   astrocut
     #   dask
@@ -319,9 +319,9 @@ galsim==2.6.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romanisim
-gitdb==4.0.11
+gitdb==4.0.12
     # via gitpython
-gitpython==3.1.43
+gitpython==3.1.44
     # via -r /opt/common-env/required.pip
 glfw==2.8.0
     # via glue-vispy-viewers
@@ -410,7 +410,7 @@ ipykernel==6.29.5
     #   jupyterlab
     #   nbclassic
     #   solara-server
-ipympl==0.9.5
+ipympl==0.9.6
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -423,7 +423,7 @@ ipysplitpanes==0.2.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   jdaviz
-ipython==8.30.0
+ipython==8.31.0
     # via
     #   -r /opt/common-env/common.pip
     #   glue-core
@@ -486,7 +486,7 @@ jaraco-context==6.0.1
     # via keyring
 jaraco-functools==4.1.0
     # via keyring
-jdaviz==4.0.1
+jdaviz==4.1.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 jedi==0.19.2
     # via ipython
@@ -494,7 +494,7 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-jinja2==3.1.4
+jinja2==3.1.5
     # via
     #   bokeh
     #   jupyter-server
@@ -507,6 +507,7 @@ jinja2==3.1.4
     #   sphinx
 jmespath==1.0.1
     # via
+    #   aiobotocore
     #   asdf
     #   boto3
     #   botocore
@@ -556,7 +557,7 @@ jupyter-resource-usage==1.1.0
     # via -r /opt/common-env/jupyter.pip
 jupyter-rfb==0.4.4
     # via glue-vispy-viewers
-jupyter-server==2.14.2
+jupyter-server==2.15.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   jupyter-lsp
@@ -594,9 +595,9 @@ jupyterlab-widgets==3.0.13
     #   -r /opt/common-env/jupyter.pip
     #   ipywidgets
     #   jupyter-rfb
-keyring==25.5.0
+keyring==25.6.0
     # via astroquery
-kiwisolver==1.4.7
+kiwisolver==1.4.8
     # via
     #   matplotlib
     #   vispy
@@ -643,7 +644,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mistune==3.0.2
+mistune==3.1.0
     # via nbconvert
 montage-wrapper==0.9.9
     # via stips
@@ -655,6 +656,7 @@ mpl-scatter-density==0.8
     # via glue-core
 multidict==6.1.0
     # via
+    #   aiobotocore
     #   aiohttp
     #   yarl
 mypy-extensions==1.0.0
@@ -665,7 +667,7 @@ nbclient==0.10.2
     # via
     #   nbconvert
     #   papermill
-nbconvert==7.16.4
+nbconvert==7.16.5
     # via
     #   jupyter-server
     #   nbsphinx
@@ -679,7 +681,7 @@ nbformat==5.10.4
     #   solara-server
 nbgitpuller==1.2.1
     # via -r /opt/common-env/common.pip
-nbsphinx==0.9.5
+nbsphinx==0.9.6
     # via -r /opt/common-env/docs.pip
 ndcube==2.2.4
     # via specutils
@@ -689,7 +691,7 @@ nest-asyncio==1.6.0
     #   nbclassic
 networkx==3.4.2
     # via scikit-image
-notebook==7.3.1
+notebook==7.3.2
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -698,7 +700,7 @@ notebook-shim==0.2.4
     #   jupyterlab
     #   nbclassic
     #   notebook
-numpy==2.2.0
+numpy==2.2.1
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -833,7 +835,7 @@ pathspec==0.12.1
     # via black
 pexpect==4.9.0
     # via ipython
-photutils==2.0.2
+photutils==2.1.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jdaviz
@@ -841,7 +843,7 @@ photutils==2.0.2
     #   romancal
     #   stips
     #   webbpsf
-pillow==11.0.0
+pillow==11.1.0
     # via
     #   astrocut
     #   bokeh
@@ -898,7 +900,7 @@ pydantic==2.10.4
     # via jupyterhub
 pydantic-core==2.27.2
     # via pydantic
-pydeps==2.0.1
+pydeps==3.0.0
     # via -r /opt/common-env/common.pip
 pyds9==1.8.1
     # via -r /opt/common-env/common.pip
@@ -906,18 +908,18 @@ pyerfa==2.0.1.5
     # via astropy
 pyflakes==3.2.0
     # via flake8
-pygments==2.18.0
+pygments==2.19.1
     # via
     #   ipython
     #   nbconvert
     #   rich
     #   solara-ui
     #   sphinx
-pymdown-extensions==10.12
+pymdown-extensions==10.14
     # via solara-ui
 pyopengl==3.1.7
     # via glue-vispy-viewers
-pyparsing==3.2.0
+pyparsing==3.2.1
     # via
     #   matplotlib
     #   romancal
@@ -925,7 +927,7 @@ pyproject-hooks==1.2.0
     # via
     #   build
     #   pip-tools
-pysiaf==0.23.3
+pysiaf==0.24.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   soc-roman-tools
@@ -944,6 +946,7 @@ pytest-openfiles==0.6.0
     # via -r /opt/common-env/testing.pip
 python-dateutil==2.9.0.post0
     # via
+    #   aiobotocore
     #   arrow
     #   botocore
     #   jupyter-client
@@ -1042,7 +1045,7 @@ rpds-py==0.22.3
     # via
     #   jsonschema
     #   referencing
-s3fs==2024.10.0
+s3fs==2024.12.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
@@ -1055,7 +1058,7 @@ scikit-image==0.25.0
     #   glue-jupyter
     #   jdaviz
     #   stcal
-scipy==1.14.1
+scipy==1.15.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
@@ -1101,7 +1104,7 @@ six==1.17.0
     #   spectral-cube
 smart-open==7.1.0
     # via s3path
-smmap==5.0.1
+smmap==5.0.2
     # via gitdb
 sniffio==1.3.1
     # via anyio
@@ -1182,11 +1185,11 @@ sqlalchemy==2.0.36
     #   jupyterhub
 stack-data==0.6.3
     # via ipython
-starlette==0.42.0
+starlette==0.45.2
     # via solara-server
 stcal==1.10.0
     # via romancal
-stdatamodels==2.1.2
+stdatamodels==2.2.0
     # via jdaviz
 stdlib-list==0.11.0
     # via pydeps
@@ -1194,8 +1197,6 @@ stips==2.2.2
     # via -r /opt/environments/roman-cal/roman-cal.pip
 stpipe==0.7.0
     # via romancal
-stsci-announce @ git+https://github.com/spacetelescope/stsci-announce
-    # via -r /opt/common-env/jupyter.pip
 stsci-imagestats==1.8.3
     # via
     #   romancal
@@ -1227,7 +1228,7 @@ terminado==0.18.1
 tifffile==2024.12.12
     # via scikit-image
 tinycss2==1.4.0
-    # via nbconvert
+    # via bleach
 tomlkit==0.13.2
     # via jupyter-packaging
 toolz==1.0.0
@@ -1298,8 +1299,9 @@ tzdata==2024.2
     # via pandas
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.2.3
+urllib3==2.3.0
     # via
+    #   aiobotocore
     #   botocore
     #   requests
 uvicorn==0.34.0
@@ -1343,7 +1345,7 @@ wrapt==1.17.0
     # via
     #   aiobotocore
     #   smart-open
-xarray==2024.11.0
+xarray==2025.1.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 xlrd==2.0.1
     # via glue-core
