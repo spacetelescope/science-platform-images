@@ -8,7 +8,7 @@ affine==2.4.0
     # via rasterio
 aiohappyeyeballs==2.4.6
     # via aiohttp
-aiohttp==3.11.12
+aiohttp==3.11.13
     # via
     #   jupyter-server-proxy
     #   papermill
@@ -92,7 +92,7 @@ astropy==7.0.1
     #   spectral-cube
     #   specutils
     #   stdatamodels
-astropy-iers-data==0.2025.2.17.0.34.13
+astropy-iers-data==0.2025.2.24.0.34.4
     # via astropy
 astropy-sphinx-theme==1.1
     # via sphinx-astropy
@@ -123,9 +123,9 @@ bleach[css]==6.2.0
     # via nbconvert
 bokeh==3.6.3
     # via jupyter-bokeh
-boto3==1.36.22
+boto3==1.36.26
     # via -r /opt/common-env/common.pip
-botocore==1.36.22
+botocore==1.36.26
     # via
     #   boto3
     #   s3transfer
@@ -147,7 +147,7 @@ bqplot-image-gl==1.6.1
     #   glue-jupyter
 build==1.2.2.post1
     # via pip-tools
-cachetools==5.5.1
+cachetools==5.5.2
     # via solara-ui
 casa-formats-io==0.3.0
     # via spectral-cube
@@ -209,7 +209,7 @@ dask[array]==2025.2.0
     #   spectral-cube
 debugpy==1.8.12
     # via ipykernel
-decorator==5.1.1
+decorator==5.2.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
@@ -376,7 +376,7 @@ ipyvue==1.11.2
     #   ipyvuetify
     #   jdaviz
     #   solara-ui
-ipyvuetify==1.10.0
+ipyvuetify==1.11.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   glue-jupyter
@@ -563,7 +563,7 @@ mccabe==0.7.0
     # via flake8
 mdurl==0.1.2
     # via markdown-it-py
-mistune==3.1.1
+mistune==3.1.2
     # via nbconvert
 more-itertools==10.6.0
     # via
@@ -757,7 +757,7 @@ prometheus-client==0.21.1
     #   jupyterhub
 prompt-toolkit==3.0.50
     # via ipython
-propcache==0.2.1
+propcache==0.3.0
     # via
     #   aiohttp
     #   yarl
@@ -898,11 +898,11 @@ rfc3986-validator==0.1.1
     #   jupyter-events
 rich==13.9.4
     # via rich-click
-rich-click==1.8.5
+rich-click==1.8.6
     # via solara-server
-roman-numerals-py==3.0.0
+roman-numerals-py==3.1.0
     # via sphinx
-rpds-py==0.22.3
+rpds-py==0.23.1
     # via
     #   jsonschema
     #   referencing
@@ -976,7 +976,7 @@ specutils==1.19.0
     #   glue-astronomy
     #   jdaviz
     #   specreduce
-sphinx==8.2.0
+sphinx==8.2.1
     # via
     #   -r /opt/common-env/docs.pip
     #   nbsphinx
@@ -1021,7 +1021,7 @@ sqlalchemy==2.0.38
     #   jupyterhub
 stack-data==0.6.3
     # via ipython
-starlette==0.45.3
+starlette==0.46.0
     # via solara-server
 stdatamodels==2.2.0
     # via jdaviz
@@ -1037,7 +1037,7 @@ terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
-tifffile==2025.1.10
+tifffile==2025.2.18
     # via scikit-image
 tinycss2==1.4.0
     # via bleach
