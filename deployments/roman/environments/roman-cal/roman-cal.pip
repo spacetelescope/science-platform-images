@@ -28,3 +28,4 @@ pysiaf>=0.24.1
 ipypopout==2.0.0
 solara
 playwright
+mast-aladin-lite
