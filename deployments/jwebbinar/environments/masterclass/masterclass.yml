@@ -31,5 +31,5 @@ dependencies:
   - wheel=0.41.3
   - xz=5.4.2
   - zlib=1.2.13
-  - python=3.10.12
+  - python=3.12
   - pip=23.3.1
