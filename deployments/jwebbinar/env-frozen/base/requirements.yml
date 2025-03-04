@@ -37,7 +37,7 @@ dependencies:
   - azure-storage-files-datalake-cpp=12.12.0
   - babel=2.17.0
   - beautifulsoup4=4.13.3
-  - blas=2.128
+  - blas=2.131
   - blas-devel=3.9.0
   - bleach=6.2.0
   - bleach-with-css=6.2.0
@@ -56,7 +56,7 @@ dependencies:
   - ca-certificates=2025.1.31
   - cached-property=1.5.2
   - cached_property=1.5.2
-  - certifi=2024.12.14
+  - certifi=2025.1.31
   - certipy=0.2.1
   - cffi=1.17.1
   - charls=2.4.2
@@ -71,20 +71,20 @@ dependencies:
   - conda-package-streaming=0.11.0
   - contourpy=1.3.1
   - cpp-expected=1.1.0
-  - cpython=3.12.8
+  - cpython=3.12.9
   - cryptography=44.0.1
   - cycler=0.12.1
   - cython=3.0.12
   - cytoolz=1.0.1
-  - dask=2025.1.0
-  - dask-core=2025.1.0
+  - dask=2025.2.0
+  - dask-core=2025.2.0
   - dav1d=1.2.1
   - debugpy=1.8.12
-  - decorator=5.1.1
+  - decorator=5.2.1
   - defusedxml=0.7.1
   - deprecation=2.1.0
   - dill=0.3.9
-  - distributed=2025.1.0
+  - distributed=2025.2.0
   - distro=1.9.0
   - et_xmlfile=2.0.0
   - exceptiongroup=1.2.2
@@ -105,8 +105,8 @@ dependencies:
   - greenlet=3.1.1
   - h11=0.14.0
   - h2=4.2.0
-  - h5py=3.12.1
-  - hdf5=1.14.4
+  - h5py=3.13.0
+  - hdf5=1.14.3
   - hpack=4.1.0
   - httpcore=1.0.7
   - httpx=0.28.1
@@ -159,10 +159,10 @@ dependencies:
   - libabseil=20240722.0
   - libaec=1.1.3
   - libarchive=3.7.7
-  - libarrow=19.0.0
-  - libarrow-acero=19.0.0
-  - libarrow-dataset=19.0.0
-  - libarrow-substrait=19.0.0
+  - libarrow=19.0.1
+  - libarrow-acero=19.0.1
+  - libarrow-dataset=19.0.1
+  - libarrow-substrait=19.0.1
   - libavif16=1.1.1
   - libblas=3.9.0
   - libbrotlicommon=1.1.0
@@ -170,7 +170,7 @@ dependencies:
   - libbrotlienc=1.1.0
   - libcblas=3.9.0
   - libcrc32c=1.1.2
-  - libcurl=8.11.1
+  - libcurl=8.12.1
   - libdeflate=1.23
   - libedit=3.1.20250104
   - libev=4.33
@@ -182,11 +182,11 @@ dependencies:
   - libgfortran=14.2.0
   - libgfortran5=14.2.0
   - libgomp=14.2.0
-  - libgoogle-cloud=2.34.0
-  - libgoogle-cloud-storage=2.34.0
+  - libgoogle-cloud=2.35.0
+  - libgoogle-cloud-storage=2.35.0
   - libgrpc=1.67.1
   - libhwy=1.1.0
-  - libiconv=1.17
+  - libiconv=1.18
   - libjpeg-turbo=3.0.0
   - libjxl=0.11.1
   - liblapack=3.9.0
@@ -197,16 +197,16 @@ dependencies:
   - libmambapy=2.0.5
   - libnghttp2=1.64.0
   - libnsl=2.0.1
-  - libopenblas=0.3.28
+  - libopenblas=0.3.29
   - libopentelemetry-cpp=1.18.0
   - libopentelemetry-cpp-headers=1.18.0
-  - libparquet=19.0.0
-  - libpng=1.6.46
+  - libparquet=19.0.1
+  - libpng=1.6.47
   - libprotobuf=5.28.3
   - libre2-11=2024.07.02
   - libsodium=1.0.20
   - libsolv=0.7.30
-  - libsqlite=3.48.0
+  - libsqlite=3.49.1
   - libssh2=1.11.1
   - libstdcxx=14.2.0
   - libstdcxx-ng=14.2.0
@@ -218,7 +218,7 @@ dependencies:
   - libwebp-base=1.5.0
   - libxcb=1.17.0
   - libxcrypt=4.4.36
-  - libxml2=2.13.5
+  - libxml2=2.13.6
   - libzlib=1.3.1
   - libzopfli=1.0.3
   - llvmlite=0.44.0
@@ -232,13 +232,13 @@ dependencies:
   - matplotlib-base=3.10.0
   - matplotlib-inline=0.1.7
   - menuinst=2.2.0
-  - mistune=3.1.1
+  - mistune=3.1.2
   - mpc=1.3.1
   - mpfr=4.2.1
   - mpmath=1.3.0
   - msgpack-python=1.1.0
   - munkres=1.1.4
-  - narwhals=1.26.0
+  - narwhals=1.27.1
   - nbclassic=1.2.0
   - nbclient=0.10.2
   - nbconvert-core=7.16.6
@@ -256,7 +256,7 @@ dependencies:
   - numexpr=2.10.2
   - numpy=2.1.3
   - oauthlib=3.2.2
-  - openblas=0.3.28
+  - openblas=0.3.29
   - openjpeg=2.5.3
   - openpyxl=3.1.5
   - openssl=3.4.1
@@ -281,13 +281,13 @@ dependencies:
   - prometheus_client=0.21.1
   - prompt-toolkit=3.0.50
   - protobuf=5.28.3
-  - psutil=6.1.1
+  - psutil=7.0.0
   - pthread-stubs=0.4
   - ptyprocess=0.7.0
   - pure_eval=0.2.3
   - py-cpuinfo=9.0.0
-  - pyarrow=19.0.0
-  - pyarrow-core=19.0.0
+  - pyarrow=19.0.1
+  - pyarrow-core=19.0.1
   - pybind11-abi=4
   - pycosat=0.6.6
   - pycparser=2.22
@@ -299,7 +299,7 @@ dependencies:
   - pyproject_hooks=1.2.0
   - pysocks=1.7.1
   - pytables=3.10.2
-  - python=3.12.8
+  - python=3.12.9
   - python-build=1.2.2.post1
   - python-dateutil=2.9.0.post0
   - python-fastjsonschema=2.21.1
@@ -320,20 +320,20 @@ dependencies:
   - requests=2.32.3
   - rfc3339-validator=0.1.4
   - rfc3986-validator=0.1.1
-  - rpds-py=0.22.3
+  - rpds-py=0.23.1
   - ruamel.yaml=0.18.10
   - ruamel.yaml.clib=0.2.8
   - s2n=1.5.11
-  - scikit-image=0.25.1
+  - scikit-image=0.25.2
   - scikit-learn=1.6.1
-  - scipy=1.15.1
+  - scipy=1.15.2
   - seaborn=0.13.2
   - seaborn-base=0.13.2
   - send2trash=1.8.3
-  - setuptools=75.8.0
+  - setuptools=75.8.2
   - simdjson=3.11.6
   - six=1.17.0
-  - smmap=5.0.0
+  - smmap=5.0.2
   - snappy=1.2.1
   - sniffio=1.3.1
   - sortedcontainers=2.4.0
@@ -342,12 +342,12 @@ dependencies:
   - sqlalchemy=2.0.38
   - stack_data=0.6.3
   - statsmodels=0.14.4
-  - svt-av1=2.3.0
+  - svt-av1=3.0.0
   - sympy=1.13.3
   - tblib=3.0.0
   - terminado=0.18.1
   - threadpoolctl=3.5.0
-  - tifffile=2025.1.10
+  - tifffile=2025.2.18
   - tinycss2=1.4.0
   - tk=8.6.13
   - tomli=2.2.1
@@ -388,7 +388,7 @@ dependencies:
   - pip:
     - Sphinx==8.2.1
     - black==25.1.0
-    - boto3==1.36.26
+    - boto3==1.37.3
     - bqplot==0.12.44
     - bqplot-image-gl==1.6.1
     - ci_watson==0.8.0
@@ -401,7 +401,7 @@ dependencies:
     - ipypopout==2.0.0
     - ipysplitpanes==0.2.0
     - ipyvolume==0.6.3
-    - ipyvuetify==1.11.0
+    - ipyvuetify==1.11.1
     - ipywebrtc==0.6.0
     - jupyter-resource-usage==1.1.1
     - jupyter_bokeh==4.0.5

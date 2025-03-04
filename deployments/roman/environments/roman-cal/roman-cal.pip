@@ -2,7 +2,7 @@ stips==2.2.2
 webbpsf==1.5.0
 synphot==1.5.0
 stsynphot==1.4.0
-jdaviz>=4.0.0
+jdaviz
 romanisim==0.7.0
 romancal==0.17.0
 roman_datamodels==0.22.0
@@ -27,3 +27,4 @@ astrocut>=0.11.1
 pysiaf>=0.24.1
 ipypopout==2.0.0
 solara
+playwright
