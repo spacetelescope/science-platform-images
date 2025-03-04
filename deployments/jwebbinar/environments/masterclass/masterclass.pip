@@ -1,8 +1,8 @@
 #jwebbinar-38
-git+https://github.com/spacetelescope/jdaviz.git
-pysiaf
-photutils[all]==2.2.0
-ipympl
+#git+https://github.com/spacetelescope/jdaviz.git
+#pysiaf
+#photutils[all]==2.2.0
+#ipympl
 
 #astroquery
 #crds
