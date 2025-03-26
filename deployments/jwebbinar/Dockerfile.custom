@@ -7,9 +7,10 @@ FROM $BASE_IMAGE AS build
 
 # All data is arranged on /data opening up options for sharing a file system
 ENV MIRAGE_DATA=/data/mirage \
-    PYSYN_CDBS=/data/pysynphot \
-    WEBBPSF_PATH=/data/webbpsf-data \
-    pandeia_refdata=/data/pandeia
+    PYSYN_CDBS=/refdata/cdbs \
+    # WEBBPSF_PATH=/data/webbpsf-data \
+    pandeia_refdata=/data/pandeia \
+    STPSF_PATH=/refdata/stpsf-data
 
 # ----------------------------------------------------------------------
 
@@ -24,13 +25,13 @@ ENV CRDS_SERVER_URL=https://jwst-crds.stsci.edu
 
 USER root
 
-# Get webbpsf-data-0.9.0.tar.gz
-RUN mkdir /data && cd /data && \
-    wget --quiet https://stsci.box.com/shared/static/qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
-    tar zxf qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
-    rm qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
-    chmod -R a+r /data/webbpsf-data && \
-    fix-permissions $CONDA_DIR $HOME
+# # Get webbpsf-data-0.9.0.tar.gz
+# RUN mkdir /data && cd /data && \
+#     wget --quiet https://stsci.box.com/shared/static/qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
+#     tar zxf qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
+#     rm qcptcokkbx7fgi3c00w2732yezkxzb99.gz && \
+#     chmod -R a+r /data/webbpsf-data && \
+#     fix-permissions $CONDA_DIR $HOME
 
 # Install sextractor under /usr/local
 # NOTE: using master because this fix is required:
@@ -77,3 +78,23 @@ RUN /opt/common-scripts/env-sync masterclass
 
 # REMAINING ENV
 COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/ /opt/environments/masterclass/
+
+# --------------------------- jwebbinar 40 -------------------------------------
+
+USER root
+
+# Get stpsf-data
+RUN mkdir /refdata && cd /refdata && \
+    wget --quiet https://stsci.box.com/shared/static/kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+    tar zxf kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+    rm kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+    chmod -R a+r /refdata/stpsf-data && \
+    fix-permissions $CONDA_DIR $HOME
+
+# Get synphot data
+RUN cd /refdata && \
+    wget --quiet https://arizona.box.com/shared/static/cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
+    tar zxf cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
+    rm cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
+    chmod -R a+r /refdata/cdbs && \
+    fix-permissions $CONDA_DIR $HOME

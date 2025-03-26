@@ -54,3 +54,6 @@ cd $HOME
 /opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep \
                                 main \
                                 $HOME/references/jwebbinar_prep-ref
+/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/spaceKLIP \
+                                develop \
+                                $HOME/references/spaceKLIP

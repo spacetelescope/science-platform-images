@@ -39,3 +39,5 @@ urllib3
 webencodings
 zipp
 jwst
+jwst_coronagraph_visibility
+git+https://github.com/spacetelescope/spaceKLIP.git

@@ -3,7 +3,6 @@ channels:
   - conda-forge
   - pkgs/main
 dependencies:
-  - _libgcc_mutex=0.1
   - _openmp_mutex=4.5
   - blas=2.119
   - blas-devel=3.9.0
@@ -37,9 +36,9 @@ dependencies:
   - libuv=1.50.0
   - libxcrypt=4.4.36
   - libzlib=1.3.1
-  - llvm-openmp=19.1.7
+  - llvm-openmp=20.1.1
   - ncurses=6.4.20240210
-  - nodejs=22.12.0
+  - nodejs=22.13.0
   - openblas=0.3.24
   - openssl=3.4.1
   - packaging=24.2
@@ -56,7 +55,7 @@ dependencies:
   - tk=8.6.13
   - tomli=2.2.1
   - tomlkit=0.13.2
-  - tzdata=2025a
+  - tzdata=2025b
   - wheel=0.41.3
   - xz=5.4.2
   - zipp=3.21.0
