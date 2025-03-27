@@ -670,7 +670,7 @@ git checkout origin/{self.branch}
                 mode == "untracked"
             ), f"Expected only untracked artifacts to be present: {path}"
         if diff:
-            results = shell("git diff origin/main", cwd=self.repo_dir)
+            results = shell(f"git diff origin/{self.branch}", cwd=self.repo_dir)
             if results.returncode != 0:
                 raise ValueError("Expected a clean diff for updated-clone repo.")
 
