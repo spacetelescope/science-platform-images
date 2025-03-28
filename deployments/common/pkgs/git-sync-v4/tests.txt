@@ -484,7 +484,7 @@ Test basic sync with no existing clone
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
 INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Creating new clone.
-INFO - Validating and locking down...
+INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
@@ -496,7 +496,7 @@ Test basic sync with existing clone
 INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
-INFO - Validating and locking down...
+INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
@@ -526,7 +526,6 @@ INFO - Updating existing clone.
 INFO - Updating failed, falling back...
 INFO - Backing up existing clone to references/sync-test-ref.12345678 and re-cloning.
 INFO - Creating new clone.
-INFO - Validating and locking down...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
@@ -543,7 +542,6 @@ INFO - Updating existing clone.
 INFO - Updating failed, falling back...
 INFO - Backing up existing clone to references/sync-test-ref.12345678 and re-cloning.
 INFO - Creating new clone.
-INFO - Validating and locking down...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
@@ -558,7 +556,7 @@ Check clone with bad dir perms works:
 INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
-INFO - Validating and locking down...
+INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
@@ -574,7 +572,7 @@ Check clone on bad branch with bad origin works:
 INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
-INFO - Validating and locking down...
+INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 
