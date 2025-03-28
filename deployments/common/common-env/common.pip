@@ -11,3 +11,4 @@ numpy
 black
 jupyterhub
 nbgitpuller
+playwright

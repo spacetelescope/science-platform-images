@@ -76,7 +76,11 @@ RUN /opt/common-scripts/apt-install \
         sysstat \
         net-tools \
         rename \
-        stress-ng
+        stress-ng \
+        libxcomposite1 \
+        libxdamage1 \
+        libgtk-3-0t64 \
+        libatk1.0-0t64
 
 # S/W Development Tools
 RUN /opt/common-scripts/apt-install \
