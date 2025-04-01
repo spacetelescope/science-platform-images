@@ -46,6 +46,7 @@ lazy-loader==0.4
 lxml==5.3.1
 lz4==4.4.3
 markdown-it-py==3.0.0
+mast-aladin-lite
 matplotlib==3.10.0
 mdurl==0.1.2
 more-itertools==10.6.0
