@@ -401,11 +401,11 @@ class Syncer:
                 self.prepare_for_update()
                 self.perform_update()
                 self.finalize_update()
+            log.info("Validating...")
+            self.validate_sync_result()
         except Exception:
             log.info("Updating failed, falling back...")
             self.fallback_sync()
-        log.info("Validating and locking down...")
-        self.validate_sync_result()
         self.lock_clone()
         self.add_sync_instructions()
         self.validate_clone(diff=False)
@@ -670,7 +670,7 @@ git checkout origin/{self.branch}
                 mode == "untracked"
             ), f"Expected only untracked artifacts to be present: {path}"
         if diff:
-            results = shell("git diff origin/main", cwd=self.repo_dir)
+            results = shell(f"git diff origin/{self.branch}", cwd=self.repo_dir)
             if results.returncode != 0:
                 raise ValueError("Expected a clean diff for updated-clone repo.")
 
