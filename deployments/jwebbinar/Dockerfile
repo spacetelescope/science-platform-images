@@ -50,7 +50,7 @@ RUN cd /tmp && \
 # ----------------------------------------------------------------------
 # Install environments
 
-USER ${NB_UID}:${NB_GID}
+USER root
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.
@@ -83,19 +83,21 @@ COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/ /opt/environments/mas
 
 USER root
 
+## Skip this step, /refdata/stpsf-data will be set up in post-start-hook with custom data
 # Get stpsf-data
-RUN mkdir /refdata && cd /refdata && \
-    wget --quiet https://stsci.box.com/shared/static/kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
-    tar zxf kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
-    rm kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
-    chmod -R a+r /refdata/stpsf-data && \
-    fix-permissions $CONDA_DIR $HOME
+# RUN mkdir /refdata && cd /refdata && \
+#     wget --quiet https://stsci.box.com/shared/static/kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+#     tar zxf kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+#     rm kqfolg2bfzqc4mjkgmujo06d3iaymahv.gz && \
+#     chmod -R a+r /refdata/stpsf-data && \
+#     fix-permissions $CONDA_DIR $HOME
 
 # Get synphot data
-RUN cd /refdata && \
+RUN mkdir /refdata && cd /refdata && \
     wget --quiet https://arizona.box.com/shared/static/cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
     tar zxf cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
     rm cbkxlwvokml7n1gref8nw3neg98kzcwn.gz && \
+    chmod 777 /refdata && \
     chmod -R a+r /refdata/cdbs && \
     fix-permissions $CONDA_DIR $HOME
 # ========================= vvvvv Generic vvvvv  =========================
