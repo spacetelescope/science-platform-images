@@ -21,6 +21,7 @@ dependencies:
   - libcblas=3.9.0
   - libcxx=16.0.6
   - libcxxabi=16.0.6
+  - libexpat=2.6.4
   - libffi=3.4.4
   - libgcc=14.2.0
   - libgcc-ng=14.2.0
@@ -46,9 +47,8 @@ dependencies:
   - pip=23.3.1
   - pip-tools=7.4.1
   - pyproject_hooks=1.2.0
-  - python=3.10.14
+  - python=3.12.3
   - python-build=1.2.2.post1
-  - python_abi=3.10
   - readline=8.2
   - setuptools=68.2.2
   - six=1.16.0
