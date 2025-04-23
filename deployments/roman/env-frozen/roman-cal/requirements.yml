@@ -42,7 +42,7 @@ dependencies:
   - nomkl=1.0
   - openblas=0.3.29
   - openssl=3.4.1
-  - packaging=25.0
+  - packaging=24.2
   - pip=25.0.1
   - pip-tools=7.4.1
   - pyproject_hooks=1.2.0
