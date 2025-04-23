@@ -1,5 +1,8 @@
 name:  Build Floating
 on:
+   pull_request:
+      branches:
+        - main
    schedule:  # weekly
      - cron: '0 0 * * 0'
    workflow_dispatch:
