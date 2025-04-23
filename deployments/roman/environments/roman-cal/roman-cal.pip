@@ -26,7 +26,7 @@ et-xmlfile==2.0.0
 filelock==3.17.0
 fonttools==4.56.0
 galsim==2.6.3
-gwcs==0.24.0
+gwcs==0.22.1
 html5lib==1.1
 idna==3.10
 imageio==2.37.0
@@ -76,7 +76,7 @@ requests==2.32.3
 rich==13.9.4
 roman-datamodels==0.23.1
 romancal==0.18.0
-romanisim==0.7.0
+romanisim==0.8.0
 rpds-py==0.22.3
 s3fs>=2024.10.0
 scikit-image==0.25.2
