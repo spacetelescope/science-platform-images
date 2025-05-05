@@ -59,24 +59,27 @@ COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 RUN   /opt/common-scripts/install-common  base
 
-# --------------------------- Masterclass -------------------------------------
+# --------------------------- Jwebbinar41 -------------------------------------
 
-ENV JH_DEFAULT_KERNEL=masterclass
+ENV JH_DEFAULT_KERNEL=jwebbinar41
 
 # BASE
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/masterclass/ /opt/env-frozen/masterclass/
-COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/*.yml /opt/environments/masterclass/
-RUN /opt/common-scripts/env-conda masterclass
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar41/ /opt/env-frozen/jwebbinar41/
+COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/*.yml /opt/environments/jwebbinar41/
+RUN /opt/common-scripts/env-conda jwebbinar41
 
 # COMPILE ALL
-COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/*.pip /opt/environments/masterclass/
-RUN /opt/common-scripts/env-compile masterclass
+COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/*.pip /opt/environments/jwebbinar41/
+RUN /opt/common-scripts/env-compile jwebbinar41
 
 # SYNC ALL
-RUN /opt/common-scripts/env-sync masterclass
+RUN /opt/common-scripts/env-sync jwebbinar41
+
+# jwebbinar4 CUSTOM (--no-deps)
+RUN env-run jwebbinar41  pip install --no-deps 'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
 
 # REMAINING ENV
-COPY --chown=${NB_UID}:${NB_GID} environments/masterclass/ /opt/environments/masterclass/
+COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/ /opt/environments/jwebbinar41/
 # ========================= vvvvv Generic vvvvv  =========================
 
 USER ${NB_UID}:${NB_GID}
