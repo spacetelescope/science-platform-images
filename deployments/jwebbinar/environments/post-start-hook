@@ -43,6 +43,7 @@ fi
 rm -rf $HOME/.user-dirs/Desktop
 rm -rf $HOME/Desktop
 
+/opt/common-scripts/remove-kernel masterclass
 /opt/common-scripts/remove-kernel jwebbinar
 /opt/common-scripts/remove-kernel jdaviz
 /opt/common-scripts/remove-kernel mirisim
@@ -54,3 +55,10 @@ cd $HOME
 /opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/jwebbinar_prep \
                                 main \
                                 $HOME/references/jwebbinar_prep-ref
+
+mkdir -p /opt/environments/jwebbinar41/test
+find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep Setup.ipynb >/opt/environments/jwebbinar41/test/notebooks
+find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep 'Notebook' | grep ipynb >>/opt/environments/jwebbinar41/test/notebooks
+chmod -R 775 /opt/environments/jwebbinar41
+chmod -R 775 /opt/environments/jwebbinar41/test
+chmod 664 /opt/environments/jwebbinar41/test/notebooks

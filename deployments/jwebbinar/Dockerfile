@@ -69,14 +69,18 @@ COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/*.yml /opt/environment
 RUN /opt/common-scripts/env-conda jwebbinar41
 
 # COMPILE ALL
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/*.pip /opt/environments/jwebbinar41/
-RUN /opt/common-scripts/env-compile jwebbinar41
+# COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/*.pip /opt/environments/jwebbinar41/
+# RUN /opt/common-scripts/env-compile jwebbinar41
 
 # SYNC ALL
-RUN /opt/common-scripts/env-sync jwebbinar41
+# RUN /opt/common-scripts/env-sync jwebbinar41
 
 # jwebbinar4 CUSTOM (--no-deps)
-RUN env-run jwebbinar41  pip install --no-deps 'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
+RUN /opt/common-scripts/env-run jwebbinar41  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
+
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar41/  /opt/env-frozen/jwebbinar41/
+COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
+RUN   /opt/common-scripts/install-common jwebbinar41
 
 # REMAINING ENV
 COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar41/ /opt/environments/jwebbinar41/
@@ -129,9 +133,10 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
 USER root
+
+RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 RUN fix-permissions $CONDA_DIR $HOME
 USER ${NB_UID}:${NB_GID}
 
 WORKDIR $HOME
-RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 CMD [ "start-notebook.py" ]

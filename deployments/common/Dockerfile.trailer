@@ -47,9 +47,10 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
 USER root
+
+RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 RUN fix-permissions $CONDA_DIR $HOME
 USER ${NB_UID}:${NB_GID}
 
 WORKDIR $HOME
-RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 CMD [ "start-notebook.py" ]

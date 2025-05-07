@@ -62,7 +62,7 @@ RUN /opt/common-scripts/apt-install \
     openssl \
     wget \
     vim
-    
+
 # Misc system tools
 RUN /opt/common-scripts/apt-install \
         tree \
@@ -101,7 +101,8 @@ RUN /opt/common-scripts/apt-install \
         libxslt1-dev \
         graphviz \
         libopenblas-dev \
-        zlib1g-dev
+        zlib1g-dev \
+        git
 
 # Install Rust language
 RUN /opt/common-scripts/apt-install cargo rustc
@@ -173,5 +174,3 @@ COPY --chown=${NB_UID}:${NB_GID} HASH /opt
 USER root
 RUN fix-permissions $HOME /opt/conda
 USER ${NB_UID}:${NB_GID}
-
-
