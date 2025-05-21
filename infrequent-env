@@ -12,7 +12,8 @@ export FREEZE=${FREEZE:-0}
 #   mamba is largely a drop-in replacement for conda with improved dependency resolution,
 #   parallel downloads, and C++ implementation.
 export CONDA_VER=mamba  # switch to conda while "mamba env export" in install-common is broken
-export MAMBA_ROOT_PREFIX=/opt/conda
+
+# export MAMBA_ROOT_PREFIX=/opt/conda   (this messes up local mamba installs...)
 
 # Additional parameters for image-exec Docker run command, e.g. add mounts here
 export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
@@ -21,7 +22,7 @@ export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
 export IMAGE_VULNERABILITY_LEVEL="medium"
 
 # Extra standard parameters to docker build commands
-export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg CONDA_VER=${CONDA_VER} --build-arg MAMBA_ROOT_PREFIX=${MAMBA_ROOT_PREFIX}"
+export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg CONDA_VER=${CONDA_VER} --build-arg MAMBA_ROOT_PREFIX=/opt/conda"
 
 export ROOT_IMAGE=ubuntu:${UBUNTU_TAG}
 

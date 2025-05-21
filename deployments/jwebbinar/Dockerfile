@@ -132,11 +132,12 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
-USER root
-
-RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
-RUN fix-permissions $CONDA_DIR $HOME
 USER ${NB_UID}:${NB_GID}
+RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 
+USER root
+RUN fix-permissions $CONDA_DIR $HOME
+
+USER ${NB_UID}:${NB_GID}
 WORKDIR $HOME
 CMD [ "start-notebook.py" ]

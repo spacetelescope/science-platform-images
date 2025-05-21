@@ -56,9 +56,9 @@ cd $HOME
                                 main \
                                 $HOME/references/jwebbinar_prep-ref
 
-mkdir -p /opt/environments/jwebbinar41/test
-find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep Setup.ipynb >/opt/environments/jwebbinar41/test/notebooks
-find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep 'Notebook' | grep ipynb >>/opt/environments/jwebbinar41/test/notebooks
-chmod -R 775 /opt/environments/jwebbinar41
-chmod -R 775 /opt/environments/jwebbinar41/test
-chmod 664 /opt/environments/jwebbinar41/test/notebooks
+mkdir -p /opt/environments/jwebbinar41/tests
+chmod 775 /opt/environments/jwebbinar41/tests
+rm -f /opt/environments/jwebbinar41/tests/notebooks
+find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep Setup.ipynb >/opt/environments/jwebbinar41/tests/notebooks
+find $HOME/references/jwebbinar_prep-ref/jwebbinar41 -type f | grep 'Notebook' | grep ipynb >>/opt/environments/jwebbinar41/tests/notebooks
+exit 0
