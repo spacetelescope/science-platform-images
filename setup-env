@@ -6,8 +6,8 @@
 
 # ----------------- basic inputs,  must set for deployment --------------
 
-export DEPLOYMENT_NAME=roman
-export ENVIRONMENT=sandbox
+export DEPLOYMENT_NAME=tike
+export ENVIRONMENT=dev
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
@@ -36,7 +36,7 @@ export BASE_IMAGE=${OWNER}/scipy-notebook   # see above
 export NOTEBOOK_TAG=latest
 export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
 
-export UBUNTU_TAG="24.04"	     # # Image scanning,  report Ubuntu status for this version of Ubuntu
+export UBUNTU_TAG="24.04"            # # Image scanning,  report Ubuntu status for this version of Ubuntu
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
