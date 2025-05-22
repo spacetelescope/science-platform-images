@@ -1,7 +1,6 @@
 name: jwebbinar41
 channels:
     - conda-forge
-    - defaults
 dependencies:
     - python==3.12.0
     - astropy
@@ -36,3 +35,24 @@ dependencies:
     - sphinx # Needed for documentation
     - sphinx-automodapi # Needed for documentation
     - tqdm
+    - pip:
+        - astraeus@git+https://github.com/kevin218/Astraeus@main
+        - boto3
+        - catwoman@git+https://github.com/taylorbell57/catwoman@master
+        - celerite2 # Needed for GP
+        - crds
+        - exotic-ld==3.2.0 # Lower limit needed for updated JWST sensitivity files, upper limit needed for breaking changes
+        - fleck
+        - george # Needed for GP
+        - image_registration@git+https://github.com/keflavich/image_registration@master # Need GitHub version to avoid np.float issue
+        - jwst==1.18.0
+        - mc3 # Needed for uncertainties in the RMS time-averaging plots in S5
+        - myst-parser # Needed for documentation
+        - numpy>=1.20.0
+        - pastasoss>=1.2.2
+        - scipy>=1.8.0 # Lower limit needed for scipy.spatial.QhullError
+        - setuptools_scm # Needed for version number
+        - sphinx-rtd-theme # Needed for documentation
+        - stcal>=1.0.0 # Lower limit needed for our create_integration_model function
+        - stdatamodels
+        - svo_filters
