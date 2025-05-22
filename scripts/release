@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [ $# -lt 2 ]; then
-    usage: "`basename $0`  <common-version>  <mission-version>"
+    echo usage: "`basename $0`  <common-version>  <mission-version>"
     cat <<EOU
 <common-version> tags the generic code and relates this repo with
 the similarly tagged IAC repos currently in CodeCommit.  It is
@@ -24,6 +24,7 @@ Example command for initial build release:
 release 2.1.0  16.0.0
 
 EOU
+    exit 2
 fi
 
 cd $JUPYTERHUB_DIR
@@ -32,9 +33,10 @@ source ./setup-env
 
 COMMON_VER=$1
 MISSION_VER=${DEPLOYMENT_NAME}-$2
+UPSTREAM=${3:-upstream}
 
-git fetch upstream
-git checkout upstream/main
+git fetch ${UPSTREAM}
+git checkout ${UPSTREAM}/main
 git branch -D update-versions
 git checkout -b update-versions
 
@@ -61,20 +63,20 @@ git add deployments/common/{HASH,VERSION} deployments/${DEPLOYMENT_NAME}/{MISSIO
 echo ======================================================================
 git status
 echo ======================================================================
-echo 
+echo
 
 read -p"If the above looks OK,  enter 'y' otherwise enter 'n' to abort:"  ans
 case $ans in
     y|Y|yes|YES|Yes)
-	echo "Finalizing release update and push."
-	git commit -m "Updated versions to $COMMON_VER and $MISSION_VER"
-	echo ======================================================================
-	echo "Push the branch updated versions to GitHub and PR to spacetelescope/science-platform-versions@main"
-	echo "Review and merge the PR before proceeding to release-post-merge to finish tagging."
-	;;
+        echo "Finalizing release update and push."
+        git commit -m "Updated versions to $COMMON_VER and $MISSION_VER"
+        echo ======================================================================
+        echo "Push the branch updated versions to GitHub and PR to spacetelescope/science-platform-versions@main"
+        echo "Review and merge the PR before proceeding to release-post-merge to finish tagging."
+        ;;
     *)
-	echo "Aborting release versions update."
-	git reset HEAD
-	git checkout -- deployments/common/{HASH,VERSION} deployments/${DEPLOYMENT_NAME}/{MISSION_HASH,MISSION_VERSION}
-	;;
+        echo "Aborting release versions update."
+        git reset HEAD
+        git checkout -- deployments/common/{HASH,VERSION} deployments/${DEPLOYMENT_NAME}/{MISSION_HASH,MISSION_VERSION}
+        ;;
 esac
