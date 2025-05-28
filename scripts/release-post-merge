@@ -1,8 +1,20 @@
 #! /bin/bash
 
-git fetch upstream
-git checkout upstream/main
+if [[ $# -eq 0 ]]; then
+
+   echo "usage: release-post-merge [<git-remote>]"
+   echo "Use the embedded version files to generate a release tag"
+   echo "and apply it to the specified remote's main branch."
+   exit 2
+
+fi
+
+
+UPSTREAM=${1:-upstream}
+
+git fetch ${UPSTREAM}
+git checkout ${UPSTREAM}/main
 read MISSION_VER  <deployments/${DEPLOYMENT_NAME}/MISSION_VERSION
 read COMMON_VER   <deployments/common/VERSION
 git tag ${MISSION_VER}-c-${COMMON_VER}
-git push --tags upstream
+git push --tags ${UPSTREAM}
