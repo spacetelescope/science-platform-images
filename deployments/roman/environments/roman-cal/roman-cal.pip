@@ -17,7 +17,7 @@ cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
 contourpy==1.3.1
-crds==12.0.9
+crds==12.1.4
 cryptography==44.0.1
 cycler==0.12.1
 drizzle==2.0.1
