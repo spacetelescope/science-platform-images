@@ -6,13 +6,13 @@ dependencies:
   - _openmp_mutex=4.5
   - bzip2=1.0.8
   - ca-certificates=2025.1.31
-  - click=8.1.8
+  - click=8.2.1
   - colorama=0.4.6
   - deprecation=2.1.0
   - fftw=3.3.10
   - freetds=1.4.26
   - icu=75.1
-  - importlib-metadata=8.6.1
+  - importlib-metadata=8.7.0
   - jupyter-packaging=0.12.3
   - keyutils=1.6.1
   - krb5=1.21.3
@@ -34,7 +34,7 @@ dependencies:
   - libstdcxx=14.2.0
   - libstdcxx-ng=14.2.0
   - libuuid=2.38.1
-  - libuv=1.50.0
+  - libuv=1.51.0
   - libxcrypt=4.4.36
   - libzlib=1.3.1
   - ncurses=6.5
@@ -57,7 +57,7 @@ dependencies:
   - tzdata=2025a
   - unixodbc=2.3.12
   - wheel=0.45.1
-  - zipp=3.21.0
+  - zipp=3.22.0
   - zlib=1.3.1
 
 prefix: "/opt/conda/envs/roman-cal"
