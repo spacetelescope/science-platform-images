@@ -15,6 +15,7 @@ ipydatawidgets
 jupyterlab-pygments
 jupyter-server
 bqplot-image-gl
+jupyter-collaboration
 jupyter-server-proxy
 jupyter-packaging
 ipyevents
@@ -27,7 +28,6 @@ jupyter-resource-usage
 sidecar
 y-py
 ypy-websocket
-#jupyter_collaboration
 jupyter_bokeh
 solara
 ipypopout==2.0.0

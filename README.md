@@ -15,6 +15,8 @@ Each image defines a [JupyterLab](https://jupyter.org/) environment which includ
 
 These images can be run locally on your laptop or as notebook servers for one of STScI's cloud-based multi-user jupyterhubs.
 
+Make sure you budget enough RAM and Disk space for your docker daemon, we typically use 16GB RAM and 200GB Disk.
+
 ![Image and Dockerfile Structure](JupyterLab.png)
 
 ### Supported Missions

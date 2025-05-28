@@ -186,3 +186,6 @@ cd $HOME/.cache
 rm -f astropy lightkurve
 ln -s $HOME/.astropy/cache  astropy
 ln -s $HOME/.lightkurve/cache  lightkurve
+
+# make sure the script does not fail blocking spawn.
+exit 0
