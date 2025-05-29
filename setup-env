@@ -6,8 +6,8 @@
 
 # ----------------- basic inputs,  must set for deployment --------------
 
-export DEPLOYMENT_NAME=roman
-export ENVIRONMENT=sandbox
+export DEPLOYMENT_NAME=jwebbinar
+export ENVIRONMENT=dev
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,

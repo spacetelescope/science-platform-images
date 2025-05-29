@@ -18,3 +18,5 @@
   stcal>=1.0.0 # Lower limit needed for our create_integration_model function
   stdatamodels
   svo_filters
+  git+https://github.com/PAHdb/pyPAHdb.git
+  git+https://github.com/PAHdb/AmesPAHdbPythonSuite.git
