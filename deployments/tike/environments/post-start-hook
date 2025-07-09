@@ -60,7 +60,7 @@ PT=$HOME/references/project-tikebook-ref
 mkdir -p /opt/environments/tess/tests
 
 # Set up test notebooks for TIKE MAST Summer Webbinar 2024 based on JUSI-1607
-rm -f /opt/environments/tess/tests/notebooks
+# rm -f /opt/environments/tess/tests/notebooks
 
 # find $TC/content/notebooks/webinar-series -name '*.ipynb'  | grep -v live > /opt/environments/tess/tests/notebooks
 
