@@ -143,16 +143,16 @@ class DirPath(PosixPath):
 
     def ensure_exists(self):
         if self.exists():
-            self.original_stat = self.stat()
-            self.chmod(self.original_stat | 0o700)
+            mode = self.stat().st_mode
+            self.chmod(mode | 0o700)
         else:
             self.mkdir(exist_ok=True, parents=True)
 
     def detox(self):
         """Ensure directory is usable by the current user."""
-        stat = self.stat().st_mode
-        if not (stat & 0o700 == 0o700):  # user rwx
-            self.chmod(stat | 0o700)
+        mode = self.stat().st_mode
+        if not (mode & 0o700 == 0o700):  # user rwx
+            self.chmod(mode | 0o700)
 
 
 class FilePath(PosixPath):
