@@ -1,7 +1,7 @@
-astropy
 matplotlib
-astroquery
+astropy
 numpy
+astroquery
+s3fs
 lightkurve
 lcviz
-s3fs

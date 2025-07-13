@@ -450,7 +450,8 @@ class Syncer:
         self.repo_dir.parent.chmod(0o755)
         backup_location = self.repo_dir.with_suffix("." + now())
         log.info(f"Backing up existing clone to {backup_location} and re-cloning.")
-        self.repo_dir.rename(backup_location)
+        shutil.move(str(self.repo_dir), str(backup_location))
+        # self.repo_dir.rename(backup_location);  os.rename -> bad for Docker
         self.clone_origin()
 
     def validate_sync_result(self) -> None:

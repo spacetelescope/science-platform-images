@@ -7,4 +7,4 @@ dependencies:
 - jupyter-packaging
 - nodejs>=22.0
 - pip: []
-name: tike-2025.07-beta
+name: tess

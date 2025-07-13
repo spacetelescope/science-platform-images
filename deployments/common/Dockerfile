@@ -4,7 +4,7 @@
 # otherwise the latest from https://hub.docker.com/_/buildpack-deps will be used
 
 ARG BASE_IMAGE=spacetelescope/scipy-notebook
-FROM $BASE_IMAGE
+FROM "$BASE_IMAGE"
 
 # ------------------------------------------------------------------------
 
