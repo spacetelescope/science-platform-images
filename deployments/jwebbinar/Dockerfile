@@ -61,26 +61,20 @@ RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- Jwebbinar -------------------------------------
 
-ENV JH_DEFAULT_KERNEL=jwebbinar
-
-# BASE
+    # BASE
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar/ /opt/env-frozen/jwebbinar/
 COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.yml /opt/environments/jwebbinar/
 RUN /opt/common-scripts/env-conda jwebbinar
 
 # COMPILE ALL
-# COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.pip /opt/environments/jwebbinar/
-# RUN /opt/common-scripts/env-compile jwebbinar
+COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.pip /opt/environments/jwebbinar/
+RUN /opt/common-scripts/env-compile jwebbinar
 
 # SYNC ALL
-# RUN /opt/common-scripts/env-sync jwebbinar
+RUN /opt/common-scripts/env-sync jwebbinar
 
 # jwebbinar4 CUSTOM (--no-deps)
 RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
-
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar/  /opt/env-frozen/jwebbinar/
-COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
-RUN   /opt/common-scripts/install-common jwebbinar
 
 # REMAINING ENV
 COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebbinar/

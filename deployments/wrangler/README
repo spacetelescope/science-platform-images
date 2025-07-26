@@ -1,0 +1,4 @@
+Do not directly edit Dockerfile.
+
+Dockerfile is automatically constructed during image-build from
+Dockerfile.custom and  ../../common/image/Dockerfile.trailer.

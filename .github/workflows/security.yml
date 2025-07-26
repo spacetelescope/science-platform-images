@@ -3,7 +3,15 @@ on:
    schedule: # weekly
      - cron: '0 0 * * 0'
    push:
+      branches:
+        - main
+      paths-ignore:
+        - "nbw-spec-archive/**"
    pull_request:
+      branches:
+        - main
+      paths-ignore:
+        - "nbw-spec-archive/**"
    workflow_dispatch:
 jobs:
   security-scanning:
@@ -14,17 +22,17 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike, wrangler ]
         USE_FROZEN: [ 0 ]
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.8
+          python-version: 3.13
 
       - name: Set Up Environment
         shell: bash
@@ -49,11 +57,3 @@ jobs:
           vuln-type: os,library
           severity: 'CRITICAL,HIGH,MEDIUM'
           scan-ref: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen
-
-      # - name: Anchore Scan
-      #   uses: anchore/scan-action@v3
-      #   with:
-      #     fail-build: true
-      #     severity-cutoff: high
-      #     output-format: table
-      #     path: deployments/${{ matrix.DEPLOYMENT_NAME }}/env-frozen

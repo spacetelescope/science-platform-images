@@ -1,0 +1,132 @@
+name: Notebook Wrangler Build
+on:
+   push:
+      branches:
+        - main
+      paths:
+        - "nbw-spec-archive/**"
+   workflow_dispatch:
+jobs:
+  docker:
+    name: Notebook Wrangler Build Image
+    runs-on: ubuntu-24.04
+    permissions:
+        packages: write
+
+    steps:
+
+      - name: Free Disk Space,  Enlarge Swapfile
+        shell: bash
+        run: |
+          df -h
+          sudo apt clean
+          existing_images=$(docker image ls -aq)
+          if [[ ${existing_images} != "" ]]; then
+             docker rmi ${existing_images}
+          fi
+          docker container prune -f
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"  # can free tens of GB but may break any setup-* actions that rely on it
+          sudo rm -rf "/usr/local/share/boost"   # Boost libraries, typically 2–3 GB
+          sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
+          sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
+          sudo rm -rf /opt/hostedtoolcache/CodeQL # CodeQL bundle, several GB.
+          sudo rm -rf /opt/ghc  # GHC (Haskell) toolchains, roughly a few GB.​
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo fallocate -l 16G /swapfile
+          sudo chmod 0600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          cat /proc/meminfo
+          df -h
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+          pip install -r requirements.txt
+
+      - name: Configure
+        shell: bash
+        run: |
+          git config --global user.email "dmd_octarine@stsci.edu"
+          git config --global user.name "Wrangler workflow"
+          scripts/image-configure wrangler --use-frozen 0 --freeze 0 --base-notebook minimal-notebook --repack 1
+
+      - name: Validate Spec
+        shell: bash
+        run: |
+             source setup-env
+             NBW_WRANGLER_SPEC=$(find nbw-spec-archive/ -name "*.yaml" -type f | sort | tail -1)
+             python -m nb_wrangler ${NBW_WRANGLER_SPEC} --spec-validate --verbose
+             cp -v ${NBW_WRANGLER_SPEC} deployments/wrangler/environments/nbw-wrangler-spec.yaml
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image Build
+        shell: bash
+        run: |
+           df -h
+           source setup-env
+           scripts/image-build
+           df -h
+           docker system df
+           docker system prune -f
+           docker image ls
+           df -h
+
+      - name: Image Functional Tests
+        shell: bash
+        run: |
+           df -h
+           source setup-env
+           scripts/image-test  --test-imports  # only test imports pending data installs and/or adequate GH resources
+           docker system prune -f
+           df -h
+
+
+      - name: Free Up Disk Space Before Scan
+        shell: bash
+        run: |
+          echo "Space before cleanup:"
+          df -h
+          docker system df
+          echo "Running Docker cleanup and removing large directories..."
+          sudo rm -rf /usr/share/dotnet
+          docker builder prune --all --force
+          docker system prune --force
+          echo "Space after cleanup:"
+          df -h
+          docker system df
+
+       # strictly speaking in prod we shold scan before pushing,  this is for trivy testing
+      - name: Run Trivy vulnerability scanner
+        shell: bash
+        run: |
+          set -o pipefail
+          source setup-env
+          image-scan  notebook-wrangler  on-github   # writes to /tmp/trivy-tag
+
+      - name: Image Push
+        shell: bash
+        run: |
+            set -o pipefail
+            export NBW_WRANGLER_SPEC=$(find nbw-spec-archive/ -name "*.yaml" -type f | sort | tail -1)
+            export GITHUB_TAG=$(basename ${NBW_WRANGLER_SPEC} .yaml)-$(cat /tmp/trivy-tag)
+            export BUILT_IMAGE_HASH=$(docker image ls | head -2 | awk '{print $3;}' | tail -1)
+            export GITHUB_UNTAGGED_ID=ghcr.io/${{ github.repository }}
+            export GITHUB_IMAGE_ID=${GITHUB_UNTAGGED_ID}:${GITHUB_TAG}
+            docker tag ${BUILT_IMAGE_HASH} ${GITHUB_IMAGE_ID}
+            docker push $GITHUB_IMAGE_ID

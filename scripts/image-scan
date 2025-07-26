@@ -1,0 +1,93 @@
+#! /bin/bash
+
+set -e
+
+# If desired,  $1 can override the default image type
+export IMAGE_ID=${1:-${NOTEBOOK_ID}}
+export WHERE=${2:-""}
+
+# image-login
+
+export DOCKER_BUILDKIT=1
+
+TRIVY=trivy
+
+if [[ "$(which trivy)" == "" ]]; then
+    echo "The 'trivy' scanner program is not installed,  installing."
+    if [[ "$(which micromamba)" != "" ]]; then
+        MAMBA=micromamba
+    elif [[ "$(which mamba)" != "" ]]; then
+        MAMBA=mamba
+    else
+        echo "Installing micromamba first to host trivy..."
+        curl -Ls micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+        MAMBA=bin/micromamba
+        chmod +x ${MAMBA}
+        eval "$(bin/micromamba shell hook --shell bash)"
+        ${MAMBA} config append channels conda-forge
+        ${MAMBA} config set channel_priority strict
+        ${MAMBA} self-update
+    fi
+    ${MAMBA} install --quiet -c conda-forge trivy
+    TRIVY=/home/runner/.local/share/mamba/bin/trivy
+fi
+
+
+# Scanning image with trivy. https://aquasecurity.github.io/trivy/
+
+# docker run -v /var/run/docker.sock:/var/run/docker.sock \
+#       public.ecr.aws/aquasecurity/trivy:latest \
+
+function f_trivy {
+    CLI_PARAMS=$@
+    if [[ $WHERE == "on-github" ]]; then
+        GH_PARAMS="--no-progress"
+    else
+        GH_PARAMS=""
+    fi
+    ${TRIVY}  image ${IMAGE_ID} \
+       ${CLI_PARAMS} \
+       ${GH_PARAMS} \
+       --timeout 30m \
+       --severity HIGH,CRITICAL \
+       --scanners vuln \
+       --pkg-types os,library \
+       --parallel 1 \
+       --slow \
+       --exit-code 1
+    return $?
+}
+
+function annotated_echo {
+    if [[ $WHERE == "on-github" ]]; then
+        ANN_PREFIX="::warning "
+        echo "::warning $*"
+    else
+        echo "$*"
+    fi
+}
+
+echo "scanfailed" >/tmp/trivy-tag   # this may be impossible but just in case
+
+set -o pipefail         # do not stop if f_trivy fails in a pipe
+set +e                  # do not stop on error
+
+# Run Trivy and suppress initial output until Legend: is seen
+f_trivy | awk '/^Legend:/ {found=1} found {print}'
+
+if [ $? -ne 0 ]; then
+    annotated_echo "===> Trivy scan FAILED w/o --ignore-unfixed."
+    OUTPUT=$(f_trivy --ignore-unfixed)
+    if [ $? -ne 0 ]; then
+        annotated_echo "===> Trivy scan FAILED with --ignore-unfixed."
+        echo "hasfixed" >/tmp/trivy-tag
+    else
+        annotated_echo "===> Trivy scan PASSED with --ignore-unfixed."
+        echo "hasunfixed" >/tmp/trivy-tag
+    fi
+else
+    echo "===> Trivy scan PASSED even w/o --ignore-unfixed."
+    echo "scanok" >/tmp/trivy-tag
+fi
+
+exit 0

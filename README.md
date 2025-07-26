@@ -17,7 +17,7 @@ These images can be run locally on your laptop or as notebook servers for one of
 
 Make sure you budget enough RAM and Disk space for your docker daemon, we typically use 16GB RAM and 200GB Disk.
 
-![Image and Dockerfile Structure](JupyterLab.png)
+![Image and Dockerfile Structure](doc/JupyterLab.png)
 
 ### Supported Missions
 
@@ -69,7 +69,7 @@ run-lab      # to run JupyterLab single user on your local computer
 
 The diagram below illustrates the general structure of these images:
 
-![Image and Dockerfile Structure](image-structure.png)
+![Image and Dockerfile Structure](doc/image-structure.png)
 
 Starting from an Ubuntu base image, a chain of 7 Dockerfiles is used to build the final product.  Optional patch layers can be added later to address specific security concerns w/o rebuilding the entire image.
 

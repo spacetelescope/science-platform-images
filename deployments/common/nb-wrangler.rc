@@ -1,0 +1,12 @@
+#! /bin/bash
+# Configure nb-wrangler for installation under docker-stacks base environment
+
+export NBW_ROOT=/opt/nbw-live
+export NB_PANTRY=$HOME/.nbw-pantry
+export NBW_MM=/opt/conda
+export NBW_MAMBA_CMD=mamba
+export NBW_PIP_CMD=pip
+#export NBW_OVERRIDE_ENV=base
+export NBW_WRANGLER_ENV=base
+export NBW_TEST_JOBS=1
+export NBW_TEST_MAX_SECS=1800

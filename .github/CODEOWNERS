@@ -1,0 +1,7 @@
+# Explicitly exclude /nbw-spec-archive/ (no owners = no required review for this path)
+/nbw-spec-archive/
+
+# Catch-all: Require owners for everything else
+* @jaytmiller @msanchezst @cganley1 @jshihstsci @jmatuskey
+
+

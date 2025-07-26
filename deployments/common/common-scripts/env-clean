@@ -3,10 +3,10 @@
 set -e
 
 # When buildkit caching or development mode are enabled, don't clear the cache
-if [[ "${CLEAR_PKG_CACHES}" == "1" ]]; then
+if [ -z "${USER_CACHE_DIRS}" ]; then
     echo "-------------------------------------------------------------------------------"
     echo "===== Cleaning up conda env..."
-    . /etc/profile.d/conda.sh
+    . /etc/profile.d/${CONDA_VER}.sh
     ${CONDA_VER} clean -fya
     # ${CONDA_VER} build purge-all
     rm -rf $HOME/.cache/pip
@@ -14,6 +14,6 @@ if [[ "${CLEAR_PKG_CACHES}" == "1" ]]; then
     echo "===== Clearing jupyterlab and npm caches..."
     jupyter lab clean -y
     npm cache clean --force
-    yarn cache clean --force
+    # yarn cache clean --force
     rm -rf $HOME/.node-gyp
 fi

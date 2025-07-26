@@ -3,6 +3,9 @@ on:
    pull_request:
       branches:
         - main
+      paths-ignore:
+        - 'nbw-spec-archive/**'
+        - 'deployments/wrangler/**'
    workflow_dispatch:
 
 jobs:

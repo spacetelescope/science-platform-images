@@ -33,7 +33,7 @@ env_spec=/opt/environments/${env}/${env}.@(yml|explicit)
 
 env_frozen_yml=/opt/env-frozen/${env}/requirements.yml
 
-. /etc/profile.d/conda.sh
+. /etc/profile.d/${CONDA_VER}.sh
 
 function env_create {
     spec=$1

@@ -24,11 +24,23 @@ image-update
 
 # ..................................................................................
 # Build base image, e.g. our version of scipy-notebook including cert handling
-if [[ ${BASE_IMAGE} == "spacetelescope/scipy-notebook" ]]; then
+if [[ ${OWNER} == "spacetelescope" ]]; then
     image-base
 else
     docker pull ${BASE_IMAGE}
 fi
+
+function repack {
+    image=$1
+    if [[ "$REPACK" == "1" ]]; then
+        echo "Repacking image to reduce size."
+        docker image ls
+        image-repack ${image} ${image}-slim --delete-source
+        docker tag ${image}-slim ${image}
+        docker rmi ${image}-slim
+        docker image ls
+    fi
+}
 
 # ..................................................................................
 # Build STScI shared layer for all deployments
@@ -46,6 +58,9 @@ time docker build \
        --file Dockerfile.cached  .
 rm Dockerfile.cached
 
+docker rmi ${BASE_IMAGE}
+repack notebook-common
+
 # ..................................................................................
 # Build custom layers for this deployment, RUN caching leaves behind cache
 # mount points owned by root which must be corrected later so users can still
@@ -60,6 +75,8 @@ time docker build \
      --build-arg BASE_IMAGE=notebook-common \
      --file Dockerfile.cached .
 rm Dockerfile.cached
+
+docker rmi notebook-common
 
 # ..................................................................................
 # In a Dockerfile which is not using RUN cache, touch up all the cache
@@ -76,6 +93,8 @@ docker build \
 
 # Once touched up we can discard this to reduce confusion
 docker rmi "notebook-${DEPLOYMENT_NAME}-dirty"
+
+repack $NOTEBOOK_ID
 
 # ..................................................................................
 # Optionally update requirements used by frozen builds.

@@ -1,7 +1,7 @@
 export PS1="${debian_chroot:+($debian_chroot)}\u@notebook:\w\$ "
 
 # Enable conda
-. "/opt/conda/etc/profile.d/conda.sh"
+. "/opt/conda/etc/profile.d/${CONDA_VER}.sh"
 
 # Activate base by default
 conda activate base

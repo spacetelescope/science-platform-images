@@ -4,7 +4,14 @@
 
 env=${1:-undefined}  # no real need to define ATM
 
+OLD_OPTS=$-
 set +u    # due to missing PS1,  etc.  turn off undefined var trapping
-source /etc/profile.d/conda.sh
-conda deactivate
-set -u
+
+source /etc/nb-wrangler.rc
+source /etc/profile.d/${CONDA_VER}.sh
+${CONDA_VER} deactivate
+
+case $OLD_OPTS in
+  *u*) set -u ;;
+  *) set +u ;;
+esac

@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# A script to squash a Docker image into a single layer while preserving critical metadata
+# and minimizing peak disk usage during the process.
+#
+# USAGE:
+#   ./image-repack <source_image> <target_image> [--delete-source]
+#
+# DEPENDENCIES:
+#   - docker
+#   - jq (for parsing JSON output from docker inspect)
+#
+# DESCRIPTION:
+# This script improves upon the standard squashing process by aggressively cleaning up
+# artifacts to reduce the total storage required. It operates as follows:
+# 1. Inspects the source image to extract its metadata (CMD, ENTRYPOINT, ENV, etc.).
+# 2. Creates a temporary container and streams its exported filesystem via a pipe
+#    to `docker import`, creating a new single-layer base image without writing a
+#    tarball to disk.
+# 3. **Immediately deletes the original source image** and prunes Docker to reclaim
+#    disk space before proceeding.
+# 4. Generates a temporary Dockerfile that starts FROM the new base and reapplies
+#    all the extracted metadata.
+# 5. Builds the final target image from this Dockerfile.
+# 6. Cleans up all remaining temporary artifacts (the base image and the Dockerfile),
+#    leaving only the final squashed image.
+
+set -e
+
+SOURCE_IMAGE="$1"
+TARGET_IMAGE="$2"
+DELETE_SOURCE_IMAGE=${3:-"--no-delete-source"}
+
+TEMP_BASE_IMAGE="squash-base-$(uuidgen)"
+TEMP_DOCKERFILE="Dockerfile.squash-$(uuidgen)"
+
+# --- Helper Functions ---
+
+# Check for required command-line arguments
+check_args() {
+  if [ -z "$SOURCE_IMAGE" ] || [ -z "$TARGET_IMAGE" ]; then
+    echo "Usage: $0 <source_image> <target_image> [--delete-source]" >&2
+    exit 1
+  fi
+}
+
+# Check for dependencies
+check_deps() {
+  if ! command -v docker &> /dev/null; then
+    echo "Error: 'docker' is not installed or not in your PATH." >&2
+    exit 1
+  fi
+  if ! command -v jq &> /dev/null; then
+    echo "Error: 'jq' is not installed or not in your PATH. It's required for parsing image metadata." >&2
+    exit 1
+  fi
+}
+
+# Cleanup function to remove temporary artifacts, called on script exit
+cleanup() {
+  echo "--- Cleaning up temporary artifacts ---"
+  if [ -f "$TEMP_DOCKERFILE" ]; then
+    rm "$TEMP_DOCKERFILE"
+  fi
+  if docker image inspect "$TEMP_BASE_IMAGE" &> /dev/null; then
+    docker rmi "$TEMP_BASE_IMAGE"
+  fi
+  # Prune any other dangling images to be thorough
+  docker image prune --force
+  echo "Cleanup complete."
+}
+
+# --- Main Logic ---
+
+main() {
+  check_args
+  check_deps
+
+  # Ensure cleanup runs on script exit, error, or interrupt
+  trap cleanup EXIT HUP INT QUIT TERM
+
+  echo "--- Starting optimized image squashing for '$SOURCE_IMAGE' ---"
+
+  # 1. Inspect the source image and extract metadata
+  echo "Step 1: Inspecting source image and extracting metadata..."
+  local inspection
+  inspection=$(docker inspect "$SOURCE_IMAGE")
+
+  # 2. Flatten the image using a piped docker export/import to avoid temp files
+  echo "Step 2: Flattening '$SOURCE_IMAGE' into temporary base image '$TEMP_BASE_IMAGE'"
+  local container_id
+  container_id=$(docker create "$SOURCE_IMAGE")
+  docker export "$container_id" | docker import - "$TEMP_BASE_IMAGE"
+  docker rm "$container_id" > /dev/null # Container is no longer needed
+  echo "Flattened base image created."
+
+  # 3. Immediately remove the original source image to free up disk space
+  if [[ "${DELETE_SOURCE_IMAGE}" == "--delete-source" ]]; then
+      echo "Step 3: Removing original source image '$SOURCE_IMAGE' to conserve space..."
+      docker rmi "$SOURCE_IMAGE"
+      docker image prune --force # Attempt to reclaim space from dangling layers now
+      echo "Original image removed."
+  else
+      echo "Retaining original unsquashed image ${SOURCE_IMAGE}.  Add '--delete-source' as 3rd parameter to conserve storage by deleting original."
+  fi
+  
+  # 4. Generate a temporary Dockerfile with all the preserved metadata
+  echo "Step 4: Generating Dockerfile with preserved metadata..."
+  echo "FROM $TEMP_BASE_IMAGE" > "$TEMP_DOCKERFILE"
+
+  jq -r '.[0].Config.Env[]' <<< "$inspection" | while read -r env; do
+    key=$(echo "$env" | cut -d'=' -f1)
+    value=$(echo "$env" | cut -d'=' -f2-)
+    echo "ENV $key=\"$value\"" >> "$TEMP_DOCKERFILE"
+  done
+
+  jq -r '.[0].Config.WorkingDir | select(. != null and . != "")' <<< "$inspection" | while read -r wd; do echo "WORKDIR $wd" >> "$TEMP_DOCKERFILE"; done
+  jq -r '.[0].Config.User | select(. != null and . != "")' <<< "$inspection" | while read -r user; do echo "USER $user" >> "$TEMP_DOCKERFILE"; done
+  jq -r '.[0].Config.ExposedPorts | keys[] | select(. != null)' <<< "$inspection" | while read -r port; do echo "EXPOSE $port" >> "$TEMP_DOCKERFILE"; done
+  jq -r '.[0].Config.OnBuild | select(. != null) | .[]' <<< "$inspection" | while read -r onbuild; do echo "ONBUILD $onbuild" >> "$TEMP_DOCKERFILE"; done
+  jq -r '.[0].Config.StopSignal | select(. != null)' <<< "$inspection" | while read -r signal; do echo "STOPSIGNAL $signal" >> "$TEMP_DOCKERFILE"; done
+  
+  local entrypoint
+  entrypoint=$(jq '.[0].Config.Entrypoint' <<< "$inspection")
+  if [ "$entrypoint" != "null" ]; then echo "ENTRYPOINT $(jq -c '.' <<< "$entrypoint")" >> "$TEMP_DOCKERFILE"; fi
+
+  local cmd
+  cmd=$(jq '.[0].Config.Cmd' <<< "$inspection")
+  if [ "$cmd" != "null" ]; then echo "CMD $(jq -c '.' <<< "$cmd")" >> "$TEMP_DOCKERFILE"; fi
+  
+  jq -r '.[0].Config.Labels | to_entries | .[] | "\(.key)=\"\(.value)\""' <<< "$inspection" | while read -r label; do echo "LABEL $label" >> "$TEMP_DOCKERFILE"; done
+  
+  echo "Generated temporary Dockerfile '$TEMP_DOCKERFILE'."
+
+  # 5. Build the final image from the generated Dockerfile
+  echo "Step 5: Building final squashed image '$TARGET_IMAGE'"
+  docker build --no-cache -t "$TARGET_IMAGE" -f "$TEMP_DOCKERFILE" .
+
+  echo "--- Squashing complete! ---"
+  echo "Final image '$TARGET_IMAGE' has been created."
+}
+
+# --- Run main function ---
+main

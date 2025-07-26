@@ -4,9 +4,15 @@
 
 env=$1
 
-set +u    # due to missing PS1,  etc.  turn off undefined var trapping
-source /etc/profile.d/conda.sh
-conda activate $env
-set -u
-# conda env list
 
+OLD_OPTS=$-
+set +u    # due to missing PS1,  etc.  turn off undefined var trapping
+
+source /etc/nb-wrangler.rc
+source /etc/profile.d/${CONDA_VER}.sh
+${CONDA_VER} activate $env
+
+case $OLD_OPTS in
+  *u*) set -u ;;
+  *) set +u ;;
+esac

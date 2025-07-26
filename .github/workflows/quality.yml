@@ -3,7 +3,15 @@ on:
    schedule: # weekly
      - cron: '0 0 * * 0'
    push:
+      branches:
+        - main
+      paths-ignore:
+        - "nbw-spec-archive/**"
    pull_request:
+      branches:
+        - main
+      paths-ignore:
+        - "nbw-spec-archive/**"
    workflow_dispatch:
 
 jobs:
@@ -15,17 +23,17 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        DEPLOYMENT_NAME: [ jwebbinar, roman, tike]
+        DEPLOYMENT_NAME: [ jwebbinar, roman, tike, wrangler ]
         USE_FROZEN: [ 0 ]
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v6
         with:
-          python-version: 3.8
+          python-version: 3.13
 
       - name: Set Up Environment
         shell: bash

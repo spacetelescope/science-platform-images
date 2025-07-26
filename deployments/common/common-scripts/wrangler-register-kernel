@@ -1,0 +1,17 @@
+#! /bin/bash
+
+#
+# This script works for both new wrangler-style builds and also
+# for "classic builds" which are initialized using --inject-spi
+# to define the requirements files, etc., based on a wrangler
+# spec.
+#
+# This script registers the wrangler environment defined for this
+# image by the spec in the deployment's environments directory as
+# a Jupyter kernel at startup to make sure there is a GUI menu
+# item to select it.  Don't call this for non-wrangler kernels.
+#
+
+source /etc/nb-wrangler.rc
+source nb-wrangler environment
+nb-wrangler /opt/environments/nbw-wrangler-spec.yaml --env-register

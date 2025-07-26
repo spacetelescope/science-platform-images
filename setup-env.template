@@ -1,19 +1,26 @@
-
+#! /bin/bash
 # Clone and customize this for your deployment
 #
 # NOTE:  must be sourced from jupyterhub-deploy root directory
 #
 
+# set -eu # DO NOT 'set -eu' since this script is sourced and will kill the sourcing terminal/shell on error.
+
 # ----------------- basic inputs,  must set for deployment --------------
 
-export DEPLOYMENT_NAME=cluster-name  # roman, jwebbinar, tike
+export DEPLOYMENT_NAME=cluster-name  # roman, jwebbinar, tike, wrangler
 export ENVIRONMENT=sandbox           # sandbox, dev, test, prod, int
 export CAL_VERSION=none              # e.g. roman or jwst x.y.z CAL release, latest, or none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
                                      # 1 for tagged/frozen production build
 
-export FREEZE=1                     # dump new frozen requirements in image to modified files in this git repo
+export FREEZE=0                     # dump new frozen requirements in image to modified files in this git repo
+
+export REPACK=0                     # repack the image to reduce size;  experimental for now, generally needed for
+                                    # wrangler scanning on github but also reduces image size permanently
+
+# https://www.perplexity.ai/search/trying-to-load-a-repacked-dock-NKu4SvlYTTq0uaram38D0w#0
 
 export PLATFORM="linux/amd64"       # os / instruction-set for built image: linux/amd64 or linux/aarch64
 
@@ -24,21 +31,32 @@ export PLATFORM="linux/amd64"       # os / instruction-set for built image: linu
 export REGISTRY=""
 # export REGISTRY="quay.io/jupyter/"
 
-
-
 # OWNER=spacetelescope will be built from docker-stacks source code
 # quay.io/jupyter has the official pre-built images,  no trailing backslash
 export OWNER="spacetelescope"
 # export OWNER="quay.io/jupyter"
 
-export BASE_IMAGE=${OWNER}/scipy-notebook   # see above
+export BASE_NOTEBOOK="scipy-notebook"  # minimal-notebook
+
+export BASE_IMAGE=${OWNER}/${BASE_NOTEBOOK}
 
 export NOTEBOOK_TAG=latest
 export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
+# export NOTEBOOK_ID_SLIM=${NOTEBOOK_ID}-slim  # this is implied by repack,  refactor if you really need it.
+
+export DATE_TAG=$(date -u +'%Y-%m-%d-%H-%M-%S')
+export GITHUB_REG="ghcr.io"
+export GITHUB_ORG=jaytmiller
+# export GITHUB_ORG=spacetelescope
+export GITHUB_REPO=science-platform-images
+export GITHUB_TAG=notebook-${DEPLOYMENT_NAME}-${DATE_TAG}
+export GITHUB_UNTAGGED_ID=${GITHUB_REG}/${GITHUB_ORG}/${GITHUB_REPO}
+export GITHUB_IMAGE_ID=${GITHUB_REG}/${GITHUB_ORG}/${GITHUB_REPO}:${GITHUB_TAG}
+export GITHUB_IMAGE_SLIM_ID=${GITHUB_IMAGE_ID}-slim
 
 export UBUNTU_TAG="24.04"            # # Image scanning,  report Ubuntu status for this version of Ubuntu
 
-export PYTHON_VERSION="3.11"
+export BASE_PYTHON_VERSION="3.12"
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
