@@ -1,7 +1,7 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
 ARG BASE_IMAGE
-FROM $BASE_IMAGE AS build
+FROM "$BASE_IMAGE" AS build
 
 # ---------------------------------------------------------------
 # VARTOOLS Light Curve Analysis Program

@@ -7,7 +7,6 @@ bandit
 boto3
 flake8
 black
-checkov
 ruff
 colorama
 keyring

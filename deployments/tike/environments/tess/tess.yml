@@ -1,24 +1,10 @@
-name: tess
-channels:
-  - conda-forge
+channels: [conda-forge]
 dependencies:
-  - python~=3.11.0
-  - pip
-  - freetds
-  - fftw
-  - mpi
-  - nomkl
-  - openblas
-  - pip:
-    - setuptools
-    - pyfftw
-    - cython
-    - numba
-    - numpy
-    - scipy
-
-
-#  - mkl_fft
-#  - mkl
-#  - mkl-service
-#  - tensorflow
+- python=3.11
+- pip
+- pip-tools
+- setuptools
+- jupyter-packaging
+- nodejs>=22.0
+- pip: []
+name: tess
