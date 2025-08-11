@@ -12,3 +12,7 @@ black
 jupyterhub
 nbgitpuller
 playwright
+flask
+psycopg2-binary
+requests
+ddtrace
