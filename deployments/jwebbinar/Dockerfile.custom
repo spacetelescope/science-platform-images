@@ -76,7 +76,7 @@ RUN /opt/common-scripts/env-conda jwebbinar
 # RUN /opt/common-scripts/env-sync jwebbinar
 
 # jwebbinar4 CUSTOM (--no-deps)
-RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar'
+RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar/  /opt/env-frozen/jwebbinar/
 COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
