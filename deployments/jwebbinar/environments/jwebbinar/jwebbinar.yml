@@ -1,4 +1,4 @@
-name: jwebbinar41
+name: jwebbinar
 channels:
     - conda-forge
 dependencies:
