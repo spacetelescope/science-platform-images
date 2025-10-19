@@ -22,7 +22,7 @@ export IMAGE_RUN_PARS="--rm -e JUPYTER_ENABLE_LAB=yes --platform ${PLATFORM}"
 export IMAGE_VULNERABILITY_LEVEL="medium"
 
 # Extra standard parameters to docker build commands
-export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg CONDA_VER=${CONDA_VER} --build-arg MAMBA_ROOT_PREFIX=/opt/conda"
+export DOCKER_BUILD_ARGS="--rm --force-rm  --build-arg OWNER=${OWNER} --build-arg REGISTRY=${REGISTRY}  --progress plain --platform ${PLATFORM} --build-arg CONDA_VER=${CONDA_VER} --build-arg MAMBA_ROOT_PREFIX=/opt/conda --build-arg PYTHON_VERSION=${PYTHON_VERSION}"
 
 export ROOT_IMAGE=ubuntu:${UBUNTU_TAG}
 
