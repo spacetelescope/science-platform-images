@@ -22,7 +22,7 @@ export PLATFORM="linux/amd64"       # os / instruction-set for built image: linu
 # Set to "" (empty) for source build,  or quay.io/jupyter/ for current docker-stacks image.
 # jupyter is now at quay.io/jupyter/  needed to obtain fresh builds.  trailing backslash required
 export REGISTRY=""
-# export REGISTRY="quay.io/jupyter/" 
+# export REGISTRY="quay.io/jupyter/"
 
 
 
@@ -36,7 +36,9 @@ export BASE_IMAGE=${OWNER}/scipy-notebook   # see above
 export NOTEBOOK_TAG=latest
 export NOTEBOOK_ID=notebook-${DEPLOYMENT_NAME}:${NOTEBOOK_TAG}  # abstract name of mission-specific notebook image
 
-export UBUNTU_TAG="24.04"	     # # Image scanning,  report Ubuntu status for this version of Ubuntu
+export UBUNTU_TAG="24.04"            # # Image scanning,  report Ubuntu status for this version of Ubuntu
+
+export PYTHON_VERSION="3.11"
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 
