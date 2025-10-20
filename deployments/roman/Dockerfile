@@ -116,7 +116,6 @@ USER ${NB_UID}:${NB_GID}
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 
 USER root
-RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
 RUN fix-permissions $CONDA_DIR $HOME
 
 USER ${NB_UID}:${NB_GID}
