@@ -34,3 +34,5 @@ ipypopout==2.0.0
 jupyterlab-tour
 anywidget
 jupytext
+jupyter-app-launcher
+voila-gridstack

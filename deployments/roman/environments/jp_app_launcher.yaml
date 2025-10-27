@@ -1,0 +1,12 @@
+# Docs: https://jupyter-app-launcher.readthedocs.io/en/latest/usage.html#configuration-file-content
+# Default mode, just notebook. not auto-rendering, , disabled.
+# - title: "Cost Metrics Dashboard Notebook"
+#   description: "Open the cost metrics dashboard"
+#   source: /opt/environments/cost-dashboard.ipynb
+#   type: notebook
+
+# notebook-voila requires voila-gridstack to be installed in the system. 
+- title: "Cost Metrics Dashboard"
+  description: "Open the cost metrics dashboard"
+  source: /opt/environments/cost-dashboard.ipynb
+  type: notebook-voila
