@@ -1,0 +1,7 @@
+export pandeia_refdata="${HOME}/refdata/pandeia_data-2025.9-roman"
+export STPSF_PATH="${HOME}/refdata/stpsf-data"
+export stips_data="${HOME}/refdata/stips_data"
+export PYSYN_CDBS="${HOME}/refdata/grp/redcat/trds/"
+export CRDS_SERVER_URL="https://roman-crds.stsci.edu"
+export CRDS_CONTEXT="roman_0041.pmap"
+export CRDS_PATH="${HOME}/crds_cache"
