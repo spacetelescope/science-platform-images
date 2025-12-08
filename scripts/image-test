@@ -5,4 +5,4 @@
 # script.   Typically this runs all import and notebook tests in a single
 # container run,  this may change.
 
-time image-exec /opt/environments/test
+time image-exec /opt/environments/test $*

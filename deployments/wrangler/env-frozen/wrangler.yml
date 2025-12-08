@@ -1,0 +1,16 @@
+name: tess
+channels:
+  - conda-forge
+dependencies:
+  - cython
+  - ipykernel
+  - jupyter
+  - jupyter-packaging
+  - nodejs>=22.0
+  - pip
+  - pip-tools
+  - python=3.11
+  - setuptools
+  - uv
+  - wheel
+

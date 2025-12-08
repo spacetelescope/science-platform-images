@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -eu
+set -eux
 
 echo "========================= Building Base Image ========================"
 
@@ -43,18 +43,32 @@ fi
 #
 build_jh() {
     STACK=$1;  shift
+    BASE_IMAGE=$1; shift
     docker build ${DOCKER_BUILD_ARGS} \
            -t ${OWNER}/${STACK}:latest \
            ./images/${STACK} \
            --file images/${STACK}/Dockerfile \
+           --build-arg BASE_IMAGE=${BASE_IMAGE} \
            $*
+    # Free precusors as we go,  real storage savings will happen after final fat image is deleted
+    if [[ "${REPACK}" == "1" ]]; then
+        if [[ "${BASE_IMAGE}" != "unused" ]]; then
+            docker rmi ${BASE_IMAGE}
+        fi
+    fi
 }
 
+build_jh  docker-stacks-foundation  unused --build-arg ROOT_IMAGE=${ROOT_IMAGE}  --build-arg PYTHON_VERSION=${BASE_PYTHON_VERSION}
 
-build_jh  docker-stacks-foundation  --build-arg ROOT_IMAGE=${ROOT_IMAGE}
+build_jh  base-notebook     ${OWNER}/docker-stacks-foundation:latest
 
-build_jh  base-notebook     --build-arg BASE_IMAGE=${OWNER}/docker-stacks-foundation:latest
+build_jh  minimal-notebook  ${OWNER}/base-notebook:latest
 
-build_jh  minimal-notebook  --build-arg BASE_IMAGE=${OWNER}/base-notebook:latest
+if [[ "${BASE_NOTEBOOK}" = "scipy-notebook" ]]; then
+    build_jh  scipy-notebook ${OWNER}/minimal-notebook:latest
+fi
 
-build_jh  scipy-notebook    --build-arg BASE_IMAGE=${OWNER}/minimal-notebook:latest
+# If running on github,  prune Docker to free resources for follow-on steps
+if [[ -v GITHUB_RUN_ID ]]; then
+    docker system prune --force
+fi

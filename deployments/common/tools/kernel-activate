@@ -13,7 +13,7 @@ if [ $# -lt 1 ]; then
     echo
     # can't exit in source'd script or sourcing script will exit
 else
-    source /opt/conda/etc/profile.d/conda.sh
+    source /opt/conda/etc/profile.d/${CONDA_VER}.sh
 
     envname=$1
     shift;

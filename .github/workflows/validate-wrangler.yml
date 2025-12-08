@@ -1,0 +1,121 @@
+name: Notebook Wrangler Validate Spec PR
+on:
+   pull_request_target:
+      branches:
+        - main
+      paths:
+        - "nbw-spec-archive/**"
+   workflow_dispatch:
+jobs:
+  docker:
+    name: Notebook Wrangler Ingest
+    runs-on: ubuntu-24.04
+    permissions:
+        packages: write
+        contents: write
+        pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: main   # ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Configure
+        shell: bash
+        run: |
+          git config --global user.email "dmd_octarine@stsci.edu"
+          git config --global user.name "Wrangler workflow"
+          scripts/image-configure wrangler --base-notebook minimal-notebook
+
+      - name: Set Up Environment
+        shell: bash
+        run: |
+          pip install -r requirements.txt
+
+      - name: Debug branch and files
+        run: |
+          echo "Current branch: ${{ github.ref }}"
+          echo "PR'ed branch: ${{ github.event.pull_request.head.ref }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "PR number: ${{ github.event.number }}"
+          echo "HEAD commit: ${{ github.sha }}"
+
+          echo "All scripts:"
+          find scripts -type f | sort
+
+          # Show nbw-spec-archive directory contents
+          echo "Contents of nbw-spec-archive:"
+          if [ -d "nbw-spec-archive" ]; then
+            ls -la nbw-spec-archive/
+          else
+            echo "Directory nbw-spec-archive does not exist"
+          fi
+
+          # Show git status
+          git status
+
+          # Show recent commits
+          git log --oneline -5
+
+      # ========================= untrusted ==============================================
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+
+      - name: Validate Repo Changes
+        shell: bash
+        run: |
+          source ./setup-env
+          set -x -o pipefail
+          CHANGED_SPEC_COUNT=$(git diff --name-status HEAD^ HEAD | grep -E 'A\s+nbw-spec-archive/nbw-.*\.yaml' | wc -l)
+          if [[ "${CHANGED_SPEC_COUNT}" != "1" ]]; then
+             echo "There should be one and only one Wrangler spec added."
+             exit 1
+          fi
+          set +e
+          CHANGES_NOT_SPEC=$(git diff --name-status HEAD^ HEAD | grep -v -E 'A\s+nbw-spec-archive/nbw-.*\.yaml')
+          set -e
+          if [[ "${CHANGES_NOT_SPEC}" != "" ]]; then
+             echo "PR change set includes more than a single wrangler spec, REJECTED."
+             exit 1
+          fi
+          NBW_WRANGLER_SPEC=$(find nbw-spec-archive/ -name "*.yaml" -type f | sort | tail -1)
+          cp -v ${NBW_WRANGLER_SPEC} /tmp/nbw-wrangler-spec.yaml
+
+      # ========================= trusted ==============================================
+
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Validate Spec
+        shell: bash
+        run: |
+          cp /tmp/nbw-wrangler-spec.yaml .
+          python -m nb_wrangler nbw-wrangler-spec.yaml --spec-validate --verbose
+
+      # ========================= untrusted ==============================================
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+
+      - name: Approve PR and Merge
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+            gh pr review --approve ${{ github.event.number }}
+            gh pr merge --admin --rebase --delete-branch ${{ github.event.number }}

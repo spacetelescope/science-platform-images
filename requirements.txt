@@ -19,3 +19,5 @@ pytest-coverage
 pandas
 openpyxl
 GitPython
+yq
+git+https://github.com/spacetelescope/nb-wrangler.git

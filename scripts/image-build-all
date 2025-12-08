@@ -13,7 +13,7 @@ for USE_FROZEN in $FREEZE_MODES; do
         id="build-${DEPLOYMENT_NAME}-${USE_FROZEN}"
         echo "============ Starting ${id}"
         cd ${JUPYTERHUB_DIR}
-        image-configure ${DEPLOYMENT_NAME} ${USE_FROZEN}
+        image-configure ${DEPLOYMENT_NAME} --use-frozen ${USE_FROZEN}
         source setup-env
         # tags for tracking here only, not intended for push, not valid for e.g. running on hub
         export NOTEBOOK_ID=${NOTEBOOK_ID}-${USE_FROZEN}
