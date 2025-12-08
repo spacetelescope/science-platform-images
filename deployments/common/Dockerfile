@@ -3,8 +3,8 @@
 # If the image (jupyter/scipy-notebook) exists locally it will be used,
 # otherwise the latest from https://hub.docker.com/_/buildpack-deps will be used
 
-ARG BASE_IMAGE=spacetelescope/scipy-notebook
-FROM "$BASE_IMAGE"
+ARG BASE_IMAGE
+FROM $BASE_IMAGE as build
 
 SHELL ["/bin/bash", "--login", "-c"]
 

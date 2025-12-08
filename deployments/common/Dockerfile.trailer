@@ -17,10 +17,12 @@ USER root
 COPY default-home-contents/ /etc/default-home-contents
 RUN  cp -r $HOME/.local /etc/default-home-contents && \
      cp -r $HOME/.jupyter /etc/default-home-contents
+
 COPY global_bashrc $HOME
-RUN  cat $HOME/global_bashrc >> /etc/bash.bashrc  && \
-     cat $HOME/global_bashrc >> /etc/bash.env  && \
-     rm $HOME/global_bashrc
+COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
+RUN  cat $HOME/global_bashrc $HOME/nbw-exports.sh >> /etc/bash.bashrc  && \
+     cat $HOME/global_bashrc $HOME/nbw-exports.sh >> /etc/bash.env  && \
+     rm $HOME/global_bashrc $HOME/nbw-exports.sh
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
