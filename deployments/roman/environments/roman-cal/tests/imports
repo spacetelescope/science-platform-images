@@ -9,10 +9,10 @@ galsim
 glob
 importlib
 matplotlib
-notebook_data_dependencies
+#notebook_data_dependencies
 numpy
 pandeia
-plot_rist
+#plot_rist
 pysiaf
 roman_datamodels
 romancal
