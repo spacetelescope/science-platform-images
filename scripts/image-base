@@ -53,6 +53,7 @@ build_jh() {
     # Free precusors as we go,  real storage savings will happen after final fat image is deleted
     if [[ "${REPACK}" == "1" ]]; then
         if [[ "${BASE_IMAGE}" != "unused" ]]; then
+            echo "Removing image ${BASE_IMAGE} for REPACK."
             docker rmi ${BASE_IMAGE}
         fi
     fi
