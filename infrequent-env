@@ -64,12 +64,21 @@ export COMMON_IMAGE_DIR=`pwd`/deployments/common
 # --------------- vvvvv misc env settings vvvvv ---------------------------------
 
 function where () {
-    info="${DEPLOYMENT_NAME}-${ENVIRONMENT}-${OWNER}-${CAL_VERSION}"
+    info="${DEPLOYMENT_NAME}-${ENVIRONMENT}-${OWNER}-${BASE_NOTEBOOK}"
     if [[ "${USE_FROZEN}" == "0" ]]; then
         info="${info}-floating"
     elif [[ "${USE_FROZEN}" == "1" ]]; then
         info="${info}-frozen"
     else
+        echo "Invalid USE_FROZEN setting,  must be 0 or 1.  Use image-configure."
+        info="${info}-ERROR"
+    fi
+    if [[ "${REPACK}" == "0" ]]; then
+        info="${info}-fat"
+    elif [[ "$REPACK}" == "1" ]]; then
+        info="${info}-slim"
+    else
+        echo "Invalid REPACK setting,  must be 0 or 1. Use image-configure."
         info="${info}-ERROR"
     fi
     echo $info
