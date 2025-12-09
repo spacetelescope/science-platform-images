@@ -118,7 +118,7 @@ def main():
     parser.add_argument(
         "--base-notebook",
         type=str,
-        default="scipy-notebook",
+        default="minimal-notebook",
         choices=["scipy-notebook", "minimal-notebook", "base-notebook", "pytorch-notebook", "tensorflow-notebook",
                  "julia-notebook", "pyspark-notebook", "r-notebook", "all-spark-notebook"],
         help="Docker-stacks notebook type to build or pull.  scipy-notebook(tike,roman,jwebbinar), minimal-notebook(wrangler)"
