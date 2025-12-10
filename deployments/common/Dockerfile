@@ -4,7 +4,7 @@
 # otherwise the latest from https://hub.docker.com/_/buildpack-deps will be used
 
 ARG BASE_IMAGE
-FROM $BASE_IMAGE as build
+FROM $BASE_IMAGE
 
 SHELL ["/bin/bash", "--login", "-c"]
 
@@ -173,6 +173,30 @@ COPY --chown=${NB_UID}:${NB_GID}  default-home-contents/   /etc/default-home-con
 COPY --chown=${NB_UID}:${NB_GID}  tools/  /opt/tools/
 COPY --chown=${NB_UID}:${NB_GID} VERSION /opt
 COPY --chown=${NB_UID}:${NB_GID} HASH /opt
+
+# ----------------------------------------------------------------------
+
+# Install nb-wrangler in base environment
+
+USER ${NB_UID}:${NB_GID}
+WORKDIR /tmp
+
+# Install wrangler directly in base environment
+RUN source /opt/common-scripts/env-activate base && \
+    git clone https://github.com/spacetelescope/nb-wrangler && \
+    cd nb-wrangler && \
+    pip install . && \
+    cp nb-wrangler /opt/tools && \
+    cd .. && \
+    /opt/common-scripts/env-clean && \
+    rm -rf nb-wrangler
+
+USER root
+RUN source /etc/nb-wrangler.rc && \
+    mkdir -p ${NBW_ROOT} && \
+    chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT}
+
+# ----------------------------------------------------------------------
 
 USER root
 RUN for DIR in ${USER_CACHE_DIRS};  do mkdir -p ${DIR}; chown -R $NB_UID:$NB_GID ${DIR}; done

@@ -1,5 +1,5 @@
 ARG BASE_CONTAINER
-FROM $BASE_CONTAINER as build
+FROM $BASE_CONTAINER AS build
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
