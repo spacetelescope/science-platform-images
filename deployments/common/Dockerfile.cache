@@ -1,5 +1,5 @@
-ARG BASE_CONTAINER
-FROM $BASE_CONTAINER AS build
+ARG BASE_CONTAINER=notebook-common:latest
+FROM ${BASE_CONTAINER}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 

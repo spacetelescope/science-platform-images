@@ -3,8 +3,8 @@
 # If the image (jupyter/scipy-notebook) exists locally it will be used,
 # otherwise the latest from https://hub.docker.com/_/buildpack-deps will be used
 
-ARG BASE_IMAGE
-FROM $BASE_IMAGE
+ARG BASE_IMAGE=spacetelescope/minimal-notebook:latest
+FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "--login", "-c"]
 
@@ -194,7 +194,9 @@ RUN source /opt/common-scripts/env-activate base && \
 USER root
 RUN source /etc/nb-wrangler.rc && \
     mkdir -p ${NBW_ROOT} && \
-    chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT}
+    chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
+    chmod -R 775 ${NBW_ROOT} && \
+    chmod -R g+s ${NBW_ROOT}
 
 # ----------------------------------------------------------------------
 

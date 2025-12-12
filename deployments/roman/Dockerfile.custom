@@ -1,7 +1,7 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
-ARG BASE_IMAGE
-FROM $BASE_IMAGE AS build
+ARG BASE_IMAGE=notebook-common
+FROM ${BASE_IMAGE}
 
 # ----------------------------------------------------------------------
 # Duplicated in config,  these are for standalone non-hub lab use.
