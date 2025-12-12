@@ -2,7 +2,7 @@
 
 # Generic scripts to git-sync notebooks specified in wrangler spec; no parameters
 
-notebook_repos=$(yq -y --indentless .out.notebook_repo_urls /opt/environments/nbw-wrangler-spec.yaml | cut -d' ' -f2)
+notebook_repos=$(yq -r --indentless '.repositories.[].url' /opt/environments/nbw-wrangler-spec.yaml | cut -d' ' -f2)
 for repo in ${notebook_repos}; do
     out=$(basename $repo | perl -p -e's/.git//g')
     /opt/common-scripts/git-sync-v4 ${repo} main ${HOME}/references/${out}-ref

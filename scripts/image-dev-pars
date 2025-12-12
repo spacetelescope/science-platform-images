@@ -24,7 +24,8 @@ COMMON_MOUNTS="${COMMON_MOUNTS} -v ${COMMON_IMAGE_DIR}/tools:/opt/tools:rw"
 MISSION_MOUNTS="-v ${IMAGE_DIR}/environments:/opt/environments:rw"
 MISSION_MOUNTS="${MISSION_MOUNTS} -v ${IMAGE_DIR}/env-frozen:/opt/env-frozen:rw"
 
-DATA_MOUNTS="-v ${SP_HOME:-${HOME}}/refdata:/home/jovyan/refdata"
+SP_HOME=${SP_HOME:-${HOME}}
+DATA_MOUNTS="-v ${NBW_PANTRY:-${SP_HOME}/.nbw-pantry}:/teams/admin/nbw-pantry"
 
 # If the first parameter is --dev,  run dev mode where some sources
 # are mapped directly into the container for live development.
