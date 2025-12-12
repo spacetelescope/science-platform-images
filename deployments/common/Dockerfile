@@ -193,10 +193,10 @@ RUN source /opt/common-scripts/env-activate base && \
 
 USER root
 RUN source /etc/nb-wrangler.rc && \
-    mkdir -p ${NBW_ROOT} && \
-    chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
-    chmod -R 775 ${NBW_ROOT} && \
-    chmod -R g+s ${NBW_ROOT}
+    mkdir -p ${NBW_ROOT} ${NBW_ROOT}/temps && \
+    chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} ${NBW_ROOT}/temps && \
+    chmod -R 775 ${NBW_ROOT} ${NBW_ROOT}/temps && \
+    chmod -R g+s ${NBW_ROOT} ${NBW_ROOT}/temps
 
 # ----------------------------------------------------------------------
 
