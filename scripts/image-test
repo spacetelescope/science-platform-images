@@ -5,4 +5,6 @@
 # script.   Typically this runs all import and notebook tests in a single
 # container run,  this may change.
 
+source image-dev-pars
+
 time image-exec /opt/environments/test $*
