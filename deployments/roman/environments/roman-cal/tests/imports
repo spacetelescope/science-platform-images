@@ -29,6 +29,7 @@ photutils
 plot_rist
 pprint
 pysiaf
+rbt
 rbvt
 roman_datamodels
 romancal
@@ -41,6 +42,7 @@ stips
 stpsf
 stsynphot
 synphot
+textwrap
 time
 typing
 warnings
