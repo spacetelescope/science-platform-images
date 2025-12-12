@@ -1,7 +1,7 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
 ARG BASE_IMAGE=notebook-common
-FROM $BASE_IMAGE AS build
+FROM ${BASE_IMAGE}
 
 # ---------------------------------------------------------------
 # VARTOOLS Light Curve Analysis Program
@@ -104,13 +104,18 @@ USER root
 COPY default-home-contents/ /etc/default-home-contents
 RUN  cp -r $HOME/.local /etc/default-home-contents && \
      cp -r $HOME/.jupyter /etc/default-home-contents
+
 COPY global_bashrc $HOME
-RUN  cat $HOME/global_bashrc >> /etc/bash.bashrc  && \
-     cat $HOME/global_bashrc >> /etc/bash.env  && \
-     rm $HOME/global_bashrc
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
+
+# Already copied by generic environments copy
+# COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
+
+RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
+     cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
+     rm $HOME/global_bashrc
 
 # ----------------------------------------------------------------------
 
@@ -132,6 +137,10 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
       >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
+
+
+ENV NBW_PANTRY=/teams/admin/nbw-pantry
+RUN mkdir -p ${NBW_PANTRY} && chown -R ${NB_UID}:${NB_GID} ${NBW_PANTRY}
 
 USER ${NB_UID}:${NB_GID}
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook

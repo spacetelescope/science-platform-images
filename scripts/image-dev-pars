@@ -25,7 +25,19 @@ MISSION_MOUNTS="-v ${IMAGE_DIR}/environments:/opt/environments:rw"
 MISSION_MOUNTS="${MISSION_MOUNTS} -v ${IMAGE_DIR}/env-frozen:/opt/env-frozen:rw"
 
 SP_HOME=${SP_HOME:-${HOME}}
-DATA_MOUNTS="-v ${NBW_PANTRY:-${SP_HOME}/.nbw-pantry}:/teams/admin/nbw-pantry"
+
+DATA_MOUNTS=${DATA_MOUNTS:-""}
+
+DEFAULT_IMAGE_PANTRY="/teams/admin/nbw-pantry"   # Coordinate with Dockerfiles etc.
+DEFAULT_USER_PANTRY=${SP_HOME}/.nbw-pantry
+
+NBW_PANTRY="${NBW_PANTRY:-${DEFAULT_USER_PANTRY}"
+mkdir -p "${NBW_PANTRY}"
+DATA_MOUNTS="${DATA_MOUNTS} -v ${NBW_PANTRY}:${DEFAULT_IMAGE_PANTRY}"
+
+CRDS_PATH="${CRDS_PATH:-${SP_HOME}/crds_cache}"
+mkdir -p "${CRDS_PATH}"
+DATA_MOUNTS="${DATA_MOUNTS} -v ${CRDS_PATH}:/home/jovyan/crds_cache:rw"
 
 # If the first parameter is --dev,  run dev mode where some sources
 # are mapped directly into the container for live development.
@@ -39,3 +51,5 @@ else
 fi
 
 IMAGE_RUN_PARS="${IMAGE_RUN_PARS} ${DEV_PARS} ${DATA_MOUNTS}"
+
+echo "IMAGE_RUN_PARS: ${IMAGE_RUN_PARS}"
