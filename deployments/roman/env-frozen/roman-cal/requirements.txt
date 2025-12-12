@@ -88,11 +88,14 @@ asdf==5.1.0
     #   astrocut
     #   crds
     #   gwcs
+    #   jdaviz
     #   rad
     #   roman-datamodels
     #   romancal
     #   romanisim
+    #   specutils
     #   stcal
+    #   stdatamodels
     #   stpipe
 asdf-astropy==0.9.0
     # via
@@ -101,6 +104,8 @@ asdf-astropy==0.9.0
     #   rad
     #   roman-datamodels
     #   romancal
+    #   specutils
+    #   stdatamodels
 asdf-coordinates-schemas==0.4.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -121,10 +126,15 @@ asdf-transform-schemas==0.6.0
     #   asdf
     #   asdf-astropy
     #   asdf-wcs-schemas
+    #   stdatamodels
 asdf-wcs-schemas==0.5.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   gwcs
+asteval==1.0.7
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 astrocut==1.1.0
     # via -r /opt/environments/roman-cal/roman-cal.pip
 astropy==7.2.0
@@ -134,21 +144,36 @@ astropy==7.2.0
     #   astrocut
     #   astropy-healpix
     #   astroquery
+    #   casa-formats-io
     #   crds
     #   galsim
+    #   glue-astronomy
     #   glue-core
     #   gwcs
+    #   healpy
+    #   healsparse
+    #   jdaviz
+    #   montage-wrapper
+    #   ndcube
     #   pandeia-engine
     #   photutils
     #   poppy
     #   pysiaf
     #   pyvo
+    #   radio-beam
+    #   regions
     #   roman-datamodels
     #   romancal
     #   romanisim
+    #   skyproj
     #   sncosmo
+    #   specreduce
+    #   spectral-cube
+    #   specutils
     #   spherical-geometry
     #   stcal
+    #   stdatamodels
+    #   stips
     #   stpipe
     #   stpsf
     #   stsynphot
@@ -158,7 +183,7 @@ astropy-healpix==1.1.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romanisim
-astropy-iers-data==0.2025.12.1.0.45.12
+astropy-iers-data==0.2025.12.8.0.38.44
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astropy
@@ -169,6 +194,7 @@ astropy-sphinx-theme==2.0
 astroquery==0.4.11
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
     #   stpsf
 asttokens==3.0.1
     # via
@@ -196,7 +222,7 @@ beautifulsoup4==4.14.3
     #   astroquery
     #   nbconvert
     #   stsynphot
-black==25.11.0
+black==25.12.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -231,6 +257,7 @@ bqplot==0.12.45
     #   bqplot-image-gl
     #   glue-jupyter
     #   ipyvolume
+    #   jdaviz
 bqplot-gl==0.0.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -253,11 +280,16 @@ cachetools==6.2.2
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
     #   solara-ui
+casa-formats-io==0.3.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   spectral-cube
 certifi==2025.11.12
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   httpcore
     #   httpx
+    #   pyproj
     #   requests
 certipy==0.2.2
     # via
@@ -307,7 +339,7 @@ contourpy==1.3.3
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   bokeh
     #   matplotlib
-crds==13.0.6
+crds==13.0.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   ci-watson
@@ -327,15 +359,17 @@ cython==3.2.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romanisim
-dask==2025.11.0
+dask[array]==2025.11.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   casa-formats-io
     #   distributed
+    #   spectral-cube
 ddtrace==4.0.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
-debugpy==1.8.17
+debugpy==1.8.18
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   ipykernel
@@ -378,6 +412,7 @@ echo==0.11.1
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-core
     #   glue-vispy-viewers
+    #   jdaviz
 entrypoints==0.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -386,6 +421,8 @@ envier==0.6.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   ddtrace
+esutil==0.6.16
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 et-xmlfile==2.0.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -463,16 +500,23 @@ glfw==2.10.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-vispy-viewers
+glue-astronomy==0.14.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 glue-core==1.24.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   glue-astronomy
     #   glue-jupyter
     #   glue-vispy-viewers
+    #   jdaviz
 glue-jupyter==0.25.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-vispy-viewers
+    #   jdaviz
 glue-vispy-viewers[jupyter]==1.3.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -486,9 +530,13 @@ gwcs==0.26.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
+    #   jdaviz
+    #   ndcube
     #   roman-datamodels
     #   romancal
     #   romanisim
+    #   specreduce
+    #   specutils
     #   stcal
     #   tweakwcs
 h11==0.16.0
@@ -501,6 +549,17 @@ h5py==3.15.1
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-core
     #   sncosmo
+healpy==1.19.0
+    # via -r /opt/environments/roman-cal/roman-cal.pip
+healsparse==1.11.1
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   skyproj
+hpgeom==1.4.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   healsparse
+    #   skyproj
 hsluv==5.0.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -526,6 +585,7 @@ idna==3.11
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   anyio
     #   httpx
+    #   jdaviz
     #   jsonschema
     #   jupyterhub
     #   requests
@@ -561,13 +621,16 @@ ipygoldenlayout==0.4.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 ipykernel==7.1.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/common-env/required.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
     #   jupyterlab
+    #   nbclassic
     #   solara-server
 ipympl==0.9.8
     # via
@@ -578,10 +641,12 @@ ipypopout==2.0.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 ipysplitpanes==0.2.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 ipython==9.8.0
     # via
     #   -r /opt/common-env/common.pip
@@ -595,6 +660,7 @@ ipython-genutils==0.2.0
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-jupyter
+    #   nbclassic
 ipython-pygments-lexers==1.1.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -612,6 +678,7 @@ ipyvue==1.11.3
     #   ipysplitpanes
     #   ipyvolume
     #   ipyvuetify
+    #   jdaviz
     #   solara-ui
 ipyvuetify==1.11.3
     # via
@@ -620,6 +687,7 @@ ipyvuetify==1.11.3
     #   glue-jupyter
     #   ipypopout
     #   ipyvolume
+    #   jdaviz
     #   solara-ui
 ipywebrtc==0.6.0
     # via
@@ -640,6 +708,7 @@ ipywidgets==8.1.8
     #   ipypopout
     #   ipyvolume
     #   ipyvue
+    #   jdaviz
     #   jupyter-bokeh
     #   jupyter-rfb
     #   pythreejs
@@ -666,6 +735,8 @@ jaraco-functools==4.3.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   keyring
+jdaviz==4.4.2
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 jedi==0.19.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -696,6 +767,10 @@ jmespath==1.0.1
     #   asdf
     #   boto3
     #   botocore
+joblib==1.5.2
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   spectral-cube
 json5==0.12.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -726,7 +801,7 @@ jupyter-bokeh==4.0.5
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
-jupyter-client==8.6.3
+jupyter-client==8.7.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -735,11 +810,11 @@ jupyter-client==8.6.3
     #   nbclient
     #   solara-server
     #   voila
-jupyter-collaboration==4.1.2
+jupyter-collaboration==4.2.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
-jupyter-collaboration-ui==2.1.2
+jupyter-collaboration-ui==2.2.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-collaboration
@@ -755,7 +830,7 @@ jupyter-core==5.9.1
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-docprovider==2.1.2
+jupyter-docprovider==2.2.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-collaboration
@@ -811,11 +886,11 @@ jupyter-server-terminals==0.5.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-server
-jupyter-server-ydoc==2.1.2
+jupyter-server-ydoc==2.2.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-collaboration
-jupyter-ydoc==3.3.2
+jupyter-ydoc==3.3.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyter-server-ydoc
@@ -916,7 +991,7 @@ markupsafe==3.0.3
     #   mako
     #   nbconvert
     #   werkzeug
-matplotlib==3.10.7
+matplotlib==3.10.8
     # via
     #   -r /opt/common-env/docs.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -924,9 +999,13 @@ matplotlib==3.10.7
     #   glue-vispy-viewers
     #   ipympl
     #   ipyvolume
+    #   jdaviz
     #   mpl-scatter-density
     #   poppy
     #   pysiaf
+    #   skyproj
+    #   soc-roman-tools
+    #   specreduce
     #   stpsf
 matplotlib-inline==0.2.1
     # via
@@ -949,6 +1028,10 @@ mistune==3.1.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   nbconvert
+montage-wrapper==0.9.9
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   stips
 more-itertools==10.8.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -976,6 +1059,10 @@ narwhals==2.13.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   bokeh
+nbclassic==1.3.3
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 nbclient==0.10.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1006,11 +1093,16 @@ nbsphinx==0.9.8
     # via
     #   -r /opt/common-env/docs.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+ndcube==2.3.5
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   specutils
 nest-asyncio==1.6.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   ipykernel
-networkx==3.6
+    #   nbclassic
+networkx==3.6.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   scikit-image
@@ -1023,6 +1115,7 @@ notebook-shim==0.2.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jupyterlab
+    #   nbclassic
     #   notebook
 numexpr==2.14.1
     # via
@@ -1039,10 +1132,13 @@ numpy==2.3.5
     #   astroquery
     #   bokeh
     #   bqplot
+    #   casa-formats-io
     #   contourpy
     #   crds
+    #   dask
     #   drizzle
     #   echo
+    #   esutil
     #   extinction
     #   fast-histogram
     #   galsim
@@ -1050,6 +1146,9 @@ numpy==2.3.5
     #   glue-vispy-viewers
     #   gwcs
     #   h5py
+    #   healpy
+    #   healsparse
+    #   hpgeom
     #   imageio
     #   ipydatawidgets
     #   ipympl
@@ -1058,6 +1157,7 @@ numpy==2.3.5
     #   lsstdesc-coord
     #   matplotlib
     #   mpl-scatter-density
+    #   ndcube
     #   numexpr
     #   opencv-python-headless
     #   pandas
@@ -1067,16 +1167,24 @@ numpy==2.3.5
     #   pyerfa
     #   pysiaf
     #   pythreejs
+    #   radio-beam
+    #   regions
     #   roman-datamodels
     #   romancal
     #   romanisim
     #   scikit-image
     #   scipy
     #   shapely
+    #   skyproj
     #   sncosmo
     #   solara-ui
+    #   specreduce
+    #   spectral-cube
+    #   specutils
     #   spherical-geometry
     #   stcal
+    #   stdatamodels
+    #   stips
     #   stpsf
     #   stsci-imagestats
     #   stsci-stimage
@@ -1085,6 +1193,7 @@ numpy==2.3.5
     #   tifffile
     #   tweakwcs
     #   vispy
+    #   xarray
 numpydoc==1.10.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1102,7 +1211,7 @@ openpyxl==3.1.5
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-core
     #   pysiaf
-opentelemetry-api==1.39.0
+opentelemetry-api==1.39.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   ddtrace
@@ -1119,6 +1228,7 @@ packaging==25.0
     #   deprecation
     #   distributed
     #   ipykernel
+    #   jdaviz
     #   jupyter-events
     #   jupyter-packaging
     #   jupyter-server
@@ -1134,11 +1244,13 @@ packaging==25.0
     #   pytest-doctestplus
     #   pytest-openfiles
     #   scikit-image
+    #   spectral-cube
     #   sphinx
     #   sphinx-astropy
     #   sphinx-automodapi
     #   tweakwcs
     #   vispy
+    #   xarray
 pamela==1.2.0 ; sys_platform != "win32"
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1150,8 +1262,11 @@ pandas==2.3.3
     #   bqplot
     #   glue-core
     #   romancal
+    #   xarray
 pandeia-engine==2025.9
-    # via -r /opt/environments/roman-cal/roman-cal.pip
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   stips
 pandocfilters==1.5.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1184,8 +1299,10 @@ pexpect==4.9.0 ; sys_platform != "emscripten" and sys_platform != "win32"
 photutils==2.3.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
     #   pandeia-engine
     #   romancal
+    #   stips
     #   stpsf
 pillow==12.0.0
     # via
@@ -1214,7 +1331,7 @@ platformdirs==4.5.1
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   black
     #   jupyter-core
-playwright==1.56.0
+playwright==1.57.0
     # via
     #   -r /opt/common-env/common.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1289,7 +1406,7 @@ pycrdt==0.12.44
     #   jupyter-ydoc
     #   pycrdt-store
     #   pycrdt-websocket
-pycrdt-store==0.1.2
+pycrdt-store==0.1.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   pycrdt-websocket
@@ -1335,7 +1452,7 @@ pygments==2.19.2
     #   rich
     #   solara-ui
     #   sphinx
-pymdown-extensions==10.17.2
+pymdown-extensions==10.19
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   solara-ui
@@ -1347,6 +1464,10 @@ pyparsing==3.2.5
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   matplotlib
+pyproj==3.7.2
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   skyproj
 pyproject-hooks==1.2.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1355,8 +1476,9 @@ pyproject-hooks==1.2.0
 pysiaf==0.25.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   soc-roman-tools
     #   stpsf
-pytest==9.0.1
+pytest==9.0.2
     # via
     #   -r /opt/common-env/testing.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1402,6 +1524,7 @@ pyvo==1.8
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astroquery
+    #   jdaviz
 pyyaml==6.0.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1410,12 +1533,14 @@ pyyaml==6.0.3
     #   bokeh
     #   dask
     #   distributed
+    #   jdaviz
     #   jupyter-app-launcher
     #   jupyter-events
     #   jupytext
     #   papermill
     #   pymdown-extensions
     #   sncosmo
+    #   stips
     #   stpipe
     #   yq
 pyzmq==27.1.0
@@ -1429,6 +1554,10 @@ rad==0.27.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   roman-datamodels
+radio-beam==0.3.9
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   spectral-cube
 reacton==1.9.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1443,6 +1572,11 @@ referencing==0.37.0
     #   jsonschema
     #   jsonschema-specifications
     #   jupyter-events
+regions==0.11
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   glue-astronomy
+    #   jdaviz
 requests==2.32.5
     # via
     #   -r /opt/common-env/common.pip
@@ -1452,6 +1586,7 @@ requests==2.32.5
     #   ci-watson
     #   crds
     #   ipyvolume
+    #   jdaviz
     #   jupyterhub
     #   jupyterlab-server
     #   papermill
@@ -1494,6 +1629,7 @@ roman-datamodels==0.27.0
     #   astrocut
     #   romancal
     #   romanisim
+    #   soc-roman-tools
 roman-numerals-py==3.1.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1511,6 +1647,7 @@ s3fs==2025.12.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
+    #   jdaviz
 s3path==0.6.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1523,22 +1660,30 @@ scikit-image==0.25.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-jupyter
+    #   jdaviz
     #   stcal
 scipy==1.16.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   astrocut
+    #   esutil
     #   glue-core
     #   glue-vispy-viewers
     #   gwcs
+    #   ndcube
     #   pandeia-engine
     #   photutils
     #   poppy
     #   pysiaf
+    #   radio-beam
     #   romancal
     #   scikit-image
     #   sncosmo
+    #   soc-roman-tools
+    #   specreduce
+    #   specutils
     #   stcal
+    #   stips
     #   stpsf
     #   stsynphot
     #   synphot
@@ -1562,6 +1707,7 @@ sidecar==0.8.0
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 simpervisor==1.0.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1573,6 +1719,8 @@ six==1.17.0
     #   pyds9
     #   python-dateutil
     #   rfc3339-validator
+skyproj==2.1.1
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 smart-open==7.5.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1587,10 +1735,15 @@ snowballstemmer==3.0.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   sphinx
+soc-roman-tools==0.1.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   stips
 solara==1.55.1
     # via
     #   -r /opt/common-env/jupyter.pip
     #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 solara-server[dev,starlette]==1.55.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1608,6 +1761,21 @@ soupsieve==2.8
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   beautifulsoup4
+specreduce==1.7.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   glue-astronomy
+    #   jdaviz
+spectral-cube==0.6.7
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   glue-astronomy
+specutils==2.2.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   glue-astronomy
+    #   jdaviz
+    #   specreduce
 spherical-geometry==1.3.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1674,7 +1842,7 @@ sphinxcontrib-serializinghtml==2.0.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   sphinx
-sqlalchemy==2.0.44
+sqlalchemy==2.0.45
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   alembic
@@ -1695,10 +1863,16 @@ stcal==1.15.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romancal
+stdatamodels==4.1.0
+    # via
+    #   -r /opt/environments/roman-cal/roman-cal.pip
+    #   jdaviz
 stdlib-list==0.12.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   pydeps
+stips==2.3
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 stpipe==0.10.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1707,6 +1881,7 @@ stpsf==2.1.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   romanisim
+    #   stips
 stsci-imagestats==1.8.4
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1724,10 +1899,12 @@ stsynphot==1.5.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   pandeia-engine
-synphot==1.6.0
+    #   stips
+synphot==1.6.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   pandeia-engine
+    #   stips
     #   stpsf
     #   stsynphot
 tblib==3.2.2
@@ -1762,7 +1939,7 @@ toolz==1.1.0
     #   dask
     #   distributed
     #   partd
-tornado==6.5.2
+tornado==6.5.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   bokeh
@@ -1780,6 +1957,7 @@ tqdm==4.67.1
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   papermill
+    #   spectral-cube
 traitlets==5.14.3
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1789,6 +1967,7 @@ traitlets==5.14.3
     #   ipython
     #   ipyvolume
     #   ipywidgets
+    #   jdaviz
     #   jupyter-client
     #   jupyter-core
     #   jupyter-events
@@ -1847,7 +2026,7 @@ uri-template==1.3.0
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   jsonschema
-urllib3==2.6.0
+urllib3==2.6.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   botocore
@@ -1861,6 +2040,7 @@ vispy==0.15.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
     #   glue-vispy-viewers
+    #   jdaviz
 voila==0.5.11
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip
@@ -1920,6 +2100,8 @@ wrapt==1.17.3
     #   aiobotocore
     #   ddtrace
     #   smart-open
+xarray==2025.12.0
+    # via -r /opt/environments/roman-cal/roman-cal.pip
 xlrd==2.0.2
     # via
     #   -r /opt/environments/roman-cal/roman-cal.pip

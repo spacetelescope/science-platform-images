@@ -24,7 +24,7 @@ COMMON_MOUNTS="${COMMON_MOUNTS} -v ${COMMON_IMAGE_DIR}/tools:/opt/tools:rw"
 MISSION_MOUNTS="-v ${IMAGE_DIR}/environments:/opt/environments:rw"
 MISSION_MOUNTS="${MISSION_MOUNTS} -v ${IMAGE_DIR}/env-frozen:/opt/env-frozen:rw"
 
-DATA_MOUNTS="-v ${HOME}/refdata:/home/jovyan/refdata"
+DATA_MOUNTS="-v ${SP_HOME:-${HOME}}/refdata:/home/jovyan/refdata"
 
 # If the first parameter is --dev,  run dev mode where some sources
 # are mapped directly into the container for live development.
@@ -32,9 +32,9 @@ DEV_MODE=${1:-""}
 if [[ "${DEV_MODE}" == "--dev" ]]; then
     shift;
     echo "Mounting development directories into lab session. Changes to affected files will be reflected outside Docker."
-    export DEV_PARS="${COMMON_MOUNTS} ${MISSION_MOUNTS} ${DATA_MOUNTS} -e CLEAR_PKG_CACHES=0 -e PATH=/opt/conda/bin:/opt/conda/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/common-scripts:/opt/tools"
+    export DEV_PARS="${COMMON_MOUNTS} ${MISSION_MOUNTS} -e CLEAR_PKG_CACHES=0 -e PATH=/opt/conda/bin:/opt/conda/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/common-scripts:/opt/tools"
 else
     export DEV_PARS=""
 fi
 
-IMAGE_RUN_PARS="${IMAGE_RUN_PARS} ${DEV_PARS}"
+IMAGE_RUN_PARS="${IMAGE_RUN_PARS} ${DEV_PARS} ${DATA_MOUNTS}"
