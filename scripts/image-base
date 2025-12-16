@@ -70,6 +70,6 @@ if [[ "${BASE_NOTEBOOK}" = "scipy-notebook" ]]; then
 fi
 
 # If running on github,  prune Docker to free resources for follow-on steps
-if [[ -v GITHUB_RUN_ID ]]; then
+if [[ ${GITHUB_RUN_ID+x} ]]; then
     docker system prune --force
 fi
