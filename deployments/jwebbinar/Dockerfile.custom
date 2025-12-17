@@ -1,6 +1,6 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
-ARG BASE_IMAGE=notebook-jwebbinar
+ARG BASE_IMAGE=notebook-common
 FROM ${BASE_IMAGE}
 
 # ----------------------------------------------------------------------
