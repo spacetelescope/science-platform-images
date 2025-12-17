@@ -36,7 +36,7 @@ export REGISTRY=""
 export OWNER=spacetelescope
 # export OWNER=spacetelescope
 
-export BASE_NOTEBOOK=scipy-notebook
+export BASE_NOTEBOOK=minimal-notebook
 
 export BASE_IMAGE=${OWNER}/${BASE_NOTEBOOK}
 

@@ -44,9 +44,9 @@ fi
 # Roman-cal Phase 1
 # .............................................................................................
 
-/opt/common-scripts/git-sync-v4 https://github.com/spacetelescope/roman_notebooks \
-                                main \
-                                $HOME/references/roman_notebooks
+/opt/common-scripts/wrangler-sync-notebooks
+
+/opt/common-scripts/wrangler-register-kernel
 
 # .............................................................................................
 # Remove old/unused kernels from UI selection
@@ -58,11 +58,6 @@ fi
 # .............................................................................................
 mkdir -p $HOME/.local/share/jupyter/jupyter_app_launcher/
 cp /opt/environments/jp_app_launcher.yaml $HOME/.local/share/jupyter/jupyter_app_launcher/
-
-# .............................................................................................
-# Test notebook setup if applicable
-# .............................................................................................
-
 
 # Make sure the script does not *return* fail blocking spawn
 exit 0

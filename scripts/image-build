@@ -58,7 +58,9 @@ time docker build \
        --file Dockerfile.cached  .
 rm Dockerfile.cached
 
-docker rmi ${BASE_IMAGE}
+if [[ "${REPACK}" == "1" ]]; then
+    docker rmi ${BASE_IMAGE}
+fi
 repack notebook-common
 
 # ..................................................................................
@@ -76,7 +78,9 @@ time docker build \
      --file Dockerfile.cached .
 rm Dockerfile.cached
 
-docker rmi notebook-common
+if [[ "${REPACK}" == "1" ]]; then
+    docker rmi notebook-common
+fi
 
 # ..................................................................................
 # In a Dockerfile which is not using RUN cache, touch up all the cache

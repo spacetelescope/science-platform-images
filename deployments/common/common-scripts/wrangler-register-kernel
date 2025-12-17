@@ -11,7 +11,10 @@
 # a Jupyter kernel at startup to make sure there is a GUI menu
 # item to select it.  Don't call this for non-wrangler kernels.
 #
-
 source /etc/nb-wrangler.rc
-source nb-wrangler environment
-nb-wrangler /opt/environments/nbw-wrangler-spec.yaml --env-register
+
+source /opt/tools/nb-wrangler environment
+
+/opt/tools/nb-wrangler /opt/environments/nbw-wrangler-spec.yaml --env-register --data-symlinks
+
+rm -f nb-wrangler.log

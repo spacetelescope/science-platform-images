@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set -eux
+set -eu
 
 echo "========================= Building Base Image ========================"
 
@@ -53,6 +53,7 @@ build_jh() {
     # Free precusors as we go,  real storage savings will happen after final fat image is deleted
     if [[ "${REPACK}" == "1" ]]; then
         if [[ "${BASE_IMAGE}" != "unused" ]]; then
+            echo "Removing image ${BASE_IMAGE} for REPACK."
             docker rmi ${BASE_IMAGE}
         fi
     fi
@@ -69,6 +70,6 @@ if [[ "${BASE_NOTEBOOK}" = "scipy-notebook" ]]; then
 fi
 
 # If running on github,  prune Docker to free resources for follow-on steps
-if [[ -v GITHUB_RUN_ID ]]; then
+if [[ ${GITHUB_RUN_ID+x} ]]; then
     docker system prune --force
 fi

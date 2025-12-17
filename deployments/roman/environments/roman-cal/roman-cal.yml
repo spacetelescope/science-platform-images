@@ -9,7 +9,7 @@ dependencies:
   - nodejs>=22.0
   - pip
   - pip-tools
-  - python=3.11
+  - python=3.12
   - setuptools
   - uv
   - wheel

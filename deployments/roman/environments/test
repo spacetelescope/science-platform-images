@@ -1,18 +1,16 @@
 #! /bin/bash
 
-# Simple == fail script on first failed test.
+# This is a simplified test script based on the wrangler's "single mission kernel"
+# model that leverages having the wrangler spec for the environment available in order
+# to run wrangler import and notebook tests.
 
-# The generic test performs import and notebook checks for test environments
-# laid out as required:
-#
-# 1. Add a "tests" subdirectory for each kernel being tested, that
-# environment will be activated for subtests.
-#
-# 2. Create an "imports" file listing packages to attempt to
-# import for that kernel environment.  Use these for packages w/o notebook coverage.
-#
-# 3. Copy, Hard link, or symlink test notebooks into <env>.  All files
-# ending in .ipynb will be executed.  Symlinks need to be specified with respect
-# to the within-container file system perspective,  not the CI-node file system.
+TEST_TYPES=${1:-"--test-imports"}
 
-/opt/common-scripts/test-environments
+if [ $# -ge 1 ]; then
+    shift;
+fi
+
+cd /tmp
+source /opt/common-scripts/env-activate base
+python -m nb_wrangler  /opt/environments/nbw-wrangler-spec.yaml  --repos-dir /tmp/nb-wrangler-test-clones --clone-repos ${TEST_TYPES}  $*
+rm -rf /tmp/nb-wrangler-test-clones

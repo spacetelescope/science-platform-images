@@ -36,7 +36,7 @@ export REGISTRY=""
 export OWNER="spacetelescope"
 # export OWNER="quay.io/jupyter"
 
-export BASE_NOTEBOOK="scipy-notebook"  # minimal-notebook
+export BASE_NOTEBOOK="minimal-notebook"  # scipy-notebook
 
 export BASE_IMAGE=${OWNER}/${BASE_NOTEBOOK}
 
