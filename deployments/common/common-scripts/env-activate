@@ -9,10 +9,23 @@ OLD_OPTS=$-
 set +u    # due to missing PS1,  etc.  turn off undefined var trapping
 
 source /etc/nb-wrangler.rc
-source /etc/profile.d/${CONDA_VER}.sh
+source /opt/conda/etc/profile.d/${CONDA_VER}.sh
 ${CONDA_VER} activate $env
 
 case $OLD_OPTS in
   *u*) set -u ;;
   *) set +u ;;
 esac
+
+
+# As part of setting up / installing an environment,  nb-wrangler installs nbw-exports.sh in the env bin dir (i.e. where Python is)
+
+# BIN_DIR=$(dirname $(which python))    #   XXXX assumes environment has Python
+# NBW_EXPORTS="${BIN_DIR}/nbw-exports.sh"
+# if [ -e ${NBW_EXPORTS} ]; then
+#     source ${NBW_EXPORTS}
+# elif [ -e /opt/environments/nbw-exports.sh ]; then  # pre-wrangler SPI injection
+#     source /opt/environments/nbw-exports.sh
+# else
+#     echo "WARNING: nb-wrangler data env var initialization is in an unexpected state.  notebook env vars may not work."
+# fi

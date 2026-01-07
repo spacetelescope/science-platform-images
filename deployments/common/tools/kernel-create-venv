@@ -1,13 +1,18 @@
 #! /bin/bash
 
-set -eu
+# set -eu
 
-source `dirname $0`/kernel-utils
+KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source  ${KERNEL_TOOLS}/kernel-utils
 
 usage "$# -lt 1" "<environment-name> [<display-name>] [<env-root>]"  <<EOU
-Create virtual environment <environment-name> and add a JupyterLab kernel <display-name> corresponding to it.
+Create virtual environment <environment-name> and add a JupyterLab kernel <display-name> corresponding to it
+under the current ${CONDA_VER} environment.
+
 If <display-name> is not specified, defaults to <environment-name>.
+
 <env-root> is the root directory for collections of environments, defaulting to $HOME/envs.
+Virtual environments as stored under <env-root>/venv.
 EOU
 
 ENVNAME=$1
@@ -17,9 +22,9 @@ ENVDIR=${ENVROOT}/venv/${ENVNAME}
 
 banner "Creating virtual environment ${ENVNAME} at ${ENVDIR}"
 python -m venv ${ENVDIR}
-source kernel-activate ${ENVNAME} "${ENVROOT}"
+source ${KERNEL_TOOLS}/kernel-activate ${ENVNAME} "${ENVROOT}"
 pip install --upgrade ipykernel pip
 
 echo "---------------------------------------------------------------"
-kernel-install "${ENVNAME}"  "${DISPNAME}"
+${KERNEL_TOOLS}/kernel-install "${ENVNAME}"  "${DISPNAME}"
 banner "Activate virtual environment with: 'source kernel-activate ${ENVNAME}'"

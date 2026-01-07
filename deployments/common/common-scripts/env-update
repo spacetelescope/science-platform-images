@@ -4,8 +4,8 @@
 # Into environment $1 install spec files listed as $2...
 #
 # Packages can be:
-# 1) .yml for conda updates from environment specs
-# 2) .conda for a simple list of conda packages
+# 1) .yml for ${CONDA_VER} updates from environment specs
+# 2) .conda for a simple list of ${CONDA_VER} packages
 # 3) .pip for a simple list of pip packages
 #
 # When installation is complete, cleans up temporary files to minimize growth
@@ -32,7 +32,7 @@ for filepath in $*; do
             ${CONDA_VER} env update --quiet --name ${env} --file /tmp/${filename}
             ;;
         conda)
-            echo "Installing conda pkgs into env ${env} from: ${filepath}"
+            echo "Installing ${CONDA_VER} pkgs into env ${env} from: ${filepath}"
             ${CONDA_VER} install --quiet --name ${env} `cat ${filepath}`
             ;;
         pip)

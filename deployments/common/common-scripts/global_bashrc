@@ -4,7 +4,7 @@ export PS1="${debian_chroot:+($debian_chroot)}\u@notebook:\w\$ "
 . "/opt/conda/etc/profile.d/${CONDA_VER}.sh"
 
 # Activate base by default
-conda activate base
+${CONDA_VER} activate base
 
 #export PATH="/opt/TurboVNC/bin:$PATH"
 
