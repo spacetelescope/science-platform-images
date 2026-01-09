@@ -39,6 +39,14 @@ for envroot in ${search_roots}; do
 done
 
 if ! ${activated}; then
-    banner "Kernel environment ${envname} not found under search path: ${search_roots}."
-    return 1
+    if [[ ${envname} == "base" ]]; then
+        ${CONDA_VER} activate
+        if [ $? -eq 0 ]; then activated=true; fi
+        return 0
+    else
+        banner "Kernel environment ${envname} not found under search paths: ${search_roots}."
+        return 1
+    fi
+else
+    return 0
 fi

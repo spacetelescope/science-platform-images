@@ -148,6 +148,9 @@ verify_activation "venv" "venv-custom" "${CUSTOM_ENVROOT}/venv/venv-custom"
 source "${KERNEL_TOOLS}/kernel-deactivate" "venv-custom"
 verify_deactivation "venv-custom"
 
+echo "=== Test 5: base environment activate/deactivate"
+source "${KERNEL_TOOLS}/kernel-activate" "base"
+source "${KERNEL_TOOLS}/kernel-deactivate" "base"
 
 # --- Final Verification ---
 echo

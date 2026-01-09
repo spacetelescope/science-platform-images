@@ -19,10 +19,10 @@ fi
 # Check if an environment is currently active before attempting to deactivate.
 # Prioritize deactivating virtual environments if one is active.
 if [ -n "${VIRTUAL_ENV}" ]; then
-    banner "Deactivating virtual environment: ${VIRTUAL_ENV}"
+    # banner "Deactivating virtual environment: ${VIRTUAL_ENV}"
     deactivate
 elif [ -n "${CONDA_PREFIX}" ]; then # Only check CONDA_PREFIX if no VIRTUAL_ENV is active
-    banner "Deactivating Conda environment: ${CONDA_PREFIX}"
+    # banner "Deactivating Conda environment: ${CONDA_PREFIX}"
     ${CONDA_VER} deactivate
 else
     banner "No environment is currently active."
