@@ -26,4 +26,4 @@ then
     exit 1
 fi
 
-jupyter kernelspec list | tail -n +2 | perl -p -e 's/[\t ]+/ /g' | perl -p -e 's/^ //g'
+jupyter kernelspec list | tail -n +2 | sed -e 's/[\t ]+/ /g' | sed -e 's/^ //g'
