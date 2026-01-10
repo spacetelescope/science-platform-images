@@ -6,7 +6,7 @@ set -e
 if [ -z "${USER_CACHE_DIRS}" ]; then
     echo "-------------------------------------------------------------------------------"
     echo "===== Cleaning up ${CONDA_VER} env..."
-    . /etc/profile.d/${CONDA_VER}.sh
+    eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
     ${CONDA_VER} clean -fya
     # ${CONDA_VER} build purge-all
     rm -rf $HOME/.cache/pip
