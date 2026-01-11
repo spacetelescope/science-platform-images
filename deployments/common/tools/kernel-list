@@ -1,13 +1,29 @@
 #! /bin/bash
 
-set -eu
-
 # List the kernels which are configured for use by JupyterLab.
 
-source `dirname $0`/kernel-utils
+# --- Shell Initialization ---
+# Default to 'mamba' if CONDA_VER is not set.
+export CONDA_VER=${CONDA_VER:-mamba}
+# Initialize conda/mamba shell functions for this script's execution context.
+eval "$(${CONDA_VER} shell hook --shell bash)"
 
-source kernel-activate base  >& /dev/null # must have jupyter
 
-jupyter kernelspec list | tail -n +2 | perl -p -e 's/[\t ]+/ /g' | perl -p -e 's/^ //g'
+KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source  ${KERNEL_TOOLS}/kernel-utils
 
+# Check if jupyter is available before trying to use it.
+if ! command -v jupyter &> /dev/null
+then
+    # If not, try to activate the base environment to find it.
+    source ${KERNEL_TOOLS}/kernel-activate base  >& /dev/null
+fi
 
+if ! command -v jupyter &> /dev/null
+then
+    echo "ERROR: 'jupyter' command not found."
+    echo "Please ensure JupyterLab is installed and accessible in your PATH."
+    exit 1
+fi
+
+jupyter kernelspec list | tail -n +2 | sed -e 's/[\t ]+/ /g' | sed -e 's/^ //g'

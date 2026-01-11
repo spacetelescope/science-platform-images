@@ -1,44 +1,29 @@
 #! /bin/bash
 
 # NO set -e for source script
-
 # set -u
 
-KERNEL_TOOLS_ROOT=${KERNEL_TOOLS_ROOT:-/opt/tools}
+KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source  ${KERNEL_TOOLS}/kernel-utils
 
-source  ${KERNEL_TOOLS_ROOT}/kernel-utils
-
+# Display usage information if no arguments are provided.
 if [ $# -lt 1 ]; then
-    echo "usage:  source kernel-deactivate <environment-name>  <env-root... (ignored)>"
+    echo "usage:  source kernel-deactivate [<environment-name>]"
     echo
-    echo "source the output of this script to deactivate your current environment."
+    echo "This script attempts to deactivate the currently active environment."
+    echo "The <environment-name> argument is for consistency and typically ignored by deactivation logic."
     echo
-    # no exit for source script.
+    # No exit for sourced script.
+fi
+
+# Check if an environment is currently active before attempting to deactivate.
+# Prioritize deactivating virtual environments if one is active.
+if [ -n "${VIRTUAL_ENV}" ]; then
+    # banner "Deactivating virtual environment: ${VIRTUAL_ENV}"
+    deactivate
+elif [ -n "${CONDA_PREFIX}" ]; then # Only check CONDA_PREFIX if no VIRTUAL_ENV is active
+    # banner "Deactivating Conda environment: ${CONDA_PREFIX}"
+    ${CONDA_VER} deactivate
 else
-    ENVNAME=$1
-    shift;
-    ENVROOTS=${*:-${ENVROOTS}}  # Add team env roots here
-    deactivated=false
-    for ENVROOT in ${ENVROOTS}; do
-        if [ ! -d ${ENVROOT} ]; then
-            banner "WARNING:  ${ENVROOT} is not a directory"
-            continue
-        elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
-            deactivate
-            deactivated=true
-            break
-        elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
-            conda deactivate
-            deactivated=true
-            break
-        else
-            /opt/conda/bin/deactivate
-            deactivated=true
-            break
-        fi
-    done
-    if [ ! ${deactivated} ]; then
-        banner "ERROR:  ${ENVNAME} is not a valid environment to deactivate under ${ENVROOTS}."
-        # No exit for source script.
-    fi
+    banner "No environment is currently active."
 fi

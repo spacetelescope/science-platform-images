@@ -1,7 +1,9 @@
 #! /bin/bash -eu
 
+set -x
+
 #
-# Does jupyter lab kernel setup for each of the environments defined in conda
+# Does jupyter lab kernel setup for each of the ${CONDA_VER} environments
 # which enables selection of the environments within jupyter lab and supports
 # command line notebook execution in specific kernels using papermill or
 # nbconvert.
@@ -25,7 +27,7 @@ EOF
 
 # Potentially among other things,  these are needed so that image-test will run.
 
-for kernel in `conda env list | grep -v '#' | grep -v base | cut -d' ' -f1`; do
+for kernel in $(${CONDA_VER} env list | grep '/opt/conda' | grep -v base | awk 'NF > 0 {print $1}'); do
 
     echo "================== Adding kernel $kernel ====================="
 

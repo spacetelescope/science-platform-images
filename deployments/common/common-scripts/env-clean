@@ -5,8 +5,8 @@ set -e
 # When buildkit caching or development mode are enabled, don't clear the cache
 if [ -z "${USER_CACHE_DIRS}" ]; then
     echo "-------------------------------------------------------------------------------"
-    echo "===== Cleaning up conda env..."
-    . /etc/profile.d/${CONDA_VER}.sh
+    echo "===== Cleaning up ${CONDA_VER} env..."
+    eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
     ${CONDA_VER} clean -fya
     # ${CONDA_VER} build purge-all
     rm -rf $HOME/.cache/pip

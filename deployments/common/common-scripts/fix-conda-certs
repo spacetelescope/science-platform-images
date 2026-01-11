@@ -2,7 +2,7 @@
 
 set -eu
 
-# Fix certs for all conda environments.
+# Fix certs for all ${CONDA_ENV} environments.
 
 echo "-------------------------------------------------------------------------------"
 echo "===== Fixing conda certs..."

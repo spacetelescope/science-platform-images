@@ -1,50 +1,52 @@
 #! /bin/bash
-
 # set -u   # no -e for source'd script
 
-KERNEL_TOOLS_ROOT=${KERNEL_TOOLS_ROOT:-/opt/tools}
+# This script is intended to be SOURCE'd.
 
-source  ${KERNEL_TOOLS_ROOT}/kernel-utils
+KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source  ${KERNEL_TOOLS}/kernel-utils
 
 if [ $# -lt 1 ]; then
-    echo "usage:  source kernel-activate <environment-name> [<env-root...>]"
+    echo "usage:  source kernel-activate <environment-name> [<env-root>...]"
     echo
-    echo "You must 'source' the output of this script into your shell to use <environment-name>."
+    echo "You must 'source' this script to activate <environment-name>."
     echo
-    # can't exit in source'd script or sourcing script will exit
-else
-    source /opt/conda/etc/profile.d/${CONDA_VER}.sh
+    return 1 # Use return instead of exit in a sourced script
+fi
 
-    envname=$1
-    shift;
-    ENVROOTS=${*:-${ENVROOTS}}  # Add team env roots here
-    activated=false
+# Assuming mamba/conda shell functions are already initialized in the parent shell.
+eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
 
-    conda init --quiet  ${KERNEL_SHELL} >& /dev/null
+envname=$1
+shift
 
-    for envroot in ${ENVROOTS}; do
-            if [ ! -d ${envroot} ]; then
-                        banner "Kernel environments directory ${envroot} does not exist."
-                        continue
-            elif [ -d ${envroot}/venv/${envname} ]; then
-                        source ${envroot}/venv/${envname}/bin/activate
-                        activated=true
-                        break
-            elif [ -d ${envroot}/conda/${envname} ]; then
-                        conda activate ${envroot}/conda/${envname}
-                        activated=true
-                        break
-            elif [ -d ${envroot}/${envname} ]; then  # normal layout w/o venv + conda
-                        conda activate ${envname}
-                        activated=true
-                        break
-            elif [ -f ${envroot}/../bin/conda ]; then   # base
-                        conda activate ${envname}
-                        activated=true
-                        break
-            fi
-    done
-    if ! ${activated}; then
-        banner "Kernel environment ${envname} not found under ${ENVROOTS}."
+# This logic is flawed, as identified before, but reverting to it per user request.
+search_roots=${*:-${ENVROOTS}}
+
+activated=false
+for envroot in ${search_roots}; do
+    if [ ! -d "${envroot}" ]; then
+        continue
+    elif [ -d "${envroot}/venv/${envname}" ]; then
+        source "${envroot}/venv/${envname}/bin/activate"
+        if [ $? -eq 0 ]; then activated=true; fi
+        break
+    elif [ -d "${envroot}/conda/${envname}" ]; then
+        ${CONDA_VER} activate "${envroot}/conda/${envname}"
+        if [ $? -eq 0 ]; then activated=true; fi
+        break
     fi
+done
+
+if ! ${activated}; then
+    if [[ ${envname} == "base" ]]; then
+        ${CONDA_VER} activate
+        if [ $? -eq 0 ]; then activated=true; fi
+        return 0
+    else
+        banner "Kernel environment ${envname} not found under search paths: ${search_roots}."
+        return 1
+    fi
+else
+    return 0
 fi
