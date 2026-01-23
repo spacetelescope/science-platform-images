@@ -1,0 +1,1381 @@
+image_spec_header:
+  image_name: "RGES-Nexus"
+  description: "An environment defined using an external Mamba environment.yml file."
+  display_name: "RGES PIT Nexus"
+  valid_on: "2026-01-16"
+  expires_on: "2028-01-16"
+
+environment_spec:
+  path: environment.yml
+  repo: nexus-notebooks
+
+# extra_mamba_packages:
+#  - emcee
+
+extra_pip_packages:
+  - pyarrow
+
+system:
+  spec_version: 2.1
+  spi:
+    repo: "https://github.com/jaytmiller/science-platform-images.git"
+    ref: "main"
+
+  spec_sha256: d92d3a7e3711557b0f400e575a753fbb55bc30a19b5c6344651d339c55357c74
+repositories:
+  nexus-notebooks:
+    url: https://github.com/rges-pit/nexus-notebooks.git
+    ref: main
+
+selected_notebooks:
+  nexus-notebooks-all:
+    repo: "nexus-notebooks"
+    root_directory: notebooks
+    include_subdirs:
+      - .
+out:
+  repositories:
+    nexus-notebooks:
+      url: https://github.com/rges-pit/nexus-notebooks.git
+      ref: d9d2bd5ff6fb894e33b5865f5ecafd591db0ae25
+
+  spi:
+    repo: "https://github.com/jaytmiller/science-platform-images.git"
+    ref: "main"
+
+  test_notebooks:
+    references/nexus-notebooks/notebooks/a_rmdc26_workflow.ipynb: 
+      nexus-notebooks-all
+    references/nexus-notebooks/notebooks/b_single_lens.ipynb: 
+      nexus-notebooks-all
+    references/nexus-notebooks/notebooks/c_binary_lens.ipynb: 
+      nexus-notebooks-all
+    references/nexus-notebooks/notebooks/x_microlensing_tools.ipynb: 
+      nexus-notebooks-all
+  test_imports:
+    - IPython
+    - MulensModel
+    - RTModel
+    - VBMicrolensing
+    - astropy
+    - bs4
+    - concurrent
+    - corner
+    - emcee
+    - google
+    - huggingface_hub
+    - io
+    - ipywidgets
+    - matplotlib
+    - microlens_emcee
+    - microlens_submit
+    - multiprocess
+    - multiprocessing
+    - numpy
+    - pandas
+    - pathlib
+    - pathos
+    - popclass
+    - pyLIMA
+    - pyarrow
+    - requests
+    - s3fs
+    - scipy
+    - shutil
+    - tempfile
+    - time
+    - tqdm
+    - typing
+    - urllib
+    - warnings
+    - zipfile
+  nb_to_imports:
+    references/nexus-notebooks/notebooks/a_rmdc26_workflow.ipynb:
+      - IPython
+      - MulensModel
+      - emcee
+      - huggingface_hub
+      - matplotlib
+      - microlens_submit
+      - multiprocessing
+      - numpy
+      - pandas
+      - pathlib
+      - pyarrow
+      - s3fs
+      - time
+    references/nexus-notebooks/notebooks/b_single_lens.ipynb:
+      - IPython
+      - MulensModel
+      - astropy
+      - bs4
+      - google
+      - io
+      - matplotlib
+      - multiprocessing
+      - numpy
+      - pandas
+      - pathlib
+      - pathos
+      - scipy
+      - shutil
+      - time
+      - typing
+      - urllib
+      - warnings
+    references/nexus-notebooks/notebooks/c_binary_lens.ipynb:
+      - IPython
+      - MulensModel
+      - VBMicrolensing
+      - corner
+      - emcee
+      - ipywidgets
+      - matplotlib
+      - microlens_emcee
+      - multiprocess
+      - numpy
+      - pandas
+      - pathlib
+      - scipy
+      - shutil
+      - tqdm
+      - urllib
+    references/nexus-notebooks/notebooks/x_microlensing_tools.ipynb:
+      - IPython
+      - MulensModel
+      - RTModel
+      - astropy
+      - concurrent
+      - corner
+      - emcee
+      - google
+      - matplotlib
+      - multiprocessing
+      - numpy
+      - pandas
+      - pathlib
+      - pathos
+      - popclass
+      - pyLIMA
+      - requests
+      - scipy
+      - shutil
+      - tempfile
+      - time
+      - zipfile
+  kernel_name: rges-pit-dc
+  mamba_spec: |
+    name: rges-pit-dc
+    channels:
+      - conda-forge
+    dependencies:
+      - jupyter-packaging
+      - nodejs>=22.0
+      - pip
+      - pip-tools
+      - setuptools
+      - python=3.11
+      - numpy==1.26.0
+      - scipy==1.11.3
+      - pandas==2.1.3
+      - matplotlib==3.8.0
+      - emcee==3.1.4
+      - corner==2.2.2
+      - astropy==5.3.4
+      - astroquery==0.4.6
+      - ipykernel==6.25.2
+      - ipympl
+      - ipython==8.16.1
+      - ipywidgets==8.1.1
+      - jupyter_client==8.3.1
+      - jupyter_core==5.3.2
+      - popclass
+      - joblib
+      - numba
+      - pathos
+      - lxml
+      - s3fs
+      - tqdm
+      - huggingface_hub
+      - microlens-submit>=0.16.4
+      - pip
+      - pip:
+          - BAGLE
+          - VBMicrolensing
+          - MulensModel==3.4.0
+          - pyLIMA
+          - RTModel
+          - eesunhong
+          - scikit-optimize
+          - scikit-learn
+          - nbi
+      - uv
+      - pip
+      - ipykernel
+      - jupyter
+      - cython
+      - setuptools
+      - wheel
+  mamba_package_map:
+    base_mamba_deps:
+      - python=3.11
+      - numpy==1.26.0
+      - scipy==1.11.3
+      - pandas==2.1.3
+      - matplotlib==3.8.0
+      - emcee==3.1.4
+      - corner==2.2.2
+      - astropy==5.3.4
+      - astroquery==0.4.6
+      - ipykernel==6.25.2
+      - ipympl
+      - ipython==8.16.1
+      - ipywidgets==8.1.1
+      - jupyter_client==8.3.1
+      - jupyter_core==5.3.2
+      - popclass
+      - joblib
+      - numba
+      - pathos
+      - lxml
+      - s3fs
+      - tqdm
+      - huggingface_hub
+      - microlens-submit>=0.16.4
+      - pip
+      - pip:
+          - BAGLE
+          - VBMicrolensing
+          - MulensModel==3.4.0
+          - pyLIMA
+          - RTModel
+          - eesunhong
+          - scikit-optimize
+          - scikit-learn
+          - nbi
+    extra_mamba_packages: []
+    spi_mamba_packages:
+      - jupyter-packaging
+      - nodejs>=22.0
+      - pip
+      - pip-tools
+      - setuptools
+    wrangler_target_packages:
+      - uv
+      - pip
+      - ipykernel
+      - jupyter
+      - cython
+      - setuptools
+      - wheel
+  non_mamba_pip_package_files:
+    - references/science-platform-images/deployments/common/common-env/required.pip
+    - references/science-platform-images/deployments/common/common-env/testing.pip
+    - references/science-platform-images/deployments/common/common-env/jupyter.pip
+    - references/science-platform-images/deployments/common/common-env/common.pip
+    - references/science-platform-images/deployments/common/common-env/docs.pip
+    - extra_pip_packages.txt
+  pip_compiler_output: |
+    aiohappyeyeballs==2.6.1
+        # via aiohttp
+    aiohttp==3.13.3
+        # via
+        #   jupyter-server-proxy
+        #   papermill
+    aiosignal==1.4.0
+        # via aiohttp
+    aiosqlite==0.22.1
+        # via ypy-websocket
+    alabaster==1.0.0
+        # via sphinx
+    alembic==1.18.1
+        # via jupyterhub
+    annotated-types==0.7.0
+        # via pydantic
+    ansicolors==1.1.8
+        # via papermill
+    anyio==4.12.1
+        # via
+        #   httpx
+        #   jupyter-server
+        #   pycrdt
+        #   pycrdt-store
+        #   pycrdt-websocket
+        #   sqlite-anyio
+        #   starlette
+        #   watchfiles
+        #   ypy-websocket
+    anywidget==0.9.21
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    appnope==0.1.4 ; sys_platform == 'darwin'
+        # via ipykernel
+    argcomplete==3.6.3
+        # via yq
+    argon2-cffi==25.1.0
+        # via jupyter-server
+    argon2-cffi-bindings==25.1.0
+        # via argon2-cffi
+    arrow==1.4.0
+        # via isoduration
+    asdf==5.1.0
+        # via crds
+    asdf-standard==1.4.0
+        # via
+        #   asdf
+        #   asdf-transform-schemas
+    asdf-transform-schemas==0.6.0
+        # via asdf
+    astropy==7.2.0
+        # via
+        #   crds
+        #   glue-core
+    astropy-iers-data==0.2026.1.19.0.42.31
+        # via astropy
+    astropy-sphinx-theme==2.0
+        # via sphinx-astropy
+    asttokens==3.0.1
+        # via stack-data
+    async-lru==2.1.0
+        # via jupyterlab
+    attrs==25.4.0
+        # via
+        #   aiohttp
+        #   asdf
+        #   jsonschema
+        #   referencing
+    babel==2.17.0
+        # via
+        #   jupyterlab-server
+        #   sphinx
+    beautifulsoup4==4.14.3
+        # via nbconvert
+    black==26.1.0
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    bleach==6.3.0
+        # via nbconvert
+    blinker==1.9.0
+        # via flask
+    bokeh==3.8.2
+        # via jupyter-bokeh
+    boto3==1.42.32
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    botocore==1.42.32
+        # via
+        #   boto3
+        #   s3transfer
+    bqplot==0.12.45
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   bqplot-gl
+        #   bqplot-image-gl
+        #   glue-jupyter
+        #   ipyvolume
+    bqplot-gl==0.0.0
+        # via glue-jupyter
+    bqplot-image-gl==1.8.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+    build==1.4.0
+        # via pip-tools
+    bytecode==0.17.0
+        # via ddtrace
+    cachetools==6.2.4
+        # via solara-ui
+    certifi==2026.1.4
+        # via
+        #   httpcore
+        #   httpx
+        #   requests
+    certipy==0.2.2
+        # via jupyterhub
+    cffi==2.0.0
+        # via
+        #   argon2-cffi-bindings
+        #   cryptography
+        #   pyzmq
+    charset-normalizer==3.4.4
+        # via requests
+    ci-watson==0.10.0
+        # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+    click==8.3.1
+        # via
+        #   black
+        #   flask
+        #   papermill
+        #   pip-tools
+        #   rich-click
+        #   solara-server
+        #   uvicorn
+    colorama==0.4.6
+        # via
+        #   build
+        #   ci-watson
+        #   click
+        #   ipython
+        #   pytest
+        #   rich-click
+        #   sphinx
+        #   tqdm
+    comm==0.2.3
+        # via
+        #   ipykernel
+        #   ipywidgets
+    contourpy==1.3.3
+        # via
+        #   bokeh
+        #   matplotlib
+    crds==13.1.1
+        # via ci-watson
+    cryptography==46.0.3
+        # via certipy
+    cycler==0.12.1
+        # via matplotlib
+    ddtrace==4.2.2
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    debugpy==1.8.19
+        # via ipykernel
+    decorator==5.2.1
+        # via ipython
+    defusedxml==0.7.1
+        # via nbconvert
+    deprecation==2.1.0
+        # via jupyter-packaging
+    dill==0.4.1
+        # via glue-core
+    distlib==0.4.0
+        # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+    docutils==0.22.4
+        # via
+        #   nbsphinx
+        #   sphinx
+        #   sphinx-rtd-theme
+    echo==0.11.1
+        # via
+        #   glue-core
+        #   glue-vispy-viewers
+    entrypoints==0.4
+        # via papermill
+    envier==0.6.1
+        # via ddtrace
+    et-xmlfile==2.0.0
+        # via openpyxl
+    executing==2.2.1
+        # via stack-data
+    fast-histogram==0.14
+        # via
+        #   glue-core
+        #   mpl-scatter-density
+    fastjsonschema==2.21.2
+        # via nbformat
+    filelock==3.20.3
+        # via
+        #   crds
+        #   solara-server
+    flake8==7.3.0
+        # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+    flask==3.1.2
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    fonttools==4.61.1
+        # via matplotlib
+    fqdn==1.5.1
+        # via jsonschema
+    freetype-py==2.5.1
+        # via vispy
+    frozenlist==1.8.0
+        # via
+        #   aiohttp
+        #   aiosignal
+    gitdb==4.0.12
+        # via gitpython
+    gitpython==3.1.46
+        # via -r references/science-platform-images/deployments/common/common-env/required.pip
+    glfw==2.10.0
+        # via glue-vispy-viewers
+    glue-core==1.24.1
+        # via
+        #   glue-jupyter
+        #   glue-vispy-viewers
+    glue-jupyter==0.25.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-vispy-viewers
+    glue-vispy-viewers==1.3.0
+        # via glue-jupyter
+    greenlet==3.3.0
+        # via
+        #   playwright
+        #   sqlalchemy
+    h11==0.16.0
+        # via
+        #   httpcore
+        #   uvicorn
+    h5py==3.15.1
+        # via glue-core
+    hsluv==5.0.4
+        # via vispy
+    httpcore==1.0.9
+        # via httpx
+    httpx==0.28.1
+        # via jupyterlab
+    humanize==4.15.0
+        # via solara-ui
+    idna==3.11
+        # via
+        #   anyio
+        #   httpx
+        #   jsonschema
+        #   jupyterhub
+        #   requests
+        #   yarl
+    imageio==2.37.2
+        # via
+        #   glue-vispy-viewers
+        #   scikit-image
+    imagesize==1.4.1
+        # via sphinx
+    importlib-metadata==8.7.1
+        # via
+        #   asdf
+        #   opentelemetry-api
+    iniconfig==2.3.0
+        # via pytest
+    ipydatawidgets==4.3.5
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   pythreejs
+    ipyevents==2.0.4
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    ipygoldenlayout==0.4.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    ipykernel==7.1.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   -r references/science-platform-images/deployments/common/common-env/required.pip
+        #   jupyterlab
+        #   solara-server
+    ipympl==0.10.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+    ipypopout==2.0.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    ipysplitpanes==0.2.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    ipython==9.9.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   glue-core
+        #   ipykernel
+        #   ipympl
+        #   ipywidgets
+    ipython-genutils==0.2.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+    ipython-pygments-lexers==1.1.1
+        # via ipython
+    ipyvolume==0.6.3
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+    ipyvue==1.11.3
+        # via
+        #   glue-jupyter
+        #   ipygoldenlayout
+        #   ipysplitpanes
+        #   ipyvolume
+        #   ipyvuetify
+        #   solara-ui
+    ipyvuetify==1.11.3
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+        #   ipypopout
+        #   ipyvolume
+        #   solara-ui
+    ipywebrtc==0.6.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ipyvolume
+    ipywidgets==8.1.8
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   anywidget
+        #   bqplot
+        #   bqplot-image-gl
+        #   glue-jupyter
+        #   ipydatawidgets
+        #   ipyevents
+        #   ipympl
+        #   ipypopout
+        #   ipyvolume
+        #   ipyvue
+        #   jupyter-bokeh
+        #   jupyter-rfb
+        #   pythreejs
+        #   reacton
+        #   sidecar
+        #   solara-ui
+    isoduration==20.11.0
+        # via jsonschema
+    itsdangerous==2.2.0
+        # via flask
+    jedi==0.19.2
+        # via ipython
+    jinja2==3.1.6
+        # via
+        #   bokeh
+        #   flask
+        #   jupyter-server
+        #   jupyterhub
+        #   jupyterlab
+        #   jupyterlab-server
+        #   nbconvert
+        #   nbsphinx
+        #   solara-server
+        #   sphinx
+    jmespath==1.1.0
+        # via
+        #   asdf
+        #   boto3
+        #   botocore
+    json5==0.13.0
+        # via jupyterlab-server
+    jsonpointer==3.0.0
+        # via jsonschema
+    jsonschema==4.26.0
+        # via
+        #   jupyter-app-launcher
+        #   jupyter-events
+        #   jupyter-server-ydoc
+        #   jupyterlab-server
+        #   nbformat
+    jsonschema-specifications==2025.9.1
+        # via jsonschema
+    jupyter-app-launcher==0.3.2
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyter-bokeh==4.0.5
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyter-client==8.8.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ipykernel
+        #   jupyter-server
+        #   nbclient
+        #   solara-server
+        #   voila
+    jupyter-collaboration==4.2.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyter-collaboration-ui==2.2.0
+        # via jupyter-collaboration
+    jupyter-core==5.9.1
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ipykernel
+        #   jupyter-client
+        #   jupyter-server
+        #   jupyterlab
+        #   nbclient
+        #   nbconvert
+        #   nbformat
+        #   voila
+    jupyter-docprovider==2.2.0
+        # via jupyter-collaboration
+    jupyter-events==0.12.0
+        # via
+        #   jupyter-server
+        #   jupyter-server-fileid
+        #   jupyter-server-ydoc
+        #   jupyterhub
+    jupyter-lsp==2.3.0
+        # via jupyterlab
+    jupyter-packaging==0.12.3
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyter-resource-usage==1.2.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyter-rfb==0.5.4
+        # via glue-vispy-viewers
+    jupyter-server==2.17.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   jupyter-app-launcher
+        #   jupyter-lsp
+        #   jupyter-resource-usage
+        #   jupyter-server-fileid
+        #   jupyter-server-proxy
+        #   jupyter-server-ydoc
+        #   jupyterlab
+        #   jupyterlab-server
+        #   nbgitpuller
+        #   notebook
+        #   notebook-shim
+        #   voila
+    jupyter-server-fileid==0.9.3
+        # via jupyter-server-ydoc
+    jupyter-server-proxy==4.4.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   jupyter-app-launcher
+    jupyter-server-terminals==0.5.4
+        # via jupyter-server
+    jupyter-server-ydoc==2.2.0
+        # via jupyter-collaboration
+    jupyter-ydoc==3.3.4
+        # via jupyter-server-ydoc
+    jupyterhub==5.4.3
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyterlab==4.5.2
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   jupyter-collaboration
+        #   notebook
+    jupyterlab-pygments==0.3.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   nbconvert
+    jupyterlab-server==2.28.0
+        # via
+        #   jupyterlab
+        #   notebook
+        #   voila
+    jupyterlab-tour==4.0.1
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    jupyterlab-widgets==3.0.16
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ipywidgets
+        #   voila-gridstack
+    jupytext==1.19.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    kiwisolver==1.4.9
+        # via
+        #   matplotlib
+        #   vispy
+    lark==1.3.1
+        # via rfc3987-syntax
+    lazy-loader==0.4
+        # via scikit-image
+    mako==1.3.10
+        # via alembic
+    markdown==3.10.1
+        # via
+        #   pymdown-extensions
+        #   solara-ui
+    markdown-it-py==4.0.0
+        # via
+        #   jupytext
+        #   mdit-py-plugins
+        #   rich
+    markupsafe==3.0.3
+        # via
+        #   flask
+        #   jinja2
+        #   mako
+        #   nbconvert
+        #   werkzeug
+    matplotlib==3.10.8
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+        #   glue-core
+        #   glue-vispy-viewers
+        #   ipympl
+        #   ipyvolume
+        #   mpl-scatter-density
+    matplotlib-inline==0.2.1
+        # via
+        #   ipykernel
+        #   ipython
+    mccabe==0.7.0
+        # via flake8
+    mdit-py-plugins==0.5.0
+        # via jupytext
+    mdurl==0.1.2
+        # via markdown-it-py
+    mistune==3.2.0
+        # via nbconvert
+    mpl-scatter-density==0.8
+        # via glue-core
+    multidict==6.7.0
+        # via
+        #   aiohttp
+        #   yarl
+    mypy-extensions==1.1.0
+        # via black
+    narwhals==2.15.0
+        # via bokeh
+    nbclient==0.10.4
+        # via
+        #   nbconvert
+        #   papermill
+        #   voila
+    nbconvert==7.16.6
+        # via
+        #   jupyter-server
+        #   nbsphinx
+        #   voila
+    nbformat==5.10.4
+        # via
+        #   jupyter-server
+        #   jupytext
+        #   nbclient
+        #   nbconvert
+        #   nbsphinx
+        #   papermill
+        #   solara-server
+    nbgitpuller==1.2.2
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    nbsphinx==0.9.8
+        # via -r references/science-platform-images/deployments/common/common-env/docs.pip
+    nest-asyncio==1.6.0
+        # via ipykernel
+    networkx==3.6.1
+        # via scikit-image
+    notebook==7.5.2
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   glue-jupyter
+    notebook-shim==0.2.4
+        # via
+        #   jupyterlab
+        #   notebook
+    numpy==2.4.1
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   asdf
+        #   astropy
+        #   bokeh
+        #   bqplot
+        #   contourpy
+        #   crds
+        #   echo
+        #   fast-histogram
+        #   glue-core
+        #   glue-vispy-viewers
+        #   h5py
+        #   imageio
+        #   ipydatawidgets
+        #   ipympl
+        #   ipyvolume
+        #   jupyter-rfb
+        #   matplotlib
+        #   mpl-scatter-density
+        #   pandas
+        #   pyerfa
+        #   pythreejs
+        #   scikit-image
+        #   scipy
+        #   shapely
+        #   solara-ui
+        #   tifffile
+        #   vispy
+    numpydoc==1.10.0
+        # via sphinx-astropy
+    oauthlib==3.3.1
+        # via jupyterhub
+    openpyxl==3.1.5
+        # via glue-core
+    opentelemetry-api==1.39.1
+        # via ddtrace
+    overrides==7.7.0 ; python_full_version < '3.12'
+        # via jupyter-server
+    packaging==26.0
+        # via
+        #   asdf
+        #   astropy
+        #   black
+        #   bokeh
+        #   build
+        #   deprecation
+        #   ipykernel
+        #   jupyter-events
+        #   jupyter-packaging
+        #   jupyter-server
+        #   jupyterhub
+        #   jupyterlab
+        #   jupyterlab-server
+        #   jupytext
+        #   lazy-loader
+        #   matplotlib
+        #   nbconvert
+        #   pipdeptree
+        #   pytest
+        #   pytest-doctestplus
+        #   pytest-openfiles
+        #   scikit-image
+        #   sphinx
+        #   sphinx-astropy
+        #   sphinx-automodapi
+        #   vispy
+        #   wheel
+    pamela==1.2.0 ; sys_platform != 'win32'
+        # via jupyterhub
+    pandas==2.3.3
+        # via
+        #   bokeh
+        #   bqplot
+        #   glue-core
+    pandocfilters==1.5.1
+        # via nbconvert
+    papermill==2.6.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   -r references/science-platform-images/deployments/common/common-env/required.pip
+    parsley==1.3
+        # via crds
+    parso==0.8.5
+        # via jedi
+    pathspec==1.0.3
+        # via black
+    pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
+        # via ipython
+    pillow==12.1.0
+        # via
+        #   bokeh
+        #   bqplot-image-gl
+        #   imageio
+        #   ipympl
+        #   ipyvolume
+        #   matplotlib
+        #   scikit-image
+        #   solara-ui
+        #   sphinx-astropy
+        #   sphinx-gallery
+    pip==25.3
+        # via
+        #   pip-tools
+        #   pipdeptree
+    pip-tools==7.5.2
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    pipdeptree==2.30.0
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    platformdirs==4.5.1
+        # via
+        #   black
+        #   jupyter-core
+    playwright==1.57.0
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    pluggy==1.6.0
+        # via pytest
+    prometheus-client==0.24.1
+        # via
+        #   jupyter-resource-usage
+        #   jupyter-server
+        #   jupyterhub
+    prompt-toolkit==3.0.52
+        # via ipython
+    propcache==0.4.1
+        # via
+        #   aiohttp
+        #   yarl
+    psutil==7.2.1
+        # via
+        #   ipykernel
+        #   jupyter-resource-usage
+        #   jupyterhub
+        #   pytest-openfiles
+    psycopg2-binary==2.9.11
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    psygnal==0.15.1
+        # via anywidget
+    ptyprocess==0.7.0 ; os_name != 'nt' or (sys_platform != 'emscripten' and sys_platform != 'win32')
+        # via
+        #   pexpect
+        #   terminado
+    pure-eval==0.2.3
+        # via stack-data
+    pyarrow==23.0.0
+        # via -r extra_pip_packages.txt
+    pycodestyle==2.14.0
+        # via flake8
+    pycparser==3.0 ; implementation_name != 'PyPy'
+        # via cffi
+    pycrdt==0.12.44
+        # via
+        #   jupyter-server-ydoc
+        #   jupyter-ydoc
+        #   pycrdt-store
+        #   pycrdt-websocket
+    pycrdt-store==0.1.3
+        # via pycrdt-websocket
+    pycrdt-websocket==0.16.0
+        # via jupyter-server-ydoc
+    pydantic==2.12.5
+        # via jupyterhub
+    pydantic-core==2.41.5
+        # via pydantic
+    pydeps==3.0.2
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    pyds9==1.8.1
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    pyee==13.0.0
+        # via playwright
+    pyerfa==2.0.1.5
+        # via astropy
+    pyflakes==3.4.0
+        # via flake8
+    pygments==2.19.2
+        # via
+        #   ipython
+        #   ipython-pygments-lexers
+        #   nbconvert
+        #   pytest
+        #   rich
+        #   solara-ui
+        #   sphinx
+    pymdown-extensions==10.20
+        # via solara-ui
+    pyopengl==3.1.10
+        # via glue-vispy-viewers
+    pyparsing==3.3.2
+        # via matplotlib
+    pyproject-hooks==1.2.0
+        # via
+        #   build
+        #   pip-tools
+    pytest==9.0.2
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/testing.pip
+        #   ci-watson
+        #   pytest-doctestplus
+        #   pytest-openfiles
+    pytest-doctestplus==1.7.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/testing.pip
+        #   sphinx-astropy
+    pytest-openfiles==0.6.0
+        # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+    python-dateutil==2.9.0.post0
+        # via
+        #   arrow
+        #   botocore
+        #   jupyter-client
+        #   jupyterhub
+        #   matplotlib
+        #   pandas
+    python-json-logger==4.0.0
+        # via jupyter-events
+    pythreejs==2.4.2
+        # via ipyvolume
+    pytokens==0.4.0
+        # via black
+    pytz==2025.2
+        # via pandas
+    pywinpty==3.0.2 ; os_name == 'nt'
+        # via
+        #   jupyter-server
+        #   jupyter-server-terminals
+        #   terminado
+    pyyaml==6.0.3
+        # via
+        #   asdf
+        #   astropy
+        #   bokeh
+        #   jupyter-app-launcher
+        #   jupyter-events
+        #   jupytext
+        #   papermill
+        #   pymdown-extensions
+        #   yq
+    pyzmq==27.1.0
+        # via
+        #   ipykernel
+        #   jupyter-client
+        #   jupyter-resource-usage
+        #   jupyter-server
+    reacton==1.9.1
+        # via solara-ui
+    readchar==4.2.1
+        # via ci-watson
+    referencing==0.37.0
+        # via
+        #   jsonschema
+        #   jsonschema-specifications
+        #   jupyter-events
+    requests==2.32.5
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/common.pip
+        #   ci-watson
+        #   crds
+        #   ipyvolume
+        #   jupyterhub
+        #   jupyterlab-server
+        #   papermill
+        #   requests-mock
+        #   solara-ui
+        #   sphinx
+    requests-mock==1.12.1
+        # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+    rfc3339-validator==0.1.4
+        # via
+        #   jsonschema
+        #   jupyter-events
+    rfc3986-validator==0.1.1
+        # via
+        #   jsonschema
+        #   jupyter-events
+    rfc3987-syntax==1.1.0
+        # via jsonschema
+    rich==14.2.0
+        # via rich-click
+    rich-click==1.9.6
+        # via solara-server
+    roman-numerals==4.1.0
+        # via sphinx
+    rpds-py==0.30.0
+        # via
+        #   jsonschema
+        #   referencing
+    s3transfer==0.16.0
+        # via boto3
+    scikit-image==0.26.0
+        # via glue-jupyter
+    scipy==1.17.0
+        # via
+        #   glue-core
+        #   glue-vispy-viewers
+        #   scikit-image
+    semantic-version==2.10.0
+        # via asdf
+    send2trash==2.1.0
+        # via jupyter-server
+    setuptools==80.10.1
+        # via
+        #   astropy-sphinx-theme
+        #   jupyter-packaging
+        #   jupyterlab
+        #   pip-tools
+    shapely==2.1.2
+        # via glue-core
+    sidecar==0.8.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    simpervisor==1.0.0
+        # via jupyter-server-proxy
+    six==1.17.0
+        # via
+        #   pyds9
+        #   python-dateutil
+        #   rfc3339-validator
+    smmap==5.0.2
+        # via gitdb
+    snowballstemmer==3.0.1
+        # via sphinx
+    solara==1.57.1
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    solara-server==1.57.1
+        # via solara
+    solara-ui==1.57.1
+        # via
+        #   solara
+        #   solara-server
+    soupsieve==2.8.3
+        # via beautifulsoup4
+    sphinx==9.0.4 ; python_full_version < '3.12'
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+        #   nbsphinx
+        #   numpydoc
+        #   sphinx-astropy
+        #   sphinx-automodapi
+        #   sphinx-gallery
+        #   sphinx-rtd-theme
+        #   sphinxcontrib-jquery
+        #   stsci-rtd-theme
+    sphinx==9.1.0 ; python_full_version >= '3.12'
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+        #   nbsphinx
+        #   numpydoc
+        #   sphinx-astropy
+        #   sphinx-automodapi
+        #   sphinx-gallery
+        #   sphinx-rtd-theme
+        #   sphinxcontrib-jquery
+        #   stsci-rtd-theme
+    sphinx-astropy==1.10
+        # via -r references/science-platform-images/deployments/common/common-env/docs.pip
+    sphinx-automodapi==0.22.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+        #   sphinx-astropy
+    sphinx-gallery==0.20.0
+        # via sphinx-astropy
+    sphinx-rtd-theme==3.1.0
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+        #   stsci-rtd-theme
+    sphinxcontrib-applehelp==2.0.0
+        # via sphinx
+    sphinxcontrib-devhelp==2.0.0
+        # via sphinx
+    sphinxcontrib-htmlhelp==2.1.0
+        # via sphinx
+    sphinxcontrib-jquery==4.1
+        # via
+        #   sphinx-astropy
+        #   sphinx-rtd-theme
+    sphinxcontrib-jsmath==1.0.1
+        # via sphinx
+    sphinxcontrib-qthelp==2.0.0
+        # via sphinx
+    sphinxcontrib-serializinghtml==2.0.0
+        # via sphinx
+    sqlalchemy==2.0.46
+        # via
+        #   alembic
+        #   jupyterhub
+    sqlite-anyio==0.2.3
+        # via pycrdt-store
+    stack-data==0.6.3
+        # via ipython
+    starlette==0.52.1
+        # via solara-server
+    stdlib-list==0.12.0
+        # via pydeps
+    stsci-rtd-theme==1.0.1
+        # via -r references/science-platform-images/deployments/common/common-env/docs.pip
+    tenacity==9.1.2
+        # via papermill
+    terminado==0.18.1
+        # via
+        #   jupyter-server
+        #   jupyter-server-terminals
+    tifffile==2026.1.14
+        # via scikit-image
+    tinycss2==1.4.0
+        # via bleach
+    tomlkit==0.14.0
+        # via
+        #   jupyter-packaging
+        #   yq
+    tornado==6.5.4
+        # via
+        #   bokeh
+        #   ipykernel
+        #   jupyter-client
+        #   jupyter-server
+        #   jupyter-server-proxy
+        #   jupyterhub
+        #   jupyterlab
+        #   nbgitpuller
+        #   notebook
+        #   terminado
+    tqdm==4.67.1
+        # via papermill
+    traitlets==5.14.3
+        # via
+        #   bqplot
+        #   ipykernel
+        #   ipympl
+        #   ipython
+        #   ipyvolume
+        #   ipywidgets
+        #   jupyter-client
+        #   jupyter-core
+        #   jupyter-events
+        #   jupyter-server
+        #   jupyter-server-proxy
+        #   jupyterhub
+        #   jupyterlab
+        #   matplotlib-inline
+        #   nbclient
+        #   nbconvert
+        #   nbformat
+        #   nbsphinx
+        #   pythreejs
+        #   traittypes
+        #   voila
+    traittypes==0.2.3
+        # via
+        #   bqplot
+        #   ipydatawidgets
+        #   ipyvolume
+    typing-extensions==4.15.0
+        # via
+        #   aiosignal
+        #   alembic
+        #   anyio
+        #   anywidget
+        #   beautifulsoup4
+        #   bqplot-image-gl
+        #   ipython
+        #   opentelemetry-api
+        #   pydantic
+        #   pydantic-core
+        #   pyee
+        #   reacton
+        #   referencing
+        #   sqlalchemy
+        #   starlette
+        #   typing-inspection
+    typing-inspection==0.4.2
+        # via pydantic
+    tzdata==2025.3
+        # via
+        #   arrow
+        #   pandas
+    uri-template==1.3.0
+        # via jsonschema
+    urllib3==2.6.3
+        # via
+        #   botocore
+        #   requests
+    uvicorn==0.40.0
+        # via solara-server
+    vispy==0.16.1
+        # via glue-vispy-viewers
+    voila==0.5.11
+        # via voila-gridstack
+    voila-gridstack==0.4.0
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    watchdog==6.0.0
+        # via solara-server
+    watchfiles==1.1.1
+        # via solara-server
+    wcwidth==0.3.0
+        # via prompt-toolkit
+    webcolors==25.10.0
+        # via jsonschema
+    webencodings==0.5.1
+        # via
+        #   bleach
+        #   tinycss2
+    websocket-client==1.9.0
+        # via jupyter-server
+    websockets==16.0
+        # via
+        #   solara-server
+        #   voila
+    werkzeug==3.1.5
+        # via flask
+    wheel==0.46.3
+        # via
+        #   jupyter-packaging
+        #   pip-tools
+    widgetsnbextension==4.0.15
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ipywidgets
+    wrapt==2.0.1
+        # via ddtrace
+    xlrd==2.0.2
+        # via glue-core
+    xmltodict==1.0.2
+        # via yq
+    xyzservices==2025.11.0
+        # via bokeh
+    y-py==0.6.2
+        # via
+        #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+        #   ypy-websocket
+    yarl==1.22.0
+        # via aiohttp
+    ypy-websocket==0.12.4
+        # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    yq==3.4.3
+        # via -r references/science-platform-images/deployments/common/common-env/common.pip
+    zipp==3.23.0
+        # via importlib-metadata
