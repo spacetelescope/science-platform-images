@@ -20,11 +20,12 @@ system:
   spi:
     repo: "https://github.com/jaytmiller/science-platform-images.git"
     ref: "main"
-  spec_sha256: a93a97d4bf1abe1607f9aaf4ff529f705e32599d56fdcb0daf660b05a2f93fcf
+
+  spec_sha256: d92d3a7e3711557b0f400e575a753fbb55bc30a19b5c6344651d339c55357c74
 repositories:
   nexus-notebooks:
-    url: https://github.com/jaytmiller/nexus-notebooks.git
-    ref: rrn-update
+    url: https://github.com/rges-pit/nexus-notebooks.git
+    ref: main
 
 selected_notebooks:
   nexus-notebooks-all:
@@ -35,12 +36,13 @@ selected_notebooks:
 out:
   repositories:
     nexus-notebooks:
-      url: https://github.com/jaytmiller/nexus-notebooks.git
-      ref: 0ee6847e74e443f26e2a86dee12cd3b91f92ead0
+      url: https://github.com/rges-pit/nexus-notebooks.git
+      ref: d9d2bd5ff6fb894e33b5865f5ecafd591db0ae25
 
   spi:
     repo: "https://github.com/jaytmiller/science-platform-images.git"
     ref: "main"
+
   test_notebooks:
     references/nexus-notebooks/notebooks/a_rmdc26_workflow.ipynb: 
       nexus-notebooks-all
@@ -1377,11 +1379,3 @@ out:
         # via -r references/science-platform-images/deployments/common/common-env/common.pip
     zipp==3.23.0
         # via importlib-metadata
-  data:
-    spec_inputs:
-      references/nexus-notebooks/refdata_dependencies.yaml:
-        install_files: {}
-        other_variables: {}
-    spec_exports: {}
-    pantry_exports: {}
-    metadata: {}

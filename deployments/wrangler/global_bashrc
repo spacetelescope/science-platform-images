@@ -1,1 +1,4 @@
-#! /bin/bash
+
+export NBW_DEFAULT_ENV=$(yq -r .out.kernel_name /opt/environments/nbw-wrangler-spec.yaml)
+
+source /opt/common-scripts/env-activate ${NBW_DEFAULT_ENV}
