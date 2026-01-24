@@ -33,21 +33,16 @@ RUN   /opt/common-scripts/install-common  base
 
 WORKDIR ${NBW_ROOT}
 
-# Install wrangler directly in base environment
-RUN source /opt/common-scripts/env-activate base && \
-    git clone https://github.com/spacetelescope/nb-wrangler && \
-    cd nb-wrangler && \
-    pip install . && \
-    cp nb-wrangler /opt/tools && \
-    cd .. && \
-    /opt/common-scripts/env-clean && \
-    rm -rf nb-wrangler
 
+# Run wrangler from base environment creating/installing spec'ed environment
+# If the spec says python3 ("base") it will add to the base environment instead of creating a second
 RUN source /opt/common-scripts/env-activate base && \
-    python -m nb_wrangler --verbose --reinstall --env-compact \
-           /opt/environments/nbw-wrangler-spec.yaml && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
     fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
+
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2

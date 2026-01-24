@@ -24,17 +24,13 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v6
 
       - name: Free Disk Space,  Enlarge Swapfile
         shell: bash
         run: |
              df -h
              sudo apt clean
-             docker rmi $(docker image ls -aq)
-             docker container prune -f
              sudo rm -rf "/usr/local/share/boost"
              sudo rm -rf "$AGENT_TOOLSDIRECTORY"
              sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android

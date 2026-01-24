@@ -8,14 +8,14 @@
 
 # ----------------- basic inputs,  must set for deployment --------------
 
-export DEPLOYMENT_NAME=roman
+export DEPLOYMENT_NAME=wrangler
 export ENVIRONMENT=sandbox
 export CAL_VERSION=none
 
 export USE_FROZEN=0                  # use 0 for loosely pinned package versions,
                                      # 1 for tagged/frozen production build
 
-export FREEZE=1                     # dump new frozen requirements in image to modified files in this git repo
+export FREEZE=0                     # dump new frozen requirements in image to modified files in this git repo
 
 export REPACK=0                     # repack the image to reduce size;  experimental for now, generally needed for
                                     # wrangler scanning on github but also reduces image size permanently

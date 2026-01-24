@@ -14,6 +14,7 @@ if [ -z "${USER_CACHE_DIRS}" ]; then
     echo "===== Clearing jupyterlab and npm caches..."
     jupyter lab clean -y
     npm cache clean --force
+    jlpm cache clean --all
     # yarn cache clean --force
     rm -rf $HOME/.node-gyp
 fi

@@ -2,7 +2,8 @@
 # Configure nb-wrangler for installation under docker-stacks base environment
 
 export NBW_ROOT=/opt/nbw-live
-export NB_PANTRY=$HOME/.nbw-pantry
+#export NBW_PANTRY=$HOME/.nbw-pantry
+export NBW_PANTRY=/teams/admin/nbw-pantry
 export NBW_MM=/opt/conda
 export NBW_MAMBA_CMD=mamba
 export NBW_PIP_CMD=pip

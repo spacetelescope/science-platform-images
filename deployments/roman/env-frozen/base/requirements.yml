@@ -78,7 +78,7 @@ dependencies:
   - jsonschema-with-format-nongpl=4.25.1
   - jupyter-lsp=2.3.0
   - jupyter-packaging=0.12.3
-  - jupyter_client=8.7.0
+  - jupyter_client=8.6.3
   - jupyter_core=5.9.1
   - jupyter_events=0.12.0
   - jupyter_server=2.17.0
@@ -169,7 +169,7 @@ dependencies:
   - pyproject_hooks=1.2.0
   - pysocks=1.7.1
   - python=3.12.12
-  - python-build=1.4.0
+  - python-build=1.3.0
   - python-dateutil=2.9.0.post0
   - python-fastjsonschema=2.21.2
   - python-gil=3.12.12
@@ -196,14 +196,14 @@ dependencies:
   - six=1.17.0
   - sniffio=1.3.1
   - soupsieve=2.8
-  - sqlalchemy=2.0.45
+  - sqlalchemy=2.0.44
   - stack_data=0.6.3
   - terminado=0.18.1
   - tinycss2=1.5.1
   - tk=8.6.13
   - tomli=2.3.0
   - tomlkit=0.13.3
-  - tornado=6.5.3
+  - tornado=6.5.2
   - tqdm=4.67.1
   - traitlets=5.14.3
   - truststore=0.10.3
@@ -213,7 +213,7 @@ dependencies:
   - typing_utils=0.1.0
   - tzdata=2025b
   - uri-template=1.3.0
-  - urllib3=2.6.1
+  - urllib3=2.6.0
   - wcwidth=0.2.14
   - webcolors=25.10.0
   - webencodings=0.5.1
@@ -227,17 +227,17 @@ dependencies:
   - zstd=1.5.7
   - pip:
     - Flask==3.1.2
-    - GitPython==3.1.46
+    - GitPython==3.1.45
     - ImageIO==2.37.2
     - Markdown==3.10
     - Parsley==1.3
     - PyOpenGL==3.1.10
     - Sphinx==8.2.3
-    - Werkzeug==3.1.5
+    - Werkzeug==3.1.4
     - aiohappyeyeballs==2.6.1
-    - aiohttp==3.13.3
+    - aiohttp==3.13.2
     - aiosignal==1.4.0
-    - aiosqlite==0.22.1
+    - aiosqlite==0.22.0
     - alabaster==1.0.0
     - ansicolors==1.1.8
     - anywidget==0.9.21
@@ -246,12 +246,12 @@ dependencies:
     - asdf_standard==1.4.0
     - asdf_transform_schemas==0.6.0
     - astropy==7.2.0
-    - astropy-iers-data==0.2026.1.12.0.42.13
+    - astropy-iers-data==0.2025.12.15.0.40.51
     - astropy-sphinx-theme==2.0
     - black==25.12.0
-    - bokeh==3.8.2
-    - boto3==1.42.25
-    - botocore==1.42.25
+    - bokeh==3.8.1
+    - boto3==1.42.12
+    - botocore==1.42.12
     - bqplot==0.12.45
     - bqplot-gl==0.0.0
     - bqplot-image-gl==1.8.0
@@ -259,9 +259,9 @@ dependencies:
     - cachetools==6.2.4
     - ci_watson==0.10.0
     - contourpy==1.3.3
-    - crds==13.0.7
+    - crds==13.0.6
     - cycler==0.12.1
-    - ddtrace==4.2.0
+    - ddtrace==4.0.1
     - dill==0.4.0
     - distlib==0.4.0
     - docutils==0.21.2
@@ -270,7 +270,7 @@ dependencies:
     - envier==0.6.1
     - et_xmlfile==2.0.0
     - fast-histogram==0.14
-    - filelock==3.20.3
+    - filelock==3.20.1
     - flake8==7.3.0
     - fonttools==4.61.1
     - freetype-py==2.5.1
@@ -282,7 +282,7 @@ dependencies:
     - glue-vispy-viewers==1.3.0
     - h5py==3.15.1
     - hsluv==5.0.4
-    - humanize==4.15.0
+    - humanize==4.14.0
     - imagesize==1.4.1
     - iniconfig==2.3.0
     - ipydatawidgets==4.3.5
@@ -306,7 +306,7 @@ dependencies:
     - jupyter-resource-usage==1.2.0
     - jupyter-rfb==0.5.4
     - jupyter-server-ydoc==2.2.0
-    - jupyter-ydoc==3.3.4
+    - jupyter-ydoc==3.3.3
     - jupyter_app_launcher==0.3.2
     - jupyter_bokeh==4.0.5
     - jupyter_server_fileid==0.9.3
@@ -324,37 +324,37 @@ dependencies:
     - mpl-scatter-density==0.8
     - multidict==6.7.0
     - mypy_extensions==1.1.0
-    - narwhals==2.15.0
+    - narwhals==2.14.0
     - nb-wrangler==0.6.0
     - nbgitpuller==1.2.2
     - nbsphinx==0.9.8
     - networkx==3.6.1
-    - numpy==2.4.1
+    - numpy==2.3.5
     - numpydoc==1.10.0
     - openpyxl==3.1.5
     - opentelemetry-api==1.39.1
     - pandas==2.3.3
     - papermill==2.6.0
-    - pathspec==1.0.3
-    - pillow==12.1.0
+    - pathspec==0.12.1
+    - pillow==12.0.0
     - pipdeptree==2.30.0
     - playwright==1.57.0
     - propcache==0.4.1
     - psycopg2-binary==2.9.11
-    - psygnal==0.15.1
+    - psygnal==0.15.0
     - pycodestyle==2.14.0
     - pycrdt==0.12.44
     - pycrdt-store==0.1.3
     - pycrdt-websocket==0.16.0
-    - pydeps==3.0.2
+    - pydeps==3.0.1
     - pyds9==1.8.1
     - pyee==13.0.0
     - pyerfa==2.0.1.5
     - pyflakes==3.4.0
-    - pymdown-extensions==10.20
-    - pyparsing==3.3.1
+    - pymdown-extensions==10.19.1
+    - pyparsing==3.2.5
     - pytest==9.0.2
-    - pytest-doctestplus==1.7.0
+    - pytest-doctestplus==1.6.0
     - pytest-openfiles==0.6.0
     - pythreejs==2.4.2
     - pytokens==0.3.0
@@ -362,21 +362,21 @@ dependencies:
     - readchar==4.2.1
     - requests-mock==1.12.1
     - rich==14.2.0
-    - rich-click==1.9.5
+    - rich-click==1.9.4
     - roman-numerals==4.1.0
     - roman-numerals-py==4.1.0
     - s3transfer==0.16.0
-    - scikit-image==0.26.0
-    - scipy==1.17.0
+    - scikit-image==0.25.2
+    - scipy==1.16.3
     - semantic-version==2.10.0
     - shapely==2.1.2
     - sidecar==0.8.0
     - simpervisor==1.0.0
     - smmap==5.0.2
     - snowballstemmer==3.0.1
-    - solara==1.56.0
-    - solara-server==1.56.0
-    - solara-ui==1.56.0
+    - solara==1.55.1
+    - solara-server==1.55.1
+    - solara-ui==1.55.1
     - sphinx-astropy==1.10
     - sphinx-automodapi==0.22.0
     - sphinx-gallery==0.20.0
@@ -389,21 +389,21 @@ dependencies:
     - sphinxcontrib-qthelp==2.0.0
     - sphinxcontrib-serializinghtml==2.0.0
     - sqlite-anyio==0.2.3
-    - starlette==0.51.0
+    - starlette==0.50.0
     - stdlib-list==0.12.0
     - stsci-rtd-theme==1.0.1
     - tenacity==9.1.2
-    - tifffile==2025.12.20
+    - tifffile==2025.12.12
     - tinycss2==1.4.0
     - traittypes==0.2.3
-    - uv==0.9.24
-    - uvicorn==0.40.0
-    - vispy==0.16.1
+    - uv==0.9.18
+    - uvicorn==0.38.0
+    - vispy==0.16.0
     - voila==0.5.11
     - voila-gridstack==0.4.0
     - watchdog==6.0.0
     - watchfiles==1.1.1
-    - websockets==16.0
+    - websockets==15.0.1
     - widgetsnbextension==4.0.15
     - wrapt==2.0.1
     - xlrd==2.0.2
