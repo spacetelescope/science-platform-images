@@ -80,7 +80,8 @@ COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
 
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
-     rm $HOME/global_bashrc $HOME/.bashrc
+     printf '\nDefaults    lecture = never\n' >> /etc/sudoers && \
+     rm -f $HOME/global_bashrc $HOME/.bashrc
 
 # ----------------------------------------------------------------------
 
