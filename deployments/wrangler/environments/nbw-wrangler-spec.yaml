@@ -14,13 +14,14 @@ environment_spec:
 
 extra_pip_packages:
   - pyarrow
+  - s3fs
 
 system:
   spec_version: 2.1
   spi:
     repo: "https://github.com/spacetelescope/science-platform-images.git"
     ref: "main"
-  spec_sha256: abbc4141a01fc6dfdb19055b20cd7778f4265760982be575dbc4ddbc8f3b02d2
+  spec_sha256: 741b7c581983e5d7a42b85b418fcafe8eea670fc6835b057867f4f5a518e562f
 repositories:
   nexus-notebooks:
     url: https://github.com/rges-pit/nexus-notebooks.git
@@ -33,14 +34,6 @@ selected_notebooks:
     include_subdirs:
       - .
 out:
-  data:
-    spec_inputs:
-      references/nexus-notebooks/refdata_dependencies.yaml:
-        install_files: {}
-        other_variables: {}
-    spec_exports: {}
-    pantry_exports: {}
-    metadata: {}
   repositories:
     nexus-notebooks:
       url: https://github.com/rges-pit/nexus-notebooks.git
@@ -368,6 +361,7 @@ out:
     botocore==1.42.34
         # via
         #   boto3
+        #   s3fs
         #   s3transfer
     bqplot==0.12.45
         # via
@@ -492,6 +486,8 @@ out:
         # via
         #   aiohttp
         #   aiosignal
+    fsspec==2026.1.0
+        # via s3fs
     gitdb==4.0.12
         # via gitpython
     gitpython==3.1.46
@@ -1135,6 +1131,8 @@ out:
         # via
         #   jsonschema
         #   referencing
+    s3fs==0.4.2
+        # via -r extra_pip_packages.txt
     s3transfer==0.16.0
         # via boto3
     scikit-image==0.26.0
@@ -1385,3 +1383,11 @@ out:
         # via -r references/science-platform-images/deployments/common/common-env/common.pip
     zipp==3.23.0
         # via importlib-metadata
+  data:
+    spec_inputs:
+      references/nexus-notebooks/refdata_dependencies.yaml:
+        install_files: {}
+        other_variables: {}
+    spec_exports: {}
+    pantry_exports: {}
+    metadata: {}
