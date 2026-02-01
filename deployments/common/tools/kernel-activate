@@ -2,6 +2,9 @@
 # set -u   # no -e for source'd script
 
 # This script is intended to be SOURCE'd.
+# It activates a Python virtual environment or a Mamba/Conda environment by name.
+# It searches for environments within a given list of root directories that may
+# be custom persistence roots or standard mamba/conda envs directories.
 
 KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source  ${KERNEL_TOOLS}/kernel-utils
@@ -19,34 +22,43 @@ eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
 
 envname=$1
 shift
-
-# This logic is flawed, as identified before, but reverting to it per user request.
 search_roots=${*:-${ENVROOTS}}
 
-activated=false
+# --- Environment Activation Search ---
+# Special case for activating the 'base' environment.
+if [[ "${envname}" == "base" ]]; then
+    ${CONDA_VER} activate base
+    return $?
+fi
+
+# Iterate through all possible environment roots.
 for envroot in ${search_roots}; do
     if [ ! -d "${envroot}" ]; then
         continue
-    elif [ -d "${envroot}/venv/${envname}" ]; then
+    fi
+
+    # 1. Check for a python virtual environment in a custom persistence root.
+    if [ -f "${envroot}/venv/${envname}/bin/activate" ]; then
+        echo "Activating Python virtual environment: ${envname}"
         source "${envroot}/venv/${envname}/bin/activate"
-        if [ $? -eq 0 ]; then activated=true; fi
-        break
+        return $?
+    # 2. Check for a conda environment in a custom persistence root.
     elif [ -d "${envroot}/conda/${envname}" ]; then
+        echo "Activating Conda environment from custom root: ${envname}"
         ${CONDA_VER} activate "${envroot}/conda/${envname}"
-        if [ $? -eq 0 ]; then activated=true; fi
-        break
+        return $?
+    # 3. Check for a conda environment in a standard environment root.
+    elif [ -d "${envroot}/${envname}" ]; then
+        # This check should be last as it is the most general.
+        # It handles the case where envroot is e.g. '/opt/conda/envs'.
+        echo "Activating Conda environment from standard root: ${envname}"
+        ${CONDA_VER} activate "${envroot}/${envname}"
+        return $?
     fi
 done
 
-if ! ${activated}; then
-    if [[ ${envname} == "base" ]]; then
-        ${CONDA_VER} activate
-        if [ $? -eq 0 ]; then activated=true; fi
-        return 0
-    else
-        banner "Kernel environment ${envname} not found under search paths: ${search_roots}."
-        return 1
-    fi
-else
-    return 0
-fi
+
+# --- Failure ---
+# If we reach here, no environment was successfully activated.
+banner "Kernel environment '${envname}' not found under search paths: ${search_roots}."
+return 1
