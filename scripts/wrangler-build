@@ -20,7 +20,7 @@ SP_SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd ${SP_SCRIPTS}
 cd ..
 
-${SP_SCRIPTS}/image-configure wrangler $*
+${SP_SCRIPTS}/image-configure $*
 
 source setup-env
 
