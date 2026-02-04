@@ -1,0 +1,27 @@
+#! /bin/bash
+
+# For local builds,  remove all image-build images from Docker and prune
+# to force a complete rebuild.
+
+set -e
+
+docker_images=$(docker image ls)
+
+function conditional_rmi {
+    if echo $docker_images | grep $1; then
+        echo "Removing image: $1"
+        docker rmi $1
+    else
+        echo "No need to remove missing image: $1"
+    fi
+}
+
+echo "====== Deleting old SP docker images"
+conditional_rmi notebook-common
+conditional_rmi notebook-wrangler
+conditional_rmi spacetelescope/minimal-notebook
+conditional_rmi spacetelescope/base-notebook
+conditional_rmi spacetelescope/docker-stacks-foundation
+
+echo "====== Pruning docker system."
+docker system prune -f
