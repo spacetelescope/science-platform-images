@@ -123,6 +123,12 @@ RUN /opt/common-scripts/apt-install \
         libxt-dev \
         libbz2-dev
 
+# Uninstall sudo:  hub users cannot use, security risk,  misleading terminal instructions
+RUN DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    SUDO_FORCE_REMOVE=yes apt-get remove --yes sudo && \
+    apt autoremove --yes
+
 # YYYY SEC
 #       nvidia-cuda-toolkit
 

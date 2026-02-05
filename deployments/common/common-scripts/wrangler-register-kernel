@@ -15,6 +15,6 @@ source /etc/nb-wrangler.rc
 
 source /opt/tools/nb-wrangler environment
 
-/opt/tools/nb-wrangler /opt/environments/nbw-wrangler-spec.yaml --env-register --data-symlinks
+/opt/tools/nb-wrangler /opt/environments/nbw-wrangler-spec.yaml --env-register --data-symlinks --env-kernel-cleanup
 
 rm -f nb-wrangler.log

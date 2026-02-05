@@ -1,0 +1,27 @@
+#! /bin/bash
+
+#
+# This is a simple entry point called by nb-wrangler as a single
+# subprocess which can set up the shell environment on its own.
+# This prevents the need to use a shell in subprocess.run which
+# is considered a security risk...  avoidable like this.
+#
+# Calling it requires knowing where it is.  It introspects,  then
+# changes directories to the root of the repo clone and mimics
+# a developer running image-configure,  sourcing setup-env, and
+# then running image-build.
+#
+
+set -e
+
+SP_SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Switch to the root of the science-platform-image clone
+cd ${SP_SCRIPTS}
+cd ..
+
+${SP_SCRIPTS}/image-configure $*
+
+source setup-env
+
+image-build

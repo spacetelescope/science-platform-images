@@ -36,3 +36,5 @@ anywidget
 jupytext
 jupyter-app-launcher
 voila-gridstack
+nbdime
+jupyterlab-git
