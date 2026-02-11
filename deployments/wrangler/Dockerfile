@@ -1,7 +1,7 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
 ARG BASE_IMAGE=notebook-common
-FROM $BASE_IMAGE AS build
+FROM ${BASE_IMAGE} AS build
 
 ARG NBW_ROOT="/opt/nbw-live"
 ENV NBW_ROOT="${NBW_ROOT}"
@@ -33,21 +33,16 @@ RUN   /opt/common-scripts/install-common  base
 
 WORKDIR ${NBW_ROOT}
 
-# Install wrangler directly in base environment
-RUN source /opt/common-scripts/env-activate base && \
-    git clone https://github.com/spacetelescope/nb-wrangler && \
-    cd nb-wrangler && \
-    pip install . && \
-    cp nb-wrangler /opt/tools && \
-    cd .. && \
-    /opt/common-scripts/env-clean && \
-    rm -rf nb-wrangler
 
+# Run wrangler from base environment creating/installing spec'ed environment
+# If the spec says python3 ("base") it will add to the base environment instead of creating a second
 RUN source /opt/common-scripts/env-activate base && \
-    python -m nb_wrangler --verbose --reinstall --env-compact \
-           /opt/environments/nbw-wrangler-spec.yaml && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
     fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
+
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
@@ -74,13 +69,19 @@ USER root
 COPY default-home-contents/ /etc/default-home-contents
 RUN  cp -r $HOME/.local /etc/default-home-contents && \
      cp -r $HOME/.jupyter /etc/default-home-contents
+
 COPY global_bashrc $HOME
-RUN  cat $HOME/global_bashrc >> /etc/bash.bashrc  && \
-     cat $HOME/global_bashrc >> /etc/bash.env  && \
-     rm $HOME/global_bashrc
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
+
+# Already copied by generic environments copy
+# COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
+
+RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
+     cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
+     printf '\nDefaults    lecture = never\n' >> /etc/sudoers && \
+     rm -f $HOME/global_bashrc $HOME/.bashrc
 
 # ----------------------------------------------------------------------
 
@@ -103,8 +104,15 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
+
+ENV NBW_PANTRY=/teams/admin/nbw-pantry
+RUN mkdir -p ${NBW_PANTRY} && chown -R ${NB_UID}:${NB_GID} ${NBW_PANTRY}
+
 USER ${NB_UID}:${NB_GID}
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
+
+USER root
+RUN fix-permissions $CONDA_DIR $HOME
 
 USER ${NB_UID}:${NB_GID}
 WORKDIR $HOME

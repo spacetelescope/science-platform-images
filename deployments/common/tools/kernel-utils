@@ -2,11 +2,25 @@
 
 # NO set -eu for source script
 
+# How the path to this script is discovered, handling symlinks *and* sourcing:
+# $(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+#
+# $(dirname $0) is simpler but does not work for sourcing
+#
+# BASH_SOURCE[0] gives the path to the current script (even when sourced in many cases).
+# dirname strips the script name, leaving the directory path portion.
+# The inner cd moves into that directory, and pwd returns its absolute path.
+
+# ENVROOT: The default root directory for CREATING new environments.
+# Users can override by setting the variable. Defaults to $HOME/envs.
 ENVROOT=${ENVROOT:-${HOME}/envs}
-ENVROOTS=${ENVROOTS:-"${ENVROOT} /opt/conda/envs"}   # To add team conda environments?
+
+# ENVROOTS: A space-separated list of directories for SEARCHING for environments.
+# The order defines search precedence. Defaults to the user's default envs
+# directory plus the system-wide one.
+ENVROOTS=${ENVROOTS:-"${ENVROOT} /opt/conda/envs"}
 
 KERNEL_SHELL=${KERNEL_SHELL:-bash}   # shell nominally used for conda init
-
 function usage() {
    local condition=$1
    shift

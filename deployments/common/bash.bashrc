@@ -2,8 +2,6 @@
 
 export PS1="${debian_chroot:+($debian_chroot)}\u@notebook:\w\$ "
 
-source /opt/common-scripts/env-activate base
-
 # Utility scripts for users,  mainly python environment management
 export PATH="/opt/tools:$PATH"
 

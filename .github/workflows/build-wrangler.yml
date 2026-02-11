@@ -30,7 +30,7 @@ jobs:
           sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android
           sudo rm -rf /usr/share/dotnet # will release about 20GB if you don't need .NET
           sudo rm -rf /opt/hostedtoolcache/CodeQL # CodeQL bundle, several GB.
-          sudo rm -rf /opt/ghc  # GHC (Haskell) toolchains, roughly a few GB.​
+          sudo rm -rf /opt/ghc  # GHC (Haskell) toolchains, roughly a few GB.
           sudo swapoff -a
           sudo rm -f /swapfile
           sudo fallocate -l 16G /swapfile
@@ -41,7 +41,7 @@ jobs:
           df -h
 
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5

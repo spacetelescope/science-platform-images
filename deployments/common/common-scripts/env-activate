@@ -9,7 +9,7 @@ OLD_OPTS=$-
 set +u    # due to missing PS1,  etc.  turn off undefined var trapping
 
 source /etc/nb-wrangler.rc
-source /etc/profile.d/${CONDA_VER}.sh
+eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
 ${CONDA_VER} activate $env
 
 case $OLD_OPTS in

@@ -8,7 +8,7 @@ Step 2 of the pip-tools workflow:  resolve pip versions from .pip package list f
 
 Nominal pip-tools workflow:
 
-    1. /opt/common-scripts/env-conda   <env>    # Create minimal conda environment.
+    1. /opt/common-scripts/env-conda   <env>    # Create minimal ${CONDA_VER} environment.
     2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
     3. /opt/common-scripts/env-sync    <env>    # Install requirements.txt,  remove anything else
     4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.

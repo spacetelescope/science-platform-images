@@ -19,13 +19,17 @@ RUN  cp -r $HOME/.local /etc/default-home-contents && \
      cp -r $HOME/.jupyter /etc/default-home-contents
 
 COPY global_bashrc $HOME
-COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
-RUN  cat $HOME/global_bashrc $HOME/nbw-exports.sh >> /etc/bash.bashrc  && \
-     cat $HOME/global_bashrc $HOME/nbw-exports.sh >> /etc/bash.env  && \
-     rm $HOME/global_bashrc $HOME/nbw-exports.sh
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
+
+# Already copied by generic environments copy
+# COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
+
+RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
+     cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
+     printf '\nDefaults    lecture = never\n' >> /etc/sudoers && \
+     rm -f $HOME/global_bashrc $HOME/.bashrc
 
 # ----------------------------------------------------------------------
 

@@ -46,6 +46,8 @@ ENV USER_CACHE_DIRS="${USER_CACHE_DIRS}"
 ENV NB_UID=1000
 ENV NB_GID=100
 
+ENV KERNEL_SHELL=bash
+
 # ------------------------------------------------------------------------
 # Make sure user cache directories exist before RUN caching uses then as mount points
 
@@ -121,6 +123,12 @@ RUN /opt/common-scripts/apt-install \
         libxt-dev \
         libbz2-dev
 
+# Uninstall sudo:  hub users cannot use, security risk,  misleading terminal instructions
+RUN DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    SUDO_FORCE_REMOVE=yes apt-get remove --yes sudo && \
+    apt autoremove --yes
+
 # YYYY SEC
 #       nvidia-cuda-toolkit
 
@@ -145,7 +153,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 USER root
 
 # Load conda profile scripts by default, symlink target doesn't exist for a bit
-RUN ln -s ${CONDA_DIR}/etc/profile.d/${CONDA_VER}.sh /etc/profile.d/${CONDA_VER}.sh
+# RUN ln -s ${CONDA_DIR}/etc/profile.d/${CONDA_VER}.sh /etc/profile.d/${CONDA_VER}.sh
+# replaced by 'eval "$(mamba shell hook --shell ${KERNEL_SHELL})"' wherever .sh was sourced
+# https://www.perplexity.ai/search/is-this-eval-mamba-shell-hook-fmxh4Ga8TLm2ewBTvK_2cw#0
 
 # ------------------------------------------------------------------------
 USER root

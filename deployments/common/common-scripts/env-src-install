@@ -15,7 +15,7 @@ compatible binaries from source and install into <env>.
 
 Nominal pip-tools workflow:
 
-    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal ${CONDA_VER} environment.
     2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
     3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
     4+ /opt/common-scripts/env-src-install  ... # Build package binaries from source.

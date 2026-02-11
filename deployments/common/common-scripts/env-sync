@@ -8,7 +8,7 @@ Step 3 of pip-tools workflow: Install pip packages from compiled requirements.tx
 
 Nominal pip-tools workflow:
 
-    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal ${CONDA_VER} environment.
     2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
     3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
     4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
@@ -30,4 +30,3 @@ pip-sync --verbose --pip-args "${PIP_SWITCHES}" --python-executable `which pytho
 /opt/common-scripts/env-clean
 
 fix-permissions $CONDA_DIR $HOME
-

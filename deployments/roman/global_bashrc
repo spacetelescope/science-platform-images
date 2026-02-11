@@ -1,8 +1,6 @@
 export PS1="${debian_chroot:+($debian_chroot)}\u@notebook:\w\$ "
 
 # Enable conda and activate jwst-masterclass by default
-. /opt/conda/etc/profile.d/${CONDA_VER}.sh
+# eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
 
 source /opt/common-scripts/env-activate roman-cal
-
-

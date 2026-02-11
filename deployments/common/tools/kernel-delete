@@ -1,8 +1,7 @@
 #! /bin/bash
 
-set -eu
-
-source `dirname $0`/kernel-utils
+KERNEL_TOOLS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source  ${KERNEL_TOOLS}/kernel-utils
 
 usage  "$# -lt 1"  "<environment-name>  [<env-roots...>]" <<EOU
 Delete the JupyterLab kernel and associated compute environment <environment-name> in one step.
@@ -11,7 +10,7 @@ Delete the JupyterLab kernel and associated compute environment <environment-nam
 
 A *kernel* defines a compute environment as something JupyterLab should offer to users in the kernel menu to e.g. run notebooks.
 
-The *environment* itself is a conda environment or Python virtualenv and the associated installed programs and packages.
+The *environment* itself is a ${CONDA_VER} environment or Python virtualenv and the associated installed programs and packages.
 
 See also: *kernel-install* and *kernel-uninstall* for information on creating and removing kernels in JupyterLab
 without also creating or removing the underlying environment.
@@ -21,24 +20,25 @@ ENVNAME=$1
 shift;
 ENVROOTS="${*:-${ENVROOTS}}"
 
-for ENVROOT in ${ENVROOTS}; do
-    if [ ! -d ${ENVROOT} ]; then
-        banner "Kernel environments directory ${ENVROOT} does not exist."
+for envroot in ${ENVROOTS}; do
+    if [ ! -d ${envroot} ]; then
+        banner "Kernel environments directory ${envroot} does not exist."
         continue
-    elif [ -d ${ENVROOT}/venv/${ENVNAME} ]; then
-        banner "Removing virtual env ${ENVNAME} at ${ENVROOT}/venv/${ENVNAME}"
-        rm -rf ${ENVROOT}/venv/${ENVNAME}
-        kernel-uninstall "${ENVNAME}"
+    elif [ -d ${envroot}/venv/${ENVNAME} ]; then
+        banner "Removing virtual env ${ENVNAME} at ${envroot}/venv/${ENVNAME}"
+        rm -rf ${envroot}/venv/${ENVNAME}
+        ${KERNEL_TOOLS}/kernel-uninstall "${ENVNAME}"
         exit 0
-    elif [ -d ${ENVROOT}/conda/${ENVNAME} ]; then
-        banner "Removing conda env ${ENVNAME} at ${ENVROOT}/conda/${ENVNAME}"
-        conda env remove --prefix  ${ENVROOT}/conda/${ENVNAME} --yes --quiet
-        kernel-uninstall "${ENVNAME}"
+    elif [ -d ${envroot}/conda/${ENVNAME} ]; then
+        banner "Removing ${CONDA_VER} env ${ENVNAME} at ${envroot}/conda/${ENVNAME}"
+        ${CONDA_VER} env remove --prefix  ${envroot}/conda/${ENVNAME} --yes --quiet
+        rm -rf ${envroot}/conda/${ENVNAME}.mamba_trash
+        ${KERNEL_TOOLS}/kernel-uninstall "${ENVNAME}"
         exit 0
-    elif [ -d ${ENVROOT}/${ENVNAME} ]; then
-        banner "Removing conda env ${ENVNAME} at ${ENVROOT}/${ENVNAME}"
-        conda env remove --prefix ${ENVROOT}/${ENVNAME} --yes --quiet
-        kernel-uninstall "${ENVNAME}"
+    elif [ -d ${envroot}/${ENVNAME} ]; then
+        banner "Removing ${CONDA_VER} env ${ENVNAME} at ${envroot}/${ENVNAME}"
+        ${CONDA_VER} env remove --prefix ${envroot}/${ENVNAME} --yes --quiet
+        ${KERNEL_TOOLS}/kernel-uninstall "${ENVNAME}"
         exit 0
     fi
 done

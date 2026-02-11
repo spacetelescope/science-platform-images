@@ -1,0 +1,32 @@
+#! /bin/bash
+
+# This is a simple entry point for nb-wrangler to optional clear Docker
+# of old image builds to force a complete rebuild.
+#
+# For local builds,  remove all image-build images from Docker and prune
+# to force a complete rebuild.
+
+set -e
+
+DEPLOYMENT=$1
+
+docker_images=$(docker image ls)
+
+function conditional_rmi {
+    if echo $docker_images | grep $1; then
+        echo "Removing image: $1"
+        docker rmi $1
+    else
+        echo "No need to remove missing image: $1"
+    fi
+}
+
+echo "====== Deleting old SP docker images"
+conditional_rmi notebook-common
+conditional_rmi notebook-${DEPLOYMENT}
+conditional_rmi spacetelescope/minimal-notebook
+conditional_rmi spacetelescope/base-notebook
+conditional_rmi spacetelescope/docker-stacks-foundation
+
+echo "====== Pruning docker system."
+docker system prune -f

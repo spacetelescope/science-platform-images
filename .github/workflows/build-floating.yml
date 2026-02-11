@@ -30,7 +30,7 @@ jobs:
     steps:
 
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
@@ -65,8 +65,6 @@ jobs:
         run: |
              df -h
              sudo apt clean
-             docker rmi $(docker image ls -aq)
-             docker container prune -f
              sudo rm -rf "/usr/local/share/boost"
              sudo rm -rf "$AGENT_TOOLSDIRECTORY"
              sudo rm -rf /usr/local/lib/android # will release about 10 GB if you don't need Android

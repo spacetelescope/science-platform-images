@@ -4,7 +4,7 @@ if [ $# -eq 0 ]; then
     cat <<EOF
 usage:  env-conda  <env>
 
-Step 1 of pip-tools workflow: Create the baseline conda environment into which
+Step 1 of pip-tools workflow: Create the baseline ${CONDA_VER} environment into which
 pip packages will added later;  include as few pip packages as possible.
 
 If USE_FROZEN == 0:          # compile weak constraints <env>.yml to requirements.yml
@@ -13,7 +13,7 @@ If USE_FROZEN == 1:          # install from requirements.yml
 
 Nominal pip-tools workflow:
 
-    1. /opt/common-scripts/env-conda  <env>     # Create minimal conda environment.
+    1. /opt/common-scripts/env-conda  <env>     # Create minimal ${CONDA_VER} environment.
     2. /opt/common-scripts/env-compile <env>    # Resolve pip dependencies to requirements.txt
     3. /opt/common-scripts/env-sync  <env>      # Download and install requirements.txt
     4+ /opt/common-scripts/env-src-install  ... # Build packages with missing binaries from source.
@@ -24,7 +24,7 @@ fi
 
 env=$1
 
-# The "floating" conda environment should either be a .yml spec or an @explicit spec,
+# The "floating" ${CONDA_VER} environment should either be a .yml spec or an @explicit spec,
 # not both.
 
 # env_spec=$(ls -1 /opt/environments/${env}/${env}.{yml,explicit} 2>/dev/null)
@@ -33,7 +33,7 @@ env_spec=/opt/environments/${env}/${env}.@(yml|explicit)
 
 env_frozen_yml=/opt/env-frozen/${env}/requirements.yml
 
-. /etc/profile.d/${CONDA_VER}.sh
+eval "$(mamba shell hook --shell ${KERNEL_SHELL})"
 
 function env_create {
     spec=$1
@@ -46,23 +46,23 @@ function env_create {
 
 echo "-------------------------------------------------------------------------------"
 case ${USE_FROZEN} in
-    0) echo "===== Creating conda environment ${env} from floating constraints ${env_spec}"
+    0) echo "===== Creating ${CONDA_VER} environment ${env} from floating constraints ${env_spec}"
        env_create ${env_spec}
-       echo "===== Adding common conda packages to ${env}:"
+       echo "===== Adding common ${CONDA_VER} packages to ${env}:"
        /opt/common-scripts/env-update ${env}  `find /opt/common-env /opt/environments/${env} -name '*.conda' | sort`
        ;;
-    1) echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
+    1) echo "===== Creating ${CONDA_VER} environment ${env} from frozen constraints ${env_frozen_yml}"
        env_create ${env_frozen_yml}
        ;;
 esac
 
 # Save frozen requirements inside image on the fly,  copy out to source distro later
-echo "===== Saving frozen conda constraints for environment ${env} to ${env_frozen_yml}"
+echo "===== Saving frozen ${CONDA_VER} constraints for environment ${env} to ${env_frozen_yml}"
 ${CONDA_VER} env export --no-build -n ${env} > ${env_frozen_yml}
 
-# echo "===== Removing draft conda env ${env}"
+# echo "===== Removing draft ${CONDA_VER} env ${env}"
 # ${CONDA_VER} env remove -n ${env}
-# echo "===== Creating conda environment ${env} from frozen constraints ${env_frozen_yml}"
+# echo "===== Creating ${CONDA_VER} environment ${env} from frozen constraints ${env_frozen_yml}"
 # env_create ${env_frozen_yml}
 
 /opt/common-scripts/env-clean
