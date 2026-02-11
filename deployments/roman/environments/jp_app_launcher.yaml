@@ -10,3 +10,8 @@
   description: "Open the Credits Dashboard"
   source: /opt/environments/cost-dashboard.ipynb
   type: notebook-voila
+
+- title: "Catalog Schema Browser"
+  description: "Open the schema browser"
+  source: /opt/environments/catalog-schema-browser.ipynb
+  type: notebook-voila
