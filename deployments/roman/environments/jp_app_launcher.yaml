@@ -10,3 +10,10 @@
   description: "Open the Credits Dashboard"
   source: /opt/environments/cost-dashboard.ipynb
   type: notebook-voila
+
+- title: Stop My Server
+  description: Stop this Jupyter server
+  source: ${JUPYTERHUB_SERVICE_PREFIX}stopme
+  type: url
+  args:
+    createNewWindow: false  
