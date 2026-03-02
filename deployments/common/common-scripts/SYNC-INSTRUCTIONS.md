@@ -30,7 +30,8 @@ To support and guide these uses the cloned directory has the following propertie
 
 Files stored in the reference directory have read-only permissions. This prevents
 users from accidentally modifying a notebook and saving changes to its original location. 
-To edit an existing notebook, save it in a different directory, or with a different name.
+To edit an existing notebook, save it in a different directory, or with a different name
+and **change the permission on the copied notebook by using chmod because by default it is read-only**.
 
 ### Read/Write Directories
 
