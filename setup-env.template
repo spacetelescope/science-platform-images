@@ -22,6 +22,7 @@ export REPACK=0                     # repack the image to reduce size;  experime
 
 # https://www.perplexity.ai/search/trying-to-load-a-repacked-dock-NKu4SvlYTTq0uaram38D0w#0
 
+# Target deployment platform (EC2 cluster), not your local machine
 export PLATFORM="linux/amd64"       # os / instruction-set for built image: linux/amd64 or linux/aarch64
 
 
