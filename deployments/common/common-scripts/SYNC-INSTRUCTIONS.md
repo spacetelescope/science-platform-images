@@ -32,6 +32,8 @@ Files stored in the reference directory have read-only permissions. This prevent
 users from accidentally modifying a notebook and saving changes to its original location. 
 To edit an existing notebook, save it in a different directory, or with a different name
 and **change the permission on the copied notebook by using chmod because by default it is read-only**.
+e.g if the copied notebook is named C827_SOC599_data_visualization.ipynb.. make sure you are in right directory 
+where you copied the notebook and run this command `chmod u+wx  C827_SOC599_data_visualization.ipynb`.
 
 ### Read/Write Directories
 
