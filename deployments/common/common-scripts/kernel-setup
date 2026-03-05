@@ -1,6 +1,6 @@
 #! /bin/bash -eu
 
-set -x
+# set -x
 
 #
 # Does jupyter lab kernel setup for each of the ${CONDA_VER} environments
