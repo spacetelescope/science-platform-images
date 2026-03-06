@@ -47,6 +47,7 @@ function repack {
 cd ${COMMON_IMAGE_DIR}
 echo "========================= Building Common Image ========================"
 add-caching Dockerfile >Dockerfile.cached
+cp ${IMAGE_DIR}/environments/nbw-wrangler-spec.yaml .
 time docker build \
        ${DOCKER_BUILD_ARGS} \
        --tag notebook-common \

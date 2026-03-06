@@ -191,15 +191,24 @@ COPY --chown=${NB_UID}:${NB_GID} HASH /opt
 USER ${NB_UID}:${NB_GID}
 WORKDIR /tmp
 
+COPY nbw-wrangler-spec.yaml /opt/environments/nbw-wrangler-spec.yaml
+
 # Install wrangler directly in base environment
 RUN source /opt/common-scripts/env-activate base && \
-    git clone https://github.com/spacetelescope/nb-wrangler && \
-    cd nb-wrangler && \
+    curl https://raw.githubusercontent.com/spacetelescope/nb-wrangler/refs/heads/main/nb-wrangler  >nb-wrangler && \
+    chmod +x nb-wrangler && \
+    export NBW_DEV=1 && \
+    export NBW_SPEC=/opt/environments/nbw-wrangler-spec.yaml && \
+    export WRANGLER_URL=$(./nb-wrangler resolve-repo ${NBW_SPEC}) && \
+    export WRANGLER_REF=$(./nb-wrangler resolve-ref ${NBW_SPEC}) && \
+    git clone ${WRANGLER_URL} nb-wrangler-tool && \
+    cd nb-wrangler-tool && \
+    git checkout ${WRANGLER_REF} && \
     pip install . && \
     cp nb-wrangler /opt/tools && \
     cd .. && \
     /opt/common-scripts/env-clean && \
-    rm -rf nb-wrangler
+    rm -rf nb-wrangler-tool
 
 USER root
 RUN source /etc/nb-wrangler.rc && \
