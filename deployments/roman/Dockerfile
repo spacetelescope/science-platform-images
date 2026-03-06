@@ -9,6 +9,7 @@ FROM ${BASE_IMAGE}
 ENV CRDS_PATH=$HOME/crds_cache
 ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
+ENV PYTHONPATH="/srv/jupyter"
 
 # ------------------------------------------------------------------------------
 # Install environments
@@ -62,6 +63,8 @@ RUN /opt/common-scripts/env-sync roman-cal
 # iterating on the post-start-hook or tests.  The problem is that the broad copy makes it look
 # like potentially all roman-cal-specific requirements have changed.
 COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
+COPY stop_server_ext.json /etc/jupyter/jupyter_server_config.d/stop_server_ext.json
+COPY stop_server_ext.py /srv/jupyter/stop_server_ext.py
 
 # ========================= ^^^^^ Custom  ^^^^^ =========================
 # ========================= vvvvv Generic vvvvv  =========================
@@ -94,7 +97,8 @@ COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
 
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
-     rm $HOME/global_bashrc
+     printf '\nDefaults    lecture = never\n' >> /etc/sudoers && \
+     rm -f $HOME/global_bashrc $HOME/.bashrc
 
 # ----------------------------------------------------------------------
 

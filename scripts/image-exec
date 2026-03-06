@@ -15,7 +15,7 @@ SP_USER=${SP_USER:-""}               # run as the specified user id, or root or 
 
 if [[ ${SP_HOME} ]]; then
     echo "Mounting host directory SP_HOME=${SP_HOME} as /home/jovyan inside Docker."
-    IMAGE_RUN_PARS="$IMAGE_RUN_PARS -v `abspath ${SP_HOME}`:/home/jovyan"
+    IMAGE_RUN_PARS="$IMAGE_RUN_PARS -v `readlink -f ${SP_HOME}`:/home/jovyan"
     mkdir -p ${SP_HOME}
 fi
 
