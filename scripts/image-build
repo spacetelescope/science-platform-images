@@ -58,7 +58,7 @@ time docker build \
        --build-arg USER_CACHE_DIRS="${USER_CACHE_DIRS}" \
        --file Dockerfile.cached  .
 rm Dockerfile.cached
-
+rm nbw-wrangler-spec.yaml
 if [[ "${REPACK}" == "1" ]]; then
     docker rmi ${BASE_IMAGE}
 fi
