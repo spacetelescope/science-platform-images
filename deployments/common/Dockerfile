@@ -191,14 +191,19 @@ COPY --chown=${NB_UID}:${NB_GID} HASH /opt
 USER ${NB_UID}:${NB_GID}
 WORKDIR /tmp
 
-COPY nbw-wrangler-spec.yaml /opt/environments/nbw-wrangler-spec.yaml
+# Copy the wrangler spec for this build to the /tmp directory where it is used for the
+# sole purpose of installing the specific version of nb-wrangler it defines either as
+# a wrangler spec system setting or deployment_override setting.  Thus during development,
+# if you set up a dev_override for the wrangler, this section of code will install your
+# version of wrangler (e.g. your-repo/nb-wrangler@dev) instead of the current primary
+# repo/branch,  e.g. spacetelescope/nb-wrangler@main
+COPY nbw-wrangler-spec.yaml /tmp/nbw-wrangler-spec.yaml
 
-# Install wrangler directly in base environment
 RUN source /opt/common-scripts/env-activate base && \
     curl https://raw.githubusercontent.com/spacetelescope/nb-wrangler/refs/heads/main/nb-wrangler  >nb-wrangler && \
     chmod +x nb-wrangler && \
     export NBW_DEV=1 && \
-    export NBW_SPEC=/opt/environments/nbw-wrangler-spec.yaml && \
+    export NBW_SPEC=/tmp/nbw-wrangler-spec.yaml && \
     export WRANGLER_URL=$(./nb-wrangler resolve-repo ${NBW_SPEC}) && \
     export WRANGLER_REF=$(./nb-wrangler resolve-ref ${NBW_SPEC}) && \
     git clone ${WRANGLER_URL} nb-wrangler-tool && \
