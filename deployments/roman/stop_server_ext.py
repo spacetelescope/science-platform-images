@@ -27,8 +27,8 @@ class StopMeHandler(JupyterHandler):
         # 1) Send redirect right away so the browser leaves the dying /user/... page
 
         # 2) Schedule the Hub DELETE slightly later to ensure response is flushed
-        user = os.environ.get("JUPYTERHUB_USER")
-        api  = os.environ.get("JUPYTERHUB_API_URL")     # e.g., http://hub:8081/hub/api
+        user  = os.environ.get("JUPYTERHUB_USER")
+        api   = os.environ.get("JUPYTERHUB_API_URL")     # e.g., http://hub:8081/hub/api
         token = os.environ.get("JUPYTERHUB_API_TOKEN")   # per-user token
 
         if not (user and api and token):
@@ -38,6 +38,7 @@ class StopMeHandler(JupyterHandler):
             except Exception:
                 pass
             return
+
 
         async def _stop_async():
             # small delay so the 302 response flushes to the browser first
