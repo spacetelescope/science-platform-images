@@ -79,7 +79,7 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
     # Prepare pie chart data
     team_totals = filtered_df.groupby("teamname")["total_cost"].sum()
     team_totals = team_totals[team_totals > 0]
-    has_pie = not team_totals.empty
+    has_pie = False # not team_totals.empty
     if has_pie:
         team_totals.index = [("Personal Server" if t == "no-team" else t) for t in team_totals.index]
 
@@ -151,11 +151,12 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
     ax_bar.set_ylabel("Credits")
     ax_bar.grid(axis='y', alpha=0.3)
 
+    # print("No have pie...")
     # Pie chart: total cost per team
-    if has_pie:
-        ax_pie.pie(team_totals, labels=team_totals.index, autopct='%1.1f%%',
-                   startangle=140, colors=plt.cm.Set2.colors[:len(team_totals)])
-        ax_pie.set_title("Total Cost by Team")
+    # if has_pie:
+    #     ax_pie.pie(team_totals, labels=team_totals.index, autopct='%1.1f%%',
+    #                startangle=140, colors=plt.cm.Set2.colors[:len(team_totals)])
+    #     ax_pie.set_title("Total Cost by Team")
 
     plt.tight_layout()
     plt.show()
@@ -219,7 +220,7 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
 
     <div class="credit-summary">
         <div class="summary-card">
-            <div class="card-title">Credit Summary for {team_label}</div>
+            <div class="card-title">Cumulative credits for {selected_user} over selected period of time</div>
             <div class="credit-grid">
                 <div class="credit-item total-item">
                     <div class="credit-label">TOTAL CREDITS</div>
@@ -258,7 +259,7 @@ for team in df["teamname"].unique():
     if team != "no-team":
         team_display_to_value[team] = team
 
-team_dropdown = widgets.Dropdown(options=team_options, description="Team:", value="Total credit usage")
+account_dropdown = widgets.Dropdown(options=team_options, description="Account:", value="Total credit usage")
 
 start_picker = widgets.DatePicker(
     description="Start date", value=(datetime.datetime.now() - datetime.timedelta(days=30)).date()
@@ -268,7 +269,7 @@ end_picker = widgets.DatePicker(
 )
 
 cost_metrics = [
-    ("Total Credits", "total_cost"),
+    ("Credits", "total_cost"),
     ("CPU Credits", "cost_last_interval_cpu"),
     ("Memory Credits", "cost_last_interval_memory"),
     ("Egress Credits", "cost_last_interval_egress"),
@@ -277,7 +278,7 @@ cost_metrics = [
 cost_dropdown = widgets.Dropdown(options=cost_metrics, description="Credit Metric:")
 
 metric_display_names = {
-    "total_cost": "Total Credits",
+    "total_cost": "Credits",
     "cost_last_interval_cpu": "CPU Credits",
     "cost_last_interval_memory": "Memory Credits",
     "cost_last_interval_egress": "Egress Credits",
@@ -288,7 +289,7 @@ metric_display_names = {
 interact(
     plot_dashboard,
     selected_user=user_dropdown,
-    selected_team=team_dropdown,
+    selected_team=account_dropdown,
     start_date=start_picker,
     end_date=end_picker,
     cost_metric=cost_dropdown
@@ -299,7 +300,7 @@ export_button = widgets.Button(description="Export CSV")
 
 def export_to_csv(b):
     selected_user_val = user_dropdown.value
-    selected_team_val = team_dropdown.value
+    selected_team_val = account_dropdown.value
     start_date_val = start_picker.value
     end_date_val = end_picker.value
 
