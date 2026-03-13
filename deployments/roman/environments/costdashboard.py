@@ -89,17 +89,26 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         fig, ax_bar = plt.subplots(1, 1, figsize=(13, 5))
 
     # Determine which metrics to show based on selection
+    # Determine which metrics to show based on selection
+    # Define consistent color mapping for all metrics
+    metric_colors = {
+        'cost_last_interval_cpu': '#1f77b4',
+        'cost_last_interval_memory': '#ff7f0e',
+        'cost_last_interval_egress': '#2ca02c',
+        'cost_last_interval_efs_storage': '#d62728'
+    }
+    
     if cost_metric == "total_cost":
         # Show stacked bar chart with all components
         metrics_to_plot = ['cost_last_interval_cpu', 'cost_last_interval_memory',
                           'cost_last_interval_egress', 'cost_last_interval_efs_storage']
         labels = ['CPU', 'Memory', 'Egress', 'EFS Storage']
-        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+        colors = [metric_colors[metric] for metric in metrics_to_plot]
     else:
         # Show stacked bar chart with just the selected metric
         metrics_to_plot = [cost_metric]
         labels = [metric_display_names.get(cost_metric, cost_metric)]
-        colors = ['#1f77b4']
+        colors = [metric_colors.get(cost_metric, '#1f77b4')]
 
     if selected_user == "All":
         # For multiple users, show grouped stacked bars
@@ -222,10 +231,12 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         <div class="summary-card">
             <div class="card-title">Cumulative credits for {selected_user} over selected period of time</div>
             <div class="credit-grid">
+                <!--
                 <div class="credit-item total-item">
                     <div class="credit-label">TOTAL CREDITS</div>
                     <div class="credit-value">{filtered_df['total_cost'].sum():.4f}</div>
                 </div>
+                -->
                 <div class="credit-item">
                     <div class="credit-label">CPU Credits</div>
                     <div class="credit-value">{filtered_df['cost_last_interval_cpu'].sum():.4f}</div>
