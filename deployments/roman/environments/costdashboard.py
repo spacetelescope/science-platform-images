@@ -268,7 +268,7 @@ def plot_dashboard(selected_user="All", selected_team="Personal Server", start_d
             <div class="card-title">Credit Summary</div> <!-- for Total credit usage</div> -->
             <div class="credit-grid">
                 <div class="credit-item total-item">
-                    <div class="credit-label">TOTAL CREDITS</div>
+                    <div class="credit-label">CREDITS</div>
                     <div class="credit-value">{filtered_df['total_cost'].sum():.4f}</div>
                 </div>
                 <div class="credit-item">
