@@ -75,7 +75,7 @@ METRIC_COLORS = {
 HATCH_PATTERNS = ['/', '\\', '|', '-', '+', 'x', 'o', 'O', '.', '*']
 
 # Plot function
-def plot_dashboard(selected_user="All", selected_team="Total credit usage", start_date=None, end_date=None, cost_metric="total_cost"):
+def plot_dashboard(selected_user="All", selected_team="Personal Server", start_date=None, end_date=None, cost_metric="total_cost"):
     # Convert display name to actual value for filtering
     actual_team = selected_team
     if selected_team == "Personal Server":
@@ -88,8 +88,8 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         filtered_df = filtered_df[filtered_df["user"] == selected_user]
 
     # Filter by team
-    if actual_team != "Total credit usage":
-        filtered_df = filtered_df[filtered_df["teamname"] == actual_team]
+    # if actual_team != "Total credit usage":
+    filtered_df = filtered_df[filtered_df["teamname"] == actual_team]
 
     # Filter by date range
     if start_date:
@@ -102,9 +102,9 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         return
 
     # Determine team label for display
-    if selected_team == "Total credit usage":
-        team_label = "Total credit usage"
-    elif selected_team == "no-team":
+    # if selected_team == "Total credit usage":
+    #     team_label = "Total credit usage"
+    if selected_team == "no-team":
         team_label = "Personal Server"
     else:
         team_label = selected_team
@@ -167,7 +167,7 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         ax_bar.set_xticks([pos + width * (len(users) - 1) / 2 for pos in x])
         ax_bar.set_xticklabels([d.strftime('%Y-%m-%d') for d in dates], rotation=45)
         ax_bar.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-        title_suffix = f" — {team_label}" if selected_team != "Total credit usage" else ""
+        title_suffix = f" — {team_label}" # if selected_team != "Total credit usage" else ""
         ax_bar.set_title(f"{metric_display_names.get(cost_metric, cost_metric)} Over Time (All Users){title_suffix}")
     else:
         # For single user, show stacked bars
@@ -190,19 +190,18 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         ax_bar.set_xticklabels([d.strftime('%Y-%m-%d') for d in dates], rotation=45)
         if len(metrics_to_plot) > 1:
             ax_bar.legend()
-        title_suffix = f" — {team_label}" if selected_team != "Total credit usage" else " — Total credit usage"
+        title_suffix = f" — {team_label}" # if selected_team != "Total credit usage" else " — Total credit usage"
         ax_bar.set_title(f"{metric_display_names.get(cost_metric, cost_metric)} Over Time — {selected_user}{title_suffix}")
 
     ax_bar.set_xlabel("Date")
     ax_bar.set_ylabel("Credits")
     ax_bar.grid(axis='y', alpha=0.3)
 
-    # print("No have pie...")
     # Pie chart: total cost per team
-    # if has_pie:
-    #     ax_pie.pie(team_totals, labels=team_totals.index, autopct='%1.1f%%',
-    #                startangle=140, colors=plt.cm.Set2.colors[:len(team_totals)])
-    #     ax_pie.set_title("Total Cost by Team")
+    if has_pie:
+        ax_pie.pie(team_totals, labels=team_totals.index, autopct='%1.1f%%',
+                   startangle=140, colors=plt.cm.Set2.colors[:len(team_totals)])
+        ax_pie.set_title("Total Cost by Team")
 
     plt.tight_layout()
     plt.show()
@@ -266,14 +265,12 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
 
     <div class="credit-summary">
         <div class="summary-card">
-            <div class="card-title">Credit Summary for Total credit usage</div>
+            <div class="card-title">Credit Summary</div> <!-- for Total credit usage</div> -->
             <div class="credit-grid">
-                <!--
                 <div class="credit-item total-item">
                     <div class="credit-label">TOTAL CREDITS</div>
                     <div class="credit-value">{filtered_df['total_cost'].sum():.4f}</div>
                 </div>
-                -->
                 <div class="credit-item">
                     <div class="credit-label">CPU Credits</div>
                     <div class="credit-value">{filtered_df['cost_last_interval_cpu'].sum():.4f}</div>
@@ -301,13 +298,13 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
 user_options = sorted(df["user"].unique())
 user_dropdown = widgets.Dropdown(options=user_options, description="User:")
 
-team_options = ["Total credit usage"] + sorted([t if t != "no-team" else "Personal Server" for t in df["teamname"].unique()])
+team_options = sorted([t if t != "no-team" else "Personal Server" for t in df["teamname"].unique()])
 team_display_to_value = {"Total credit usage": "Total credit usage", "Personal Server": "no-team"}
 for team in df["teamname"].unique():
     if team != "no-team":
         team_display_to_value[team] = team
 
-account_dropdown = widgets.Dropdown(options=team_options, description="Account:", value="Total credit usage")
+account_dropdown = widgets.Dropdown(options=team_options, description="Account:", value="Personal Server")
 
 start_picker = widgets.DatePicker(
     description="Start date", value=(datetime.datetime.now() - datetime.timedelta(days=30)).date()
@@ -356,9 +353,9 @@ def export_to_csv(b):
     if selected_user_val != "All":
         export_df = export_df[export_df["user"] == selected_user_val]
     # Filter by team
-    if selected_team_val != "Total credit usage":
-        actual_team = "no-team" if selected_team_val == "Personal Server" else selected_team_val
-        export_df = export_df[export_df["teamname"] == actual_team]
+    # if selected_team_val != "Total credit usage":
+    actual_team = "no-team" if selected_team_val == "Personal Server" else selected_team_val
+    export_df = export_df[export_df["teamname"] == actual_team]
     if start_date_val:
         export_df = export_df[export_df["date"] >= pd.to_datetime(start_date_val)]
     if end_date_val:
