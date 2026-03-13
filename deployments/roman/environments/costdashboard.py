@@ -265,7 +265,7 @@ def plot_dashboard(selected_user="All", selected_team="Personal Server", start_d
 
     <div class="credit-summary">
         <div class="summary-card">
-            <div class="card-title">Credit Summary</div> <!-- for Total credit usage</div> -->
+            <div class="card-title"> Cumulative credits for {selected_user} over selected period of time</div>
             <div class="credit-grid">
                 <div class="credit-item total-item">
                     <div class="credit-label">CREDITS</div>
