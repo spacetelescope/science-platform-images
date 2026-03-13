@@ -5,7 +5,6 @@ import datetime
 from IPython.display import display
 import glob
 
-
 # Path to the folder containing the CSV files
 folder_path = "/cost-metrics/"
 all_files = glob.glob(folder_path + "**/*.csv.gz", recursive=True)
@@ -40,6 +39,40 @@ df = pd.concat(dfs, ignore_index=True)
 # Ensure 'date' is datetime and sort
 df["date"] = pd.to_datetime(df["date"])
 df = df.sort_values("date").reset_index(drop=True)
+
+# Define colorblind-friendly color palette
+# These colors are chosen to be distinguishable by people with common color vision deficiencies
+CB_SAFE_COLORS = [
+    '#E69F00',  # Orange (original: #ff7f0e)
+    '#56B4E9',  # Sky blue (original: #1f77b4) 
+    '#009E73',  # Blue-green (original: #2ca02c)
+    '#F0E442',  # Yellow (original: #d62728)
+    '#0072B2',  # Blue (original: #1f77b4)
+    '#D55E00',  # Vermillion (original: #ff7f0e)
+    '#CC79A7',  # Violet (original: #d62728)
+]
+
+# Alternative colorblind-safe palette with better contrast
+CB_SAFE_COLORS_ALT = [
+    '#1F77B4',  # Blue
+    '#FF7F0E',  # Orange
+    '#2CA02C',  # Green
+    '#D62728',  # Red
+    '#9467BD',  # Purple
+    '#8C564B',  # Brown
+    '#E377C2',  # Pink
+]
+
+# Create a more accessible color palette specifically for our metrics
+METRIC_COLORS = {
+    'cost_last_interval_cpu': '#1F77B4',      # Blue
+    'cost_last_interval_memory': '#FF7F0E', # Orange
+    'cost_last_interval_egress': '#2CA02C',  # Green
+    'cost_last_interval_efs_storage': '#D62728' # Red
+}
+
+# Define patterns for hatching to add texture for colorblind users
+HATCH_PATTERNS = ['/', '\\', '|', '-', '+', 'x', 'o', 'O', '.', '*']
 
 # Plot function
 def plot_dashboard(selected_user="All", selected_team="Total credit usage", start_date=None, end_date=None, cost_metric="total_cost"):
@@ -89,14 +122,11 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
         fig, ax_bar = plt.subplots(1, 1, figsize=(13, 5))
 
     # Determine which metrics to show based on selection
-    # Determine which metrics to show based on selection
     # Define consistent color mapping for all metrics
-    metric_colors = {
-        'cost_last_interval_cpu': '#1f77b4',
-        'cost_last_interval_memory': '#ff7f0e',
-        'cost_last_interval_egress': '#2ca02c',
-        'cost_last_interval_efs_storage': '#d62728'
-    }
+    metric_colors = METRIC_COLORS
+    
+    # Define hatching patterns for accessibility
+    hatching_patterns = ['/', '\\', '|', '-']
     
     if cost_metric == "total_cost":
         # Show stacked bar chart with all components
@@ -104,11 +134,13 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
                           'cost_last_interval_egress', 'cost_last_interval_efs_storage']
         labels = ['CPU', 'Memory', 'Egress', 'EFS Storage']
         colors = [metric_colors[metric] for metric in metrics_to_plot]
+        hatches = [hatching_patterns[i % len(hatching_patterns)] for i in range(len(metrics_to_plot))]
     else:
         # Show stacked bar chart with just the selected metric
         metrics_to_plot = [cost_metric]
         labels = [metric_display_names.get(cost_metric, cost_metric)]
         colors = [metric_colors.get(cost_metric, '#1f77b4')]
+        hatches = [hatching_patterns[0]]  # Single pattern for single metric
 
     if selected_user == "All":
         # For multiple users, show grouped stacked bars
@@ -124,7 +156,9 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
                 values = [user_df[user_df["date"] == d][metric].sum() if d in user_df["date"].values else 0 for d in dates]
                 ax_bar.bar([pos + i * width for pos in x], values, width,
                            label=f"{user} - {labels[j]}" if len(metrics_to_plot) > 1 else user,
-                           color=colors[j], bottom=bottom)
+                           color=colors[j], 
+                           hatch=hatches[j],  # Add hatching for accessibility
+                           bottom=bottom)
                 if bottom is None:
                     bottom = values
                 else:
@@ -143,7 +177,10 @@ def plot_dashboard(selected_user="All", selected_team="Total credit usage", star
 
         for i, metric in enumerate(metrics_to_plot):
             values = [filtered_df[filtered_df["date"] == d][metric].sum() for d in dates]
-            ax_bar.bar(x, values, label=labels[i], color=colors[i], bottom=bottom)
+            ax_bar.bar(x, values, label=labels[i], 
+                      color=colors[i], 
+                      hatch=hatches[i],  # Add hatching for accessibility
+                      bottom=bottom)
             if bottom is None:
                 bottom = values
             else:
