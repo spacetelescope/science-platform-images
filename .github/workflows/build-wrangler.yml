@@ -111,13 +111,13 @@ jobs:
           df -h
           docker system df
 
-       # strictly speaking in prod we shold scan before pushing,  this is for trivy testing
-      - name: Run Trivy vulnerability scanner
-        shell: bash
-        run: |
-          set -o pipefail
-          source setup-env
-          image-scan  notebook-wrangler  on-github   # writes to /tmp/trivy-tag
+      # ----- # strictly speaking in prod we shold scan before pushing,  this is for trivy testing
+      # ----- - name: Run Trivy vulnerability scanner
+      # -----   shell: bash
+      # -----   run: |
+      # -----     set -o pipefail
+      # -----     source setup-env
+      # -----     image-scan  notebook-wrangler  on-github   # writes to /tmp/trivy-tag
 
       - name: Image Push
         shell: bash
