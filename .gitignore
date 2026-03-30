@@ -115,3 +115,6 @@ deployments/*/secrets/*
 deployments/jwebbinar/image/default-home-contents/.jdaviz-example-data/*
 
 *.cached
+
+#Local setup-env
+setup-env
