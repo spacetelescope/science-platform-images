@@ -113,13 +113,13 @@ RUN  [ $USE_FROZEN -eq "1" ] && echo >/opt/FROZEN || echo >/opt/FLOATING
 
 # Enable deletion of non-empty directories from lab GUI
 RUN echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
-      >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
-    echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
-      >> /etc/jupyter/jupyter_server_config.py &&\
-    echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
-    echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
+     >> /etc/jupyter/jupyter_notebook_config.py &&\
+     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_notebook_config.py &&\
+     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_notebook_config.py &&\
+     echo "# -------------------------------- STSCI Config Overwrites --------------------------------" \
+     >> /etc/jupyter/jupyter_server_config.py &&\
+     echo "c.FileContentsManager.delete_to_trash = False" >> /etc/jupyter/jupyter_server_config.py &&\
+     echo "c.FileContentsManager.always_delete_dir = True" >> /etc/jupyter/jupyter_server_config.py
 
 
 ENV NBW_PANTRY=/teams/admin/nbw-pantry
