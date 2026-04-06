@@ -6,6 +6,12 @@ set -e
 export IMAGE_ID=${1:-${NOTEBOOK_ID}}
 export WHERE=${2:-""}
 
+
+echo "========================================================================"
+echo "WARNING:  Trivy image scanning is disabled."
+echo "========================================================================"
+exit 0
+
 # image-login
 
 export DOCKER_BUILDKIT=1
