@@ -3,6 +3,10 @@
 ARG BASE_IMAGE=notebook-common
 FROM ${BASE_IMAGE}
 
+ARG NBW_ROOT="/opt/nbw-live"
+ENV NBW_ROOT="${NBW_ROOT}"
+ARG NBW_PANTRY="/teams/admin/nbw-pantry"
+
 # ----------------------------------------------------------------------
 # Duplicated in config,  these are for standalone non-hub lab use.
 
@@ -24,45 +28,27 @@ USER ${NB_UID}:${NB_GID}
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
-RUN /opt/common-scripts/install-common  base
+COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
 
-# ----------------------------------------------------------------------
-# Roman CAL
-#
-# Copy roman-cal conda environment requirements: floating, frozen
-# All copies below are factored to enable Docker idempotence / build caching
-# e.g. changing tests should not result in re-installing conda
+WORKDIR ${NBW_ROOT}
+USER root
 
-COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.yml  /opt/environments/roman-cal/
-COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.explicit  /opt/environments/roman-cal/
-COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.conda  /opt/environments/roman-cal/
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/roman-cal/  /opt/env-frozen/roman-cal/
+RUN   /opt/common-scripts/install-common  base
 
-# ----- Install roman-cal conda environment
-RUN /opt/common-scripts/env-conda roman-cal
-
-# ----- Copy roman-cal pip requirements
-# ----- This will include both romancal release requirements and anything JH adds.
-COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/*.pip  /opt/environments/roman-cal/
-
-# ----  Compile roman-cal pip requirements to dependency solution
-#       Normally this includes *.pip from common/common-env automatically.
-RUN /opt/common-scripts/env-compile roman-cal
-
-# ----  If common-env causes conflicts,  it can be omitted and/or reduced if necessary
-#       by specifying alternate package lists such as /opt/common-env/required.pip
-#       which should be the minimum installed to avoid breaking our framework in places,
-#       particularly for testing.
-# RUN /opt/common-scripts/env-compile roman-cal  /opt/common-env/required.pip
-
-# ----- Install compiled roman-cal pip dependency solution
-RUN /opt/common-scripts/env-sync roman-cal
+# Run wrangler from base environment creating/installing spec'ed environment
+# If the spec says python3 ("base") it will add to the base environment instead of creating a second
+RUN source /opt/common-scripts/env-activate base && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
+    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
+    /opt/common-scripts/env-clean
 
 # ----- Copy remaining roman environments files, including tests and post-start-hook scripts
 # NOTE: this is a Docker cache buster and why builds back up to env installation when you're
 # iterating on the post-start-hook or tests.  The problem is that the broad copy makes it look
 # like potentially all roman-cal-specific requirements have changed.
-COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
+# COPY --chown=${NB_UID}:${NB_GID} environments/roman-cal/ /opt/environments/roman-cal/
 COPY stop_server_ext.json /etc/jupyter/jupyter_server_config.d/stop_server_ext.json
 COPY stop_server_ext.py /srv/jupyter/stop_server_ext.py
 
@@ -73,7 +59,9 @@ USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 
-RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
+#
+# RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
+# RUN /opt/common-scripts/wrangler-register-kernel  (post start hook)
 
 # ----------------------------------------------------------------------
 # As part of Dockerfile.trailer,  these statements are executed from the
@@ -91,9 +79,6 @@ COPY global_bashrc $HOME
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
-
-# Already copied by generic environments copy
-# COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
 
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
