@@ -32,8 +32,10 @@ set +eu   # Do not let init failures block logins
 # .............................................................................................
 if [[ $HUB_FLAG == "on-hub" ]]; then
     /opt/common-scripts/symlink-crds
-    # /opt/common-scripts/kernel-setup
 fi
+
+# Unconditionally (standalone or hub) register wrangler spec environments as JupyterLab kernels
+/opt/common-scripts/wrangler-register-kernel
 
 # .............................................................................................
 # Sync reference notebook directories / branches.
