@@ -6,7 +6,8 @@ FROM ${BASE_IMAGE} AS build
 ARG NBW_ROOT="/opt/nbw-live"
 ENV NBW_ROOT="${NBW_ROOT}"
 
-ARG NBW_PANTRY="${HOME}/.nbw-pantry"
+# ARG NBW_PANTRY="${HOME}/.nbw-pantry"
+ARG NBW_PANTRY="/teams/admin/nbw-pantry"
 ENV NBW_PANTRY="${NBW_PANTRY}"
 
 SHELL ["/bin/bash", "--login", "-c"]
@@ -25,14 +26,13 @@ RUN mkdir -p ${NBW_ROOT} && chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
 # Add jupyter-lab-extensions to base environment as well as standard packages.
 # Performing common update here enables mission specific frozen spec.
 
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/ /opt/env-frozen/base
 
 USER ${NB_UID}
 RUN   /opt/common-scripts/install-common  base
 
 WORKDIR ${NBW_ROOT}
-
 
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
@@ -56,7 +56,9 @@ USER ${NB_UID}:${NB_GID}
 
 # ----------------------------------------------------------------------
 
-RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
+#
+# RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
+# RUN /opt/common-scripts/wrangler-register-kernel  (post start hook)
 
 # ----------------------------------------------------------------------
 # As part of Dockerfile.trailer,  these statements are executed from the
@@ -74,9 +76,6 @@ COPY global_bashrc $HOME
 
 # Copy any remaining environments files not caught by more precise as-needed build copies
 COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
-
-# Already copied by generic environments copy
-# COPY environments/nbw-exports.sh $HOME/nbw-exports.sh
 
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \

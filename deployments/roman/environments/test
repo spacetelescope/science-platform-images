@@ -13,4 +13,6 @@ fi
 cd /tmp
 source /opt/common-scripts/env-activate base
 python -m nb_wrangler  /opt/environments/nbw-wrangler-spec.yaml  --repos-dir /tmp/nb-wrangler-test-clones --clone-repos ${TEST_TYPES}  $*
+ERR=$?
 rm -rf /tmp/nb-wrangler-test-clones
+exit $ERR

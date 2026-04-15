@@ -46,20 +46,15 @@ fi
 
 function f_trivy {
     CLI_PARAMS=$@
-    if [[ $WHERE == "on-github" ]]; then
-        GH_PARAMS="--no-progress"
-    else
-        GH_PARAMS=""
-    fi
     ${TRIVY}  image ${IMAGE_ID} \
        ${CLI_PARAMS} \
-       ${GH_PARAMS} \
        --timeout 30m \
        --severity HIGH,CRITICAL \
        --scanners vuln \
        --pkg-types os,library \
        --parallel 1 \
        --slow \
+       --no-progress \
        --exit-code 1
     return $?
 }
@@ -91,9 +86,9 @@ if [ $? -ne 0 ]; then
         annotated_echo "===> Trivy scan PASSED with --ignore-unfixed."
         echo "hasunfixed" >/tmp/trivy-tag
     fi
+    # exit 1
 else
     echo "===> Trivy scan PASSED even w/o --ignore-unfixed."
     echo "scanok" >/tmp/trivy-tag
 fi
-
 exit 0
