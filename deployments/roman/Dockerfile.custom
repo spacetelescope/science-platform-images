@@ -11,7 +11,6 @@ ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 # ENV CRDS_VERBOSITY=20
 ENV PYTHONPATH="/srv/jupyter"
 
-ENV CSB_URL=https://mastdev.stsci.edu/schema_browser/#/
 
 # ------------------------------------------------------------------------------
 # Install environments
