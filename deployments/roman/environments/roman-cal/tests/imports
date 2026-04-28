@@ -1,4 +1,3 @@
-argparse
 asdf
 astrocut
 astropy
@@ -12,6 +11,7 @@ footprint_utils
 functools
 galsim
 glob
+healpy
 healsparse
 importlib
 ipympl

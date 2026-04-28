@@ -1,4 +1,5 @@
-export pandeia_refdata="${HOME}/refdata/pandeia_data-2025.9-roman"
+export pandeia_refdata="${HOME}/refdata/pandeia_data-2026.1-roman"
+export PSF_DIR="${HOME}/refdata/pandeia_psf-2026.1-roman"
 export STPSF_PATH="${HOME}/refdata/stpsf-data"
 export stips_data="${HOME}/refdata/stips_data"
 export PYSYN_CDBS="${HOME}/refdata/grp/redcat/trds/"
