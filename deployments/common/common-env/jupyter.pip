@@ -30,7 +30,7 @@ y-py
 ypy-websocket
 jupyter_bokeh
 solara
-ipypopout==2.0.0
+ipypopout
 jupyterlab-tour
 anywidget
 jupytext
