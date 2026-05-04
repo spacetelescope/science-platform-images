@@ -1,8 +1,10 @@
-aiobotocore==2.26.0
+accessible-pygments==0.0.5
+    # via pydata-sphinx-theme
+aiobotocore==3.5.0
     # via s3fs
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.2
+aiohttp==3.13.5
     # via
     #   aiobotocore
     #   fsspec
@@ -13,20 +15,19 @@ aioitertools==0.13.0
     # via aiobotocore
 aiosignal==1.4.0
     # via aiohttp
-aiosqlite==0.21.0
+aiosqlite==0.22.1
     # via ypy-websocket
 alabaster==1.0.0
     # via sphinx
-alembic==1.17.2
+alembic==1.18.4
     # via jupyterhub
 annotated-types==0.7.0
     # via pydantic
-ansicolors==1.1.8
-    # via papermill
-anyio==4.12.0
+anyio==4.13.0
     # via
     #   httpx
     #   jupyter-server
+    #   jupyter-ydoc
     #   pycrdt
     #   pycrdt-store
     #   pycrdt-websocket
@@ -34,8 +35,8 @@ anyio==4.12.0
     #   starlette
     #   watchfiles
     #   ypy-websocket
-anywidget==0.9.21
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+anywidget==0.11.0
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 appnope==0.1.4 ; sys_platform == 'darwin'
     # via ipykernel
 argcomplete==3.6.3
@@ -46,9 +47,19 @@ argon2-cffi-bindings==25.1.0
     # via argon2-cffi
 arrow==1.4.0
     # via isoduration
-asdf==5.1.0
+asdf==5.3.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   asdf-astropy
     #   asdf-coordinates-schemas
     #   astrocut
@@ -63,20 +74,29 @@ asdf==5.1.0
     #   stcal
     #   stdatamodels
     #   stpipe
-asdf-astropy==0.9.0
+asdf-astropy==0.11.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   gwcs
     #   rad
     #   roman-datamodels
-    #   romancal
     #   specutils
     #   stdatamodels
-asdf-coordinates-schemas==0.4.0
+asdf-coordinates-schemas==0.5.1
     # via
     #   asdf-astropy
     #   asdf-wcs-schemas
-asdf-standard==1.4.0
+asdf-standard==1.5.0
     # via
     #   asdf
     #   asdf-astropy
@@ -86,19 +106,36 @@ asdf-standard==1.4.0
     #   roman-datamodels
 asdf-transform-schemas==0.6.0
     # via
-    #   asdf
     #   asdf-astropy
     #   asdf-wcs-schemas
     #   stdatamodels
 asdf-wcs-schemas==0.5.0
     # via gwcs
-asteval==1.0.7
+asteval==1.0.8
     # via jdaviz
-astrocut==1.1.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+astrocut==1.2.0
+    # via
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
 astropy==7.2.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/catalog_database_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stips/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stpsf/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   asdf-astropy
     #   astrocut
     #   astropy-healpix
@@ -138,81 +175,96 @@ astropy==7.2.0
     #   stsynphot
     #   synphot
     #   tweakwcs
-astropy-healpix==1.1.2
-    # via romanisim
-astropy-iers-data==0.2025.12.8.0.38.44
+astropy-healpix==1.1.3
+    # via
+    #   romanisim
+    #   stcal
+astropy-iers-data==0.2026.4.27.1.3.2
     # via astropy
-astropy-sphinx-theme==2.0
+astropy-sphinx-theme==3.0
     # via sphinx-astropy
 astroquery==0.4.11
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/catalog_database_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
     #   jdaviz
+    #   romanisim
     #   stpsf
 asttokens==3.0.1
     # via stack-data
-async-lru==2.0.5
+async-lru==2.3.0
     # via jupyterlab
-attrs==25.4.0
+attrs==26.1.0
     # via
     #   aiohttp
     #   asdf
     #   jsonschema
     #   referencing
-babel==2.17.0
+babel==2.18.0
     # via
     #   jupyterlab-server
+    #   pydata-sphinx-theme
     #   sphinx
 beautifulsoup4==4.14.3
     # via
     #   astroquery
     #   nbconvert
+    #   pydata-sphinx-theme
     #   stsynphot
-black==25.12.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+black==26.3.1
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
 bleach==6.3.0
     # via nbconvert
 blinker==1.9.0
     # via flask
-bokeh==3.8.1
+bokeh==3.9.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/rist/requirements.txt
     #   dask
     #   jupyter-bokeh
-boto3==1.41.5
+boto3==1.42.91
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r extra_pip_packages.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
     #   s3path
-botocore==1.41.5
+botocore==1.42.91
     # via
     #   aiobotocore
     #   boto3
     #   s3transfer
-bqplot==0.12.45
+bqplot @ git+https://github.com/bmorris3/bqplot@50e74181aaa684219f20b27f0c24748685b032e1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   --override /Users/jmiller/.nbw-live/temps/roman-22.0.0-override-pip.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   bqplot-gl
     #   bqplot-image-gl
     #   glue-jupyter
     #   ipyvolume
     #   jdaviz
-bqplot-gl==0.0.0
-    # via glue-jupyter
-bqplot-image-gl==1.8.0
+bqplot-gl @ git+https://github.com/bqplot/bqplot-gl@acaa70ede959fec42462a8356c47fffdd774f759
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   --override /Users/jmiller/.nbw-live/temps/roman-22.0.0-override-pip.txt
     #   glue-jupyter
-build==1.3.0
+bqplot-image-gl==1.9.2
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    #   glue-jupyter
+bqscales==0.3.7
+    # via bqplot
+build==1.4.4
     # via pip-tools
 bytecode==0.17.0
     # via ddtrace
-cachetools==6.2.2
+cachetools==7.0.6
     # via
     #   astrocut
     #   solara-ui
 casa-formats-io==0.3.0
     # via spectral-cube
-certifi==2025.11.12
+certifi==2026.4.22
     # via
     #   httpcore
     #   httpx
@@ -225,11 +277,11 @@ cffi==2.0.0
     #   argon2-cffi-bindings
     #   cryptography
     #   pyzmq
-charset-normalizer==3.4.4
+charset-normalizer==3.4.7
     # via requests
-ci-watson==0.10.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-click==8.3.1
+ci-watson==0.11.0
+    # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+click==8.3.3
     # via
     #   black
     #   dask
@@ -250,6 +302,7 @@ colorama==0.4.6
     #   ci-watson
     #   click
     #   ipython
+    #   nbdime
     #   pytest
     #   rich-click
     #   sphinx
@@ -262,30 +315,32 @@ contourpy==1.3.3
     # via
     #   bokeh
     #   matplotlib
-crds==13.0.3
+crds==13.1.15
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
     #   ci-watson
     #   romancal
     #   romanisim
     #   stpipe
-cryptography==46.0.3
+cryptography==47.0.0
     # via
     #   certipy
     #   secretstorage
 cycler==0.12.1
     # via matplotlib
-cython==3.2.2
-    # via romanisim
-dask==2025.11.0
+dask==2026.3.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
     #   casa-formats-io
     #   distributed
     #   spectral-cube
-ddtrace==4.0.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-debugpy==1.8.18
+ddtrace==4.7.1
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+debugpy==1.8.20
     # via ipykernel
 decorator==5.2.1
     # via ipython
@@ -295,32 +350,32 @@ defusedxml==0.7.1
     #   romanisim
 deprecation==2.1.0
     # via jupyter-packaging
-dill==0.4.0
+dill==0.4.1
     # via glue-core
 distlib==0.4.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-distributed==2025.11.0
+    # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+distributed==2026.3.0
     # via dask
-docutils==0.21.2
+docutils==0.22.4
     # via
     #   nbsphinx
+    #   pydata-sphinx-theme
     #   sphinx
     #   sphinx-rtd-theme
-drizzle==2.1.1
+drizzle==2.2.0
     # via
     #   romancal
     #   stcal
-echo==0.11.1
+echo==0.15.0
     # via
     #   glue-core
-    #   glue-vispy-viewers
     #   jdaviz
 entrypoints==0.4
     # via papermill
 envier==0.6.1
     # via ddtrace
 esutil==0.6.16
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/roman_notebooks/notebooks/stips/requirements.txt
 et-xmlfile==2.0.0
     # via openpyxl
 executing==2.2.1
@@ -333,15 +388,15 @@ fast-histogram==0.14
     #   mpl-scatter-density
 fastjsonschema==2.21.2
     # via nbformat
-filelock==3.20.0
+filelock==3.29.0
     # via
     #   crds
     #   solara-server
 flake8==7.3.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-flask==3.1.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-fonttools==4.61.0
+    # via -r references/science-platform-images/deployments/common/common-env/testing.pip
+flask==3.1.3
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+fonttools==4.62.1
     # via matplotlib
 fqdn==1.5.1
     # via jsonschema
@@ -351,44 +406,52 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.12.0
+fsspec==2026.3.0
     # via
     #   astrocut
     #   dask
     #   s3fs
 future==1.0.0
     # via lsstdesc-coord
-galsim==2.7.2
+galsim==2.8.4
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
     #   romanisim
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.45
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-glfw==2.10.0
-    # via glue-vispy-viewers
+gitpython==3.1.48
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/required.pip
+    #   nbdime
 glue-astronomy==0.14.0
     # via jdaviz
-glue-core==1.24.1
+glue-core==1.25.0
     # via
     #   glue-astronomy
     #   glue-jupyter
-    #   glue-vispy-viewers
     #   jdaviz
-glue-jupyter==0.25.0
+glue-jupyter==0.27.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-    #   glue-vispy-viewers
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
-glue-vispy-viewers==1.3.0
-    # via glue-jupyter
-greenlet==3.3.0
+greenlet==3.5.0
     # via
     #   playwright
     #   sqlalchemy
-gwcs==0.26.1
+gwcs==1.0.3
     # via
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   astrocut
     #   jdaviz
     #   ndcube
@@ -398,24 +461,28 @@ gwcs==0.26.1
     #   specreduce
     #   specutils
     #   stcal
+    #   stdatamodels
     #   tweakwcs
 h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
-h5py==3.15.1
+h5py==3.16.0
     # via
     #   glue-core
     #   sncosmo
 healpy==1.19.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-healsparse==1.11.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+healsparse==1.12.2
+    # via
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
     #   skyproj
-hpgeom==1.4.0
+hpgeom==1.5.4
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
     #   healsparse
     #   skyproj
 hsluv==5.0.4
@@ -426,9 +493,9 @@ httpcore==1.0.9
     # via httpx
 httpx==0.28.1
     # via jupyterlab
-humanize==4.14.0
+humanize==4.15.0
     # via solara-ui
-idna==3.11
+idna==3.13
     # via
     #   anyio
     #   httpx
@@ -437,13 +504,11 @@ idna==3.11
     #   jupyterhub
     #   requests
     #   yarl
-imageio==2.37.2
-    # via
-    #   glue-vispy-viewers
-    #   scikit-image
-imagesize==1.4.1
+imageio==2.37.3
+    # via scikit-image
+imagesize==2.0.0
     # via sphinx
-importlib-metadata==8.7.0
+importlib-metadata==8.7.1
     # via
     #   opentelemetry-api
     #   stpipe
@@ -451,63 +516,69 @@ iniconfig==2.3.0
     # via pytest
 ipydatawidgets==4.3.5
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   pythreejs
 ipyevents==2.0.4
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 ipygoldenlayout==0.4.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
-ipykernel==7.1.0
+ipykernel==7.2.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    #   -r references/science-platform-images/deployments/common/common-env/required.pip
     #   jdaviz
     #   jupyterlab
     #   nbclassic
     #   solara-server
-ipympl==0.9.8
+ipympl==0.10.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   glue-jupyter
-ipypopout==2.0.0
+ipypopout==2.0.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
 ipysplitpanes==0.2.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
-ipython==9.8.0
+ipython==9.13.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
     #   glue-core
     #   ipykernel
     #   ipympl
     #   ipywidgets
 ipython-genutils==0.2.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   glue-jupyter
     #   nbclassic
 ipython-pygments-lexers==1.1.1
     # via ipython
 ipyvolume==0.6.3
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   glue-jupyter
-ipyvue==1.11.3
+ipyvue==1.12.0
     # via
     #   glue-jupyter
     #   ipygoldenlayout
     #   ipysplitpanes
     #   ipyvolume
+    #   ipyvuedraggable
     #   ipyvuetify
     #   jdaviz
     #   solara-ui
+ipyvuedraggable==1.1.0
+    # via jdaviz
 ipyvuetify==1.11.3
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   glue-jupyter
     #   ipypopout
     #   ipyvolume
@@ -515,14 +586,15 @@ ipyvuetify==1.11.3
     #   solara-ui
 ipywebrtc==0.6.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ipyvolume
 ipywidgets==8.1.8
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   anywidget
     #   bqplot
     #   bqplot-image-gl
+    #   bqscales
     #   glue-jupyter
     #   ipydatawidgets
     #   ipyevents
@@ -532,7 +604,6 @@ ipywidgets==8.1.8
     #   ipyvue
     #   jdaviz
     #   jupyter-bokeh
-    #   jupyter-rfb
     #   pythreejs
     #   reacton
     #   sidecar
@@ -543,12 +614,12 @@ itsdangerous==2.2.0
     # via flask
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==6.0.1
+jaraco-context==6.1.2
     # via keyring
-jaraco-functools==4.3.0
+jaraco-functools==4.4.0
     # via keyring
-jdaviz==4.4.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+jdaviz==4.5.2
+    # via -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
 jedi==0.19.2
     # via ipython
 jeepney==0.9.0 ; sys_platform == 'linux'
@@ -566,22 +637,25 @@ jinja2==3.1.6
     #   jupyterlab
     #   jupyterlab-server
     #   nbconvert
+    #   nbdime
     #   nbsphinx
     #   solara-server
     #   sphinx
-jmespath==1.0.1
+jmespath==1.1.0
     # via
     #   aiobotocore
     #   asdf
     #   boto3
     #   botocore
-joblib==1.5.2
-    # via spectral-cube
-json5==0.12.1
+joblib==1.5.3
+    # via
+    #   jdaviz
+    #   spectral-cube
+json5==0.14.0
     # via jupyterlab-server
-jsonpointer==3.0.0
+jsonpointer==3.1.1
     # via jsonschema
-jsonschema==4.25.1
+jsonschema==4.26.0
     # via
     #   jupyter-app-launcher
     #   jupyter-events
@@ -589,28 +663,27 @@ jsonschema==4.25.1
     #   jupyterlab-server
     #   nbformat
     #   romancal
-    #   romanisim
 jsonschema-specifications==2025.9.1
     # via jsonschema
 jupyter-app-launcher==0.3.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 jupyter-bokeh==4.0.5
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-jupyter-client==8.7.0
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+jupyter-client==8.8.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ipykernel
     #   jupyter-server
     #   nbclient
     #   solara-server
     #   voila
-jupyter-collaboration==4.2.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-jupyter-collaboration-ui==2.2.0
+jupyter-collaboration==4.3.0
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+jupyter-collaboration-ui==2.3.0
     # via jupyter-collaboration
 jupyter-core==5.9.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
@@ -619,25 +692,23 @@ jupyter-core==5.9.1
     #   nbconvert
     #   nbformat
     #   voila
-jupyter-docprovider==2.2.0
+jupyter-docprovider==2.3.0
     # via jupyter-collaboration
-jupyter-events==0.12.0
+jupyter-events==0.12.1
     # via
     #   jupyter-server
     #   jupyter-server-fileid
     #   jupyter-server-ydoc
     #   jupyterhub
-jupyter-lsp==2.3.0
+jupyter-lsp==2.3.1
     # via jupyterlab
 jupyter-packaging==0.12.3
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-jupyter-resource-usage==1.2.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-jupyter-rfb==0.5.4
-    # via glue-vispy-viewers
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+jupyter-resource-usage==1.2.1
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 jupyter-server==2.17.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jupyter-app-launcher
     #   jupyter-lsp
     #   jupyter-resource-usage
@@ -645,33 +716,39 @@ jupyter-server==2.17.0
     #   jupyter-server-proxy
     #   jupyter-server-ydoc
     #   jupyterlab
+    #   jupyterlab-git
     #   jupyterlab-server
+    #   nbdime
     #   nbgitpuller
     #   notebook
     #   notebook-shim
     #   voila
 jupyter-server-fileid==0.9.3
     # via jupyter-server-ydoc
-jupyter-server-proxy==4.4.0
+jupyter-server-proxy==4.5.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jupyter-app-launcher
-jupyter-server-terminals==0.5.3
+jupyter-server-terminals==0.5.4
     # via jupyter-server
-jupyter-server-ydoc==2.2.0
+jupyter-server-ydoc==2.3.0
     # via jupyter-collaboration
-jupyter-ydoc==3.3.3
+jupyter-ydoc==3.4.1
     # via jupyter-server-ydoc
-jupyterhub==5.4.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-jupyterlab==4.5.0
+jupyterhub==5.4.4
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+jupyterlab==4.5.6
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jupyter-collaboration
     #   notebook
+jupyterlab-git==0.52.0
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 jupyterlab-pygments==0.3.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   nbconvert
 jupyterlab-server==2.28.0
     # via
@@ -679,23 +756,23 @@ jupyterlab-server==2.28.0
     #   notebook
     #   voila
 jupyterlab-tour==4.0.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 jupyterlab-widgets==3.0.16
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ipywidgets
     #   voila-gridstack
-jupytext==1.18.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+jupytext==1.19.1
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 keyring==25.7.0
     # via astroquery
-kiwisolver==1.4.9
+kiwisolver==1.5.0
     # via
     #   matplotlib
     #   vispy
 lark==1.3.1
     # via rfc3987-syntax
-lazy-loader==0.4
+lazy-loader==0.5
     # via scikit-image
 locket==1.0.0
     # via
@@ -703,19 +780,19 @@ locket==1.0.0
     #   partd
 looseversion==1.3.0
     # via sncosmo
-lsstdesc-coord==1.3.0
+lsstdesc-coord==1.3.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r extra_pip_packages.txt
     #   galsim
-lxml==6.0.2
+lxml==6.1.0
     # via pysiaf
 lz4==4.4.5
     # via
     #   dask
     #   roman-datamodels
-mako==1.3.10
+mako==1.3.11
     # via alembic
-markdown==3.10
+markdown==3.10.2
     # via
     #   pymdown-extensions
     #   solara-ui
@@ -731,11 +808,26 @@ markupsafe==3.0.3
     #   mako
     #   nbconvert
     #   werkzeug
-matplotlib==3.10.8
+matplotlib==3.10.9
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/catalog_database_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stips/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stpsf/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/docs.pip
     #   glue-core
-    #   glue-vispy-viewers
     #   ipympl
     #   ipyvolume
     #   jdaviz
@@ -756,11 +848,11 @@ mdit-py-plugins==0.5.0
     # via jupytext
 mdurl==0.1.2
     # via markdown-it-py
-mistune==3.1.4
+mistune==3.2.0
     # via nbconvert
 montage-wrapper==0.9.9
     # via stips
-more-itertools==10.8.0
+more-itertools==11.0.2
     # via
     #   jaraco-classes
     #   jaraco-functools
@@ -768,41 +860,47 @@ mpl-scatter-density==0.8
     # via glue-core
 msgpack==1.1.2
     # via distributed
-multidict==6.7.0
+multidict==6.7.1
     # via
     #   aiobotocore
     #   aiohttp
     #   yarl
 mypy-extensions==1.1.0
     # via black
-narwhals==2.13.0
+narwhals==2.20.0
     # via bokeh
 nbclassic==1.3.3
     # via jdaviz
-nbclient==0.10.2
+nbclient==0.10.4
     # via
     #   nbconvert
     #   papermill
     #   voila
-nbconvert==7.16.6
+nbconvert==7.17.1
     # via
     #   jupyter-server
     #   nbsphinx
     #   voila
+nbdime==4.0.4
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
+    #   jupyterlab-git
 nbformat==5.10.4
     # via
     #   jupyter-server
+    #   jupyterlab-git
     #   jupytext
     #   nbclient
     #   nbconvert
+    #   nbdime
     #   nbsphinx
     #   papermill
     #   solara-server
-nbgitpuller==1.2.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+nbgitpuller==1.3.0
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
 nbsphinx==0.9.8
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-ndcube==2.3.5
+    # via -r references/science-platform-images/deployments/common/common-env/docs.pip
+ndcube==2.4.0
     # via specutils
 nest-asyncio==1.6.0
     # via
@@ -810,10 +908,8 @@ nest-asyncio==1.6.0
     #   nbclassic
 networkx==3.6.1
     # via scikit-image
-notebook==7.5.0
-    # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-    #   glue-jupyter
+notebook==7.5.5
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 notebook-shim==0.2.4
     # via
     #   jupyterlab
@@ -821,9 +917,23 @@ notebook-shim==0.2.4
     #   notebook
 numexpr==2.14.1
     # via poppy
-numpy==2.3.5
+numpy==2.4.4
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+    #   -r references/roman_notebooks/notebooks/rist/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stpsf/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
     #   asdf
     #   asdf-astropy
     #   astropy
@@ -831,6 +941,7 @@ numpy==2.3.5
     #   astroquery
     #   bokeh
     #   bqplot
+    #   bqscales
     #   casa-formats-io
     #   contourpy
     #   crds
@@ -842,7 +953,6 @@ numpy==2.3.5
     #   fast-histogram
     #   galsim
     #   glue-core
-    #   glue-vispy-viewers
     #   gwcs
     #   h5py
     #   healpy
@@ -852,13 +962,11 @@ numpy==2.3.5
     #   ipydatawidgets
     #   ipympl
     #   ipyvolume
-    #   jupyter-rfb
     #   lsstdesc-coord
     #   matplotlib
     #   mpl-scatter-density
     #   ndcube
     #   numexpr
-    #   opencv-python-headless
     #   pandas
     #   pandeia-engine
     #   photutils
@@ -897,15 +1005,13 @@ numpydoc==1.10.0
     # via sphinx-astropy
 oauthlib==3.3.1
     # via jupyterhub
-opencv-python-headless==4.11.0.86
-    # via stcal
 openpyxl==3.1.5
     # via
     #   glue-core
     #   pysiaf
-opentelemetry-api==1.39.1
+opentelemetry-api==1.41.1
     # via ddtrace
-packaging==25.0
+packaging==26.2
     # via
     #   asdf
     #   asdf-astropy
@@ -923,6 +1029,7 @@ packaging==25.0
     #   jupyter-server
     #   jupyterhub
     #   jupyterlab
+    #   jupyterlab-git
     #   jupyterlab-server
     #   jupytext
     #   lazy-loader
@@ -939,45 +1046,56 @@ packaging==25.0
     #   sphinx-automodapi
     #   tweakwcs
     #   vispy
+    #   wheel
     #   xarray
 pamela==1.2.0 ; sys_platform != 'win32'
     # via jupyterhub
-pandas==2.3.3
+pandas==3.0.2
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-    #   bokeh
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+    #   -r references/roman_notebooks/notebooks/rist/requirements.txt
     #   bqplot
     #   dask
     #   glue-core
     #   romancal
     #   xarray
-pandeia-engine==2025.9
+pandeia-engine==2026.2
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
     #   stips
 pandocfilters==1.5.1
     # via nbconvert
-papermill==2.6.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+papermill==2.7.0
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
+    #   -r references/science-platform-images/deployments/common/common-env/required.pip
 parsley==1.3
     # via crds
-parso==0.8.5
+parso==0.8.6
     # via jedi
 partd==1.4.2
     # via dask
-pathspec==0.12.1
+pathspec==1.1.1
     # via black
-pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
-    # via ipython
-photutils==2.3.0
+pexpect==4.9.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   ipython
+    #   jupyterlab-git
+photutils==3.0.0
+    # via
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
     #   jdaviz
     #   pandeia-engine
     #   romancal
+    #   romanisim
     #   stips
     #   stpsf
-pillow==12.0.0
+pillow==12.2.0
     # via
     #   astrocut
     #   bokeh
@@ -990,25 +1108,23 @@ pillow==12.0.0
     #   solara-ui
     #   sphinx-astropy
     #   sphinx-gallery
-pip==25.3
-    # via
-    #   pip-tools
-    #   pipdeptree
-pip-tools==7.5.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-pipdeptree==2.30.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-platformdirs==4.5.1
+pip==26.1
+    # via pip-tools
+pip-tools==7.5.3
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+pipdeptree==2.35.1
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+platformdirs==4.9.6
     # via
     #   black
     #   jupyter-core
-playwright==1.57.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+playwright==1.58.0
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
 pluggy==1.6.0
     # via pytest
 poppy==1.1.2
     # via stpsf
-prometheus-client==0.23.1
+prometheus-client==0.25.0
     # via
     #   jupyter-resource-usage
     #   jupyter-server
@@ -1019,35 +1135,37 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-psutil==7.1.3
+psutil==7.2.2
     # via
     #   distributed
     #   ipykernel
+    #   ipython
     #   jupyter-resource-usage
     #   jupyterhub
     #   pytest-openfiles
-psycopg2-binary==2.9.11
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-psygnal==0.15.0
+psycopg2-binary==2.9.12
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+psygnal==0.15.1
     # via anywidget
-ptyprocess==0.7.0 ; os_name != 'nt' or (sys_platform != 'emscripten' and sys_platform != 'win32')
+ptyprocess==0.7.0
     # via
     #   pexpect
     #   terminado
 pure-eval==0.2.3
     # via stack-data
-pyarrow==22.0.0
+pyarrow==24.0.0
     # via
     #   dask
     #   roman-datamodels
     #   romancal
-pybind11==3.0.1
+    #   stcal
+pybind11==3.0.4
     # via galsim
 pycodestyle==2.14.0
     # via flake8
-pycparser==2.23 ; implementation_name != 'PyPy'
+pycparser==3.0 ; implementation_name != 'PyPy'
     # via cffi
-pycrdt==0.12.44
+pycrdt==0.12.50
     # via
     #   jupyter-server-ydoc
     #   jupyter-ydoc
@@ -1057,34 +1175,37 @@ pycrdt-store==0.1.3
     # via pycrdt-websocket
 pycrdt-websocket==0.16.0
     # via jupyter-server-ydoc
-pydantic==2.12.5
+pydantic==2.13.3
     # via jupyterhub
-pydantic-core==2.41.5
+pydantic-core==2.46.3
     # via pydantic
-pydeps==3.0.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+pydata-sphinx-theme==0.17.1
+    # via sunpy-sphinx-theme
+pydeps==3.0.6
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
 pyds9==1.8.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-pyee==13.0.0
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
+pyee==13.0.1
     # via playwright
 pyerfa==2.0.1.5
     # via astropy
 pyflakes==3.4.0
     # via flake8
-pygments==2.19.2
+pygments==2.20.0
     # via
+    #   accessible-pygments
     #   ipython
     #   ipython-pygments-lexers
     #   nbconvert
+    #   nbdime
+    #   pydata-sphinx-theme
     #   pytest
     #   rich
     #   solara-ui
     #   sphinx
-pymdown-extensions==10.19
+pymdown-extensions==10.21.2
     # via solara-ui
-pyopengl==3.1.10
-    # via glue-vispy-viewers
-pyparsing==3.2.5
+pyparsing==3.3.2
     # via matplotlib
 pyproj==3.7.2
     # via skyproj
@@ -1094,21 +1215,22 @@ pyproject-hooks==1.2.0
     #   pip-tools
 pysiaf==0.25.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
     #   soc-roman-tools
     #   stpsf
-pytest==9.0.2
+pytest==9.0.3
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/testing.pip
     #   ci-watson
     #   pytest-doctestplus
     #   pytest-openfiles
-pytest-doctestplus==1.6.0
+pytest-doctestplus==1.7.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/testing.pip
     #   sphinx-astropy
 pytest-openfiles==0.6.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/testing.pip
 python-dateutil==2.9.0.post0
     # via
     #   aiobotocore
@@ -1118,21 +1240,20 @@ python-dateutil==2.9.0.post0
     #   jupyterhub
     #   matplotlib
     #   pandas
-python-json-logger==4.0.0
+python-json-logger==4.1.0
     # via jupyter-events
 pythreejs==2.4.2
     # via ipyvolume
-pytokens==0.3.0
+pytokens==0.4.1
     # via black
-pytz==2025.2
-    # via pandas
-pyvo==1.8
+pyvo==1.8.1
     # via
+    #   -r references/roman_notebooks/notebooks/catalog_database_access/requirements.txt
     #   astroquery
     #   jdaviz
 pywin32-ctypes==0.2.3 ; sys_platform == 'win32'
     # via keyring
-pywinpty==3.0.2 ; (os_name == 'nt' and platform_machine != 'aarch64' and sys_platform == 'linux') or (os_name == 'nt' and sys_platform != 'darwin' and sys_platform != 'linux')
+pywinpty==3.0.3 ; os_name == 'nt'
     # via
     #   jupyter-server
     #   jupyter-server-terminals
@@ -1150,6 +1271,7 @@ pyyaml==6.0.3
     #   jupytext
     #   papermill
     #   pymdown-extensions
+    #   romancal
     #   sncosmo
     #   stips
     #   stpipe
@@ -1160,15 +1282,25 @@ pyzmq==27.1.0
     #   jupyter-client
     #   jupyter-resource-usage
     #   jupyter-server
-rad==0.27.0
+rad==0.30.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   roman-datamodels
 radio-beam==0.3.9
     # via spectral-cube
 reacton==1.9.1
     # via solara-ui
-readchar==4.2.1
+readchar==4.2.2
     # via ci-watson
 referencing==0.37.0
     # via
@@ -1179,9 +1311,11 @@ regions==0.11
     # via
     #   glue-astronomy
     #   jdaviz
-requests==2.32.5
+requests==2.33.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/common.pip
     #   astrocut
     #   astroquery
     #   ci-watson
@@ -1190,6 +1324,7 @@ requests==2.32.5
     #   jdaviz
     #   jupyterhub
     #   jupyterlab-server
+    #   nbdime
     #   papermill
     #   pysiaf
     #   pyvo
@@ -1199,7 +1334,7 @@ requests==2.32.5
     #   sphinx
     #   stcal
 requests-mock==1.12.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/testing.pip
 rfc3339-validator==0.1.4
     # via
     #   jsonschema
@@ -1210,48 +1345,87 @@ rfc3986-validator==0.1.1
     #   jupyter-events
 rfc3987-syntax==1.1.0
     # via jsonschema
-rich==14.2.0
+rich==15.0.0
     # via rich-click
-rich-click==1.9.4
+rich-click==1.9.7
     # via solara-server
-roman-datamodels==0.27.0
+roman-datamodels==0.30.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-    #   astrocut
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   romancal
     #   romanisim
     #   soc-roman-tools
-roman-numerals-py==3.1.0
+roman-numerals==4.1.0
     # via sphinx
-romancal==0.20.2
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-romanisim==0.10.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+romancal==0.22.0
+    # via
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
+romanisim==0.13.1
+    # via
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
+    #   romancal
 rpds-py==0.30.0
     # via
     #   jsonschema
     #   referencing
-s3fs==2025.12.0
+s3fs==2026.3.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_discovery_and_access/requirements.txt
+    #   -r references/roman_notebooks/notebooks/data_visualization/requirements.txt
+    #   -r references/roman_notebooks/notebooks/exposure_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/roman_cutouts/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/working_with_asdf/requirements.txt
     #   astrocut
     #   jdaviz
-s3path==0.6.4
+s3path==0.6.5
     # via astrocut
-s3transfer==0.15.0
+s3transfer==0.16.1
     # via boto3
-scikit-image==0.25.2
+scikit-image==0.26.0
     # via
     #   glue-jupyter
     #   jdaviz
     #   stcal
-scipy==1.16.3
+scipy==1.17.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/grism_spectral_extraction/requirements.txt
+    #   -r references/roman_notebooks/notebooks/ground_test_analysis/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/pandeia/requirements.txt
+    #   -r references/roman_notebooks/notebooks/rist/requirements.txt
     #   astrocut
     #   esutil
     #   glue-core
-    #   glue-vispy-viewers
     #   gwcs
     #   ndcube
     #   pandeia-engine
@@ -1273,12 +1447,13 @@ scipy==1.16.3
 secretstorage==3.5.0 ; sys_platform == 'linux'
     # via keyring
 semantic-version==2.10.0
-    # via asdf
-send2trash==1.8.3
-    # via jupyter-server
-setuptools==71.1.0
     # via
-    #   astropy-sphinx-theme
+    #   asdf
+    #   roman-datamodels
+send2trash==2.1.0
+    # via jupyter-server
+setuptools==82.0.1
+    # via
     #   galsim
     #   jupyter-packaging
     #   jupyterlab
@@ -1286,10 +1461,12 @@ setuptools==71.1.0
     #   pip-tools
     #   spectral-cube
 shapely==2.1.2
-    # via glue-core
-sidecar==0.8.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   glue-core
+    #   stcal
+sidecar==0.8.1
+    # via
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
 simpervisor==1.0.0
     # via jupyter-server-proxy
@@ -1300,70 +1477,73 @@ six==1.17.0
     #   python-dateutil
     #   rfc3339-validator
 skyproj==2.1.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-smart-open==7.5.0
+    # via -r references/roman_notebooks/notebooks/footprint_visualization/requirements.txt
+smart-open==7.6.0
     # via s3path
-smmap==5.0.2
+smmap==5.0.3
     # via gitdb
 sncosmo==2.12.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
 snowballstemmer==3.0.1
     # via sphinx
 soc-roman-tools==0.1.0
     # via stips
-solara==1.55.1
+solara==1.57.3
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   jdaviz
-solara-server==1.55.1
+solara-server==1.57.3
     # via solara
-solara-ui==1.55.1
+solara-ui==1.57.3
     # via
     #   solara
     #   solara-server
 sortedcontainers==2.4.0
     # via distributed
-soupsieve==2.8
+soupsieve==2.8.3
     # via beautifulsoup4
-specreduce==1.7.0
+specreduce==1.8.0
     # via
     #   glue-astronomy
     #   jdaviz
 spectral-cube==0.6.7
     # via glue-astronomy
-specutils==2.2.0
+specutils==2.3.0
     # via
     #   glue-astronomy
     #   jdaviz
     #   specreduce
-spherical-geometry==1.3.3
+spherical-geometry==1.3.5
     # via
     #   astrocut
     #   romancal
     #   stcal
     #   tweakwcs
-sphinx==8.2.3
+sphinx==9.1.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/docs.pip
+    #   astropy-sphinx-theme
     #   nbsphinx
     #   numpydoc
+    #   pydata-sphinx-theme
     #   sphinx-astropy
     #   sphinx-automodapi
     #   sphinx-gallery
     #   sphinx-rtd-theme
     #   sphinxcontrib-jquery
     #   stsci-rtd-theme
+    #   sunpy-sphinx-theme
 sphinx-astropy==1.10
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-sphinx-automodapi==0.21.0
+    # via -r references/science-platform-images/deployments/common/common-env/docs.pip
+sphinx-automodapi==0.22.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/docs.pip
     #   sphinx-astropy
-sphinx-gallery==0.20.0
+sphinx-gallery==0.21.0
     # via sphinx-astropy
-sphinx-rtd-theme==3.0.2
+sphinx-rtd-theme==3.1.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/docs.pip
     #   stsci-rtd-theme
 sphinxcontrib-applehelp==2.0.0
     # via sphinx
@@ -1381,64 +1561,77 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-sqlalchemy==2.0.45
+sqlalchemy==2.0.49
     # via
     #   alembic
     #   jupyterhub
-sqlite-anyio==0.2.3
+sqlite-anyio==0.2.8
     # via pycrdt-store
 stack-data==0.6.3
     # via ipython
-starlette==0.50.0
-    # via solara-server
-stcal==1.15.2
+starlette==0.52.1
+    # via
+    #   jdaviz
+    #   solara-server
+stcal==1.17.0
     # via romancal
-stdatamodels==4.1.0
+stdatamodels==5.0.1
     # via jdaviz
 stdlib-list==0.12.0
     # via pydeps
 stips==2.3
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-stpipe==0.10.0
+    # via -r references/roman_notebooks/notebooks/stips/requirements.txt
+stpipe==0.11.1
     # via romancal
 stpsf==2.1.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
-    #   romanisim
+    #   -r references/roman_notebooks/notebooks/aperture_photometry/requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/mosaic_pipeline/requirements.txt
+    #   -r references/roman_notebooks/notebooks/romanisim/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stpsf/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
+    #   -r references/roman_notebooks/notebooks/time_domain_simulations/requirements.txt
     #   stips
 stsci-imagestats==1.8.4
     # via
-    #   romancal
+    #   stcal
     #   tweakwcs
 stsci-rtd-theme==1.0.1
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/docs.pip
 stsci-stimage==0.3.0
     # via tweakwcs
-stsynphot==1.5.0
+stsynphot==1.5.1
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stips/requirements.txt
+    #   -r references/roman_notebooks/notebooks/stpsf/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
     #   pandeia-engine
     #   stips
-synphot==1.6.1
+sunpy-sphinx-theme==2.1.1
+    # via astropy-sphinx-theme
+synphot==1.7.0
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/roman_notebooks/notebooks/measuring_galaxy_shapes/requirements.txt
+    #   -r references/roman_notebooks/notebooks/synphot/requirements.txt
     #   pandeia-engine
     #   stips
     #   stpsf
     #   stsynphot
 tblib==3.2.2
     # via distributed
-tenacity==9.1.2
+tenacity==9.1.4
     # via papermill
 terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
-tifffile==2025.10.16
+tifffile==2026.4.11
     # via scikit-image
 tinycss2==1.4.0
     # via bleach
-tomlkit==0.13.3
+tomlkit==0.14.0
     # via
     #   jupyter-packaging
     #   yq
@@ -1447,26 +1640,29 @@ toolz==1.1.0
     #   dask
     #   distributed
     #   partd
-tornado==6.5.3
+tornado==6.5.5
     # via
     #   bokeh
     #   distributed
+    #   glue-jupyter
     #   ipykernel
     #   jupyter-client
     #   jupyter-server
     #   jupyter-server-proxy
     #   jupyterhub
     #   jupyterlab
+    #   nbdime
     #   nbgitpuller
     #   notebook
     #   terminado
-tqdm==4.67.1
+tqdm==4.67.3
     # via
     #   papermill
     #   spectral-cube
 traitlets==5.14.3
     # via
     #   bqplot
+    #   bqscales
     #   ipykernel
     #   ipympl
     #   ipython
@@ -1480,6 +1676,7 @@ traitlets==5.14.3
     #   jupyter-server-proxy
     #   jupyterhub
     #   jupyterlab
+    #   jupyterlab-git
     #   matplotlib-inline
     #   nbclient
     #   nbconvert
@@ -1491,58 +1688,55 @@ traitlets==5.14.3
 traittypes==0.2.3
     # via
     #   bqplot
+    #   bqscales
     #   ipydatawidgets
     #   ipyvolume
 tweakwcs==0.8.12
-    # via
-    #   romancal
-    #   stcal
+    # via stcal
 typing-extensions==4.15.0
     # via
     #   aiosignal
-    #   aiosqlite
     #   alembic
     #   anyio
     #   anywidget
     #   beautifulsoup4
-    #   bqplot-image-gl
     #   opentelemetry-api
     #   pydantic
     #   pydantic-core
+    #   pydata-sphinx-theme
     #   pyee
     #   reacton
     #   referencing
     #   sqlalchemy
+    #   sqlite-anyio
     #   starlette
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-tzdata==2025.2
+tzdata==2026.2
     # via
     #   arrow
     #   pandas
 uri-template==1.3.0
     # via jsonschema
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   botocore
     #   distributed
     #   requests
-uvicorn==0.38.0
+uvicorn==0.46.0
     # via solara-server
-vispy==0.15.2
-    # via
-    #   glue-vispy-viewers
-    #   jdaviz
-voila==0.5.11
+vispy==0.16.1
+    # via jdaviz
+voila==0.5.12
     # via voila-gridstack
 voila-gridstack==0.4.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 watchdog==6.0.0
     # via solara-server
 watchfiles==1.1.1
     # via solara-server
-wcwidth==0.2.14
+wcwidth==0.6.0
     # via prompt-toolkit
 webcolors==25.10.0
     # via jsonschema
@@ -1553,44 +1747,46 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.9.0
     # via jupyter-server
-websockets==15.0.1
+websockets==16.0
     # via
     #   solara-server
     #   voila
-werkzeug==3.1.4
+werkzeug==3.1.8
     # via flask
-wheel==0.45.1
+wheel==0.47.0
     # via
     #   jupyter-packaging
     #   pip-tools
 widgetsnbextension==4.0.15
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ipywidgets
-wrapt==1.17.3
+wrapt==2.1.2
     # via
     #   aiobotocore
     #   ddtrace
     #   smart-open
-xarray==2025.12.0
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+xarray==2026.4.0
+    # via
+    #   -r references/roman_notebooks/notebooks/background_visualization_tool/requirements.txt
+    #   -r references/roman_notebooks/notebooks/rist/requirements.txt
 xlrd==2.0.2
     # via glue-core
-xmltodict==1.0.2
+xmltodict==1.0.4
     # via yq
-xyzservices==2025.11.0
+xyzservices==2026.3.0
     # via bokeh
 y-py==0.6.2
     # via
-    #   -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    #   -r references/science-platform-images/deployments/common/common-env/jupyter.pip
     #   ypy-websocket
-yarl==1.22.0
+yarl==1.23.0
     # via aiohttp
 ypy-websocket==0.12.4
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/jupyter.pip
 yq==3.4.3
-    # via -r /home/ai/.nbw-live/temps/tmp-requirements.txt
+    # via -r references/science-platform-images/deployments/common/common-env/common.pip
 zict==3.0.0
     # via distributed
-zipp==3.23.0
+zipp==3.23.1
     # via importlib-metadata

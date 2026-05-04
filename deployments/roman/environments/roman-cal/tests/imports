@@ -1,4 +1,3 @@
-argparse
 asdf
 astrocut
 astropy
@@ -12,11 +11,11 @@ footprint_utils
 functools
 galsim
 glob
+healpy
 healsparse
 importlib
 ipympl
 itertools
-jdaviz
 json
 math
 matplotlib
@@ -29,6 +28,7 @@ photutils
 plot_rist
 pprint
 pysiaf
+pyvo
 rbt
 rbvt
 roman_datamodels
@@ -43,7 +43,6 @@ stpsf
 stsynphot
 synphot
 textwrap
-time
 typing
 warnings
 yaml
