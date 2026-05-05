@@ -158,7 +158,6 @@ USER root
 # https://www.perplexity.ai/search/is-this-eval-mamba-shell-hook-fmxh4Ga8TLm2ewBTvK_2cw#0
 
 # ------------------------------------------------------------------------
-USER root
 
 # Keep Xfce directories out of home and set up shortcuts for DS9.
 #COPY user-dirs.defaults /etc/xdg/user-dirs.defaults
@@ -171,6 +170,9 @@ COPY bash.env /etc/bash.env
 ENV BASH_ENV=/etc/bash.env
 
 COPY nb-wrangler.rc  /etc/nb-wrangler.rc
+
+USER root
+RUN source /etc/nb-wrangler.rc && mkdir -p ${NBW_PANTRY} && chown -R ${NB_UID}:${NB_GID} ${NBW_PANTRY}
 
 # ----------------------------------------------------------------------
 # Set up astroquery and ds9 desktop short-cut, will be further
