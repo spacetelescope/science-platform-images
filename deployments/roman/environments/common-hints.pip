@@ -23,4 +23,4 @@
 
 # jupyterlab==4.5.6
 
-bqplot==0.12.47
+# bqplot==0.12.47
