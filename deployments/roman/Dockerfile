@@ -31,7 +31,7 @@ COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments
 COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
 
 WORKDIR ${NBW_ROOT}
-USER root
+# USER root
 
 RUN   /opt/common-scripts/install-common  base
 
@@ -41,8 +41,10 @@ RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
-    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
+
+#    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
+
 
 # ----- Copy remaining roman environments files, including tests and post-start-hook scripts
 # NOTE: this is a Docker cache buster and why builds back up to env installation when you're
