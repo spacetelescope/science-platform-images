@@ -16,18 +16,22 @@ ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
 ENV PYTHONPATH="/srv/jupyter"
 
 # ------------------------------------------------------------------------------
-# Optional Ubuntu packages if api-packages.txt is defined
 
 USER root
-RUN [ -f /opt/environments/api-packages.txt ] && \
-    apt-get update && \
-    apt-get install --yes $(cat /opt/environments/apt-packages.txt) || \
-    true
+
+# Optional Ubuntu packages if api-packages.txt is defined
+RUN set -eu; \
+    if [ -f /opt/environments/apt-packages.txt ]; then \
+        apt-get update; \
+        xargs -r apt-get install -y < /opt/environments/apt-packages.txt; \
+        rm -rf /var/lib/apt/lists/*; \
+    fi
 
 # Bash script for arbitrary commands
-RUN [ -f /opt/environments/dockerfile-aux.sh ] && \
-    bash /opt/environments/dockerfile-aux.sh || \
-    true
+RUN set -eu; \
+    if [ -f /opt/environments/dockerfile-aux.sh ]; then \
+        bash /opt/environments/dockerfile-aux.sh; \
+    fi
 
 # ------------------------------------------------------------------------------
 # Install environments
