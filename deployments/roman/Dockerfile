@@ -21,10 +21,12 @@ ENV PYTHONPATH="/srv/jupyter"
 USER root
 RUN [ -f /opt/environments/api-packages.txt ] && \
     apt-get update && \
-    apt-get install --yes $(cat /opt/environments/apt-packages.txt) || true
+    apt-get install --yes $(cat /opt/environments/apt-packages.txt) || \
+    true
 
+# Bash script for arbitrary commands
 RUN [ -f /opt/environments/dockerfile-aux.sh ] && \
-    bash /opt/environments/dockerfile-aux.sh ] || \
+    bash /opt/environments/dockerfile-aux.sh || \
     true
 
 # ------------------------------------------------------------------------------
