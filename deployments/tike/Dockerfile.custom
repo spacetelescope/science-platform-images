@@ -3,39 +3,6 @@
 ARG BASE_IMAGE=notebook-common
 FROM ${BASE_IMAGE}
 
-# ---------------------------------------------------------------
-# VARTOOLS Light Curve Analysis Program
-USER root
-RUN curl --silent --show-error https://www.astro.princeton.edu/~jhartman/vartools/vartools-1.38.tar.gz -o vartools-1.38.tar.gz && \
-   tar zxf vartools-1.38.tar.gz &&\
-   cd vartools-1.38 &&\
-   mkdir -p /usr/local &&\
-   ./configure --prefix=/usr/local &&\
-   make &&\
-   make install &&\
-   cd .. &&\
-   rm -rf vartools-1.38 vartools-1.38.tar.gz
-
-# ----------------------------------------------------------------------
-# pymultinest and pycuba native libraries
-#
-
-RUN git clone https://github.com/JohannesBuchner/MultiNest &&\
-    cd MultiNest/build &&\
-    cmake .. &&\
-    make &&\
-    cp ../lib/libmultinest.so  /usr/local/lib &&\
-    cd ../.. &&\
-    rm -rf MultiNest
-
-RUN git clone https://github.com/JohannesBuchner/cuba/ &&\
-    cd cuba &&\
-    ./configure &&\
-    ./makesharedlib.sh &&\
-    cp libcuba.so /usr/local/lib &&\
-    cd .. &&\
-    rm -rf cuba
-
 # ----------------------------------------------------------------------
 # Install environments
 
@@ -46,40 +13,37 @@ USER ${NB_UID}:${NB_GID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.* /opt/environments/
+COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
+
+# Optional Ubuntu packages if api-packages.txt is defined
+RUN [ -f /opt/environments/apt-packages.txt ] && \
+    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt) || \
+    echo "apt-packages.txt does not exist or failed to install."
+
+# Bash script for arbitrary commands
+RUN [ -f /opt/environments/dockerfile-aux.sh ] && \
+    bash /opt/environments/dockerfile-aux.sh || \
+    echo "dockerfile-aux.sh does not exist or failed to install."
+
+# ------------------------------------------------------------------------------
+# Install environments
+
+# All specs for frozen builds need to be available before their normal installs
+USER ${NB_UID}:${NB_GID}
+
+WORKDIR ${NBW_ROOT}
+# USER root
+
 RUN   /opt/common-scripts/install-common  base
 
-# --------------------------- TESS -------------------------------------
+# Run wrangler from base environment creating/installing spec'ed environment
+# If the spec says python3 ("base") it will add to the base environment instead of creating a second
+RUN source /opt/common-scripts/env-activate base && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
+    /opt/common-scripts/env-clean
 
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/tess/  /opt/env-frozen/tess/
-COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.yml /opt/environments/tess/
-COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.conda /opt/environments/tess/
-RUN /opt/common-scripts/env-conda tess
-
-COPY --chown=${NB_UID}:${NB_GID} environments/tess/*.pip /opt/environments/tess/
-RUN /opt/common-scripts/env-compile tess
-
-RUN /opt/common-scripts/env-sync  tess
-
-COPY --chown=${NB_UID}:${NB_GID} environments/tess/ /opt/environments/tess/
-
-# ----------
-# Due to numpy binary API incompatibilities and available compiled pip package versions
-# Re-building from source ensures compatability with the installed numpy
-# Install these BEFORE the packages which depend on them or you may get incompatible versions from PyPi
-
-# RUN /opt/common-scripts/env-src-install  tess  batman-package
-
-# RUN /opt/common-scripts/env-src-install  tess  radvel
-
-# RUN /opt/common-scripts/env-src-install  tess  juliet
-
-#RUN /opt/common-scripts/env-src-install  tess  tvguide
-
-
-# ellc is a dependency of allesfitter
-# RUN /opt/common-scripts/env-src-install  tess  ellc
-# RUN /opt/common-scripts/env-src-install  tess  allesfitter
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
