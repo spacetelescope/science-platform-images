@@ -15,15 +15,16 @@ USER ${NB_UID}:${NB_GID}
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
 
-# Optional Ubuntu packages if api-packages.txt is defined
-RUN [ -f /opt/environments/apt-packages.txt ] && \
-    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt) || \
-    echo "apt-packages.txt does not exist or failed to install."
+# ----------------------------------------------------------------------
+# Wrangler extensions for (a) extra apt packages and (b) custom script
 
-# Bash script for arbitrary commands
-RUN [ -f /opt/environments/dockerfile-aux.sh ] && \
-    bash /opt/environments/dockerfile-aux.sh || \
-    echo "dockerfile-aux.sh does not exist or failed to install."
+# (a) Optional Ubuntu packages if api-packages.txt is defined
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
+
+# (b) Bash script for arbitrary commands
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    bash /opt/environments/dockerfile-aux.sh
 
 # ------------------------------------------------------------------------------
 # Install environments

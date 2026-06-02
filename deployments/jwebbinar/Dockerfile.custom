@@ -47,6 +47,17 @@ RUN cd /tmp && \
 
 
 # ----------------------------------------------------------------------
+# Wrangler extensions for (a) extra apt packages and (b) custom script
+
+# (a) Optional Ubuntu packages if api-packages.txt is defined
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
+
+# (b) Bash script for arbitrary commands
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    bash /opt/environments/dockerfile-aux.sh
+
+# ----------------------------------------------------------------------
 # Install environments
 
 USER ${NB_UID}:${NB_GID}
@@ -56,25 +67,22 @@ USER ${NB_UID}:${NB_GID}
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
+COPY --chown=${NB_UID}:${NB_GID} environments /opt/environments
+
 RUN   /opt/common-scripts/install-common  base
 
 # --------------------------- Jwebbinar -------------------------------------
 
-    # BASE
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/jwebbinar/ /opt/env-frozen/jwebbinar/
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.yml /opt/environments/jwebbinar/
-RUN /opt/common-scripts/env-conda jwebbinar
+# ----------------------------------------------------------------------
+# Mission environment reinstalled from curated wrangler spec
+# Run wrangler from base environment creating/installing spec'ed environment
+# If the spec says python3 ("base") it will add to the base environment instead of creating a second
 
-# COMPILE ALL
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/*.pip /opt/environments/jwebbinar/
-RUN /opt/common-scripts/env-compile jwebbinar
+RUN source /opt/common-scripts/env-activate base && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
+    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
+    /opt/common-scripts/env-clean
 
-# SYNC ALL
-RUN /opt/common-scripts/env-sync jwebbinar
-
-# jwebbinar4 CUSTOM (--no-deps)
 RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
-
-# REMAINING ENV
-COPY --chown=${NB_UID}:${NB_GID} environments/jwebbinar/ /opt/environments/jwebbinar/

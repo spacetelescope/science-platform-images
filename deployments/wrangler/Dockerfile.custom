@@ -29,20 +29,37 @@ RUN mkdir -p ${NBW_ROOT} && chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
 COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/ /opt/env-frozen/base
 
-USER ${NB_UID}
-RUN   /opt/common-scripts/install-common  base
+# ----------------------------------------------------------------------
+# Wrangler extensions for (a) extra apt packages and (b) custom script
+
+# (a) Optional Ubuntu packages if api-packages.txt is defined
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
+
+# (b) Bash script for arbitrary commands
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    bash /opt/environments/dockerfile-aux.sh
+
+# ----------------------------------------------------------------------
+# Optional mamba/pip extensions to base environment (jupyter/docker-stacks)
+# shared with mission env
 
 WORKDIR ${NBW_ROOT}
+USER ${NB_UID}
 
+RUN   /opt/common-scripts/install-common  base
+
+# ----------------------------------------------------------------------
+# Mission environment reinstalled from curated wrangler spec
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
+
 RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
     fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
-
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
