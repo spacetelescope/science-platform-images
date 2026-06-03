@@ -85,7 +85,7 @@ RUN source /opt/common-scripts/env-activate base && \
     fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
 
-RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
+# RUN /opt/common-scripts/env-run jwebbinar  pip install  --no-deps  'eureka@git+https://github.com/kevin218/Eureka.git@jwebbinar41'
 # ========================= vvvvv Generic vvvvv  =========================
 
 USER ${NB_UID}:${NB_GID}
