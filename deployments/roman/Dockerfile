@@ -17,19 +17,32 @@ ENV PYTHONPATH="/srv/jupyter"
 
 
 # ------------------------------------------------------------------------------
-# Install environments
 
-# All specs for frozen builds need to be available before their normal installs
-USER ${NB_UID}:${NB_GID}
-# USER root
+USER root
 
 # ----------------------------------------------------------------------
 # Add jupyter-lab-extensions to base environment as well as standard packages.
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID} environments/common-hints.pip /opt/environments/common-hints.pip
 COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
+
+# ----------------------------------------------------------------------
+# Wrangler extensions for (a) extra apt packages and (b) custom script
+
+# (a) Optional Ubuntu packages if api-packages.txt is defined
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
+
+# (b) Bash script for arbitrary commands
+RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+    bash /opt/environments/dockerfile-aux.sh
+
+# ------------------------------------------------------------------------------
+# Install environments
+
+# All specs for frozen builds need to be available before their normal installs
+USER ${NB_UID}:${NB_GID}
 
 WORKDIR ${NBW_ROOT}
 # USER root

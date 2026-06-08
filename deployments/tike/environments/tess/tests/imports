@@ -1,7 +1,0 @@
-matplotlib
-astropy
-numpy
-astroquery
-s3fs
-lightkurve
-lcviz

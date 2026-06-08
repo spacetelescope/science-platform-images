@@ -3,7 +3,6 @@ papermill
 ipykernel
 ipython
 boto3
-pyds9
 pipdeptree
 pip-tools
 pydeps

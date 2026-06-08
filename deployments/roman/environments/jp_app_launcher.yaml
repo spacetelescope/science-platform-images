@@ -5,7 +5,7 @@
 #   source: /opt/environments/cost-dashboard.ipynb
 #   type: notebook
 
-# notebook-voila requires voila-gridstack to be installed in the system. 
+# notebook-voila requires voila-gridstack to be installed in the system.
 - title: "Credits Dashboard"
   description: "Open the Credits Dashboard"
   source: /opt/environments/cost-dashboard.ipynb
@@ -19,4 +19,9 @@
   source: ${JUPYTERHUB_SERVICE_PREFIX}stopme
   type: url
   args:
-    createNewWindow: false  
+    createNewWindow: false
+
+- title: "Catalog Schema Browser"
+  description: "Open the schema browser"
+  source: /opt/environments/catalog-schema-browser.ipynb
+  type: notebook-voila
