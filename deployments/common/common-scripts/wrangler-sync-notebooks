@@ -2,13 +2,14 @@
 
 # Generic scripts to git-sync notebooks specified in wrangler spec; no parameters
 
-if [[ "${GIT_SYNC_OFF}" == "1" ]]; then
+if [[ "${GIT_SYNC_OFF:-}" == "1" ]]; then
     echo "git-sync is turned off globally.  aborting sync of notebook repos."
     exit 0
 fi
 
-notebook_repos=$(yq -r --indentless '.repositories.[].url' /opt/environments/nbw-wrangler-spec.yaml | cut -d' ' -f2)
-for repo in ${notebook_repos}; do
-    out=$(basename $repo | perl -p -e's/.git//g')
-    /opt/common-scripts/git-sync-v4 ${repo} main ${HOME}/references/${out}   # -ref
+yq -r '.repositories | to_entries[] | [.value.url, (.value.ref // "main")] | @tsv' \
+    /opt/environments/nbw-wrangler-spec.yaml |
+while IFS=$'\t' read -r repo ref; do
+    out=$(basename "${repo}" | perl -p -e's/.git$//g')
+    /opt/common-scripts/git-sync-v4 "${repo}" "${ref}" "${HOME}/references/${out}"
 done
