@@ -25,8 +25,8 @@ system:
   spi:
     repo: https://github.com/jaytmiller/science-platform-images.git
     ref: dev
-  date_updated: '2026-07-15T16:06:39.693403'
-  spec_sha256: 22d6761e69fce445fbc26a91ff2b689dbef5e310573fe555b2f81c97608a7f78
+  date_updated: '2026-07-15T16:32:34.489371'
+  spec_sha256: ddc18d82d6895056b216ba16d6b0031ccaf8da55dd294ae9b329e26a213bd1a0
 
 selected_notebooks:
   roman_all:
@@ -84,7 +84,7 @@ out:
       resolved_ref: 2026.2.2
   spi:
     repo: https://github.com/jaytmiller/science-platform-images.git
-    ref: 477101405d5dbe2acc23baec46beba3ecae59d72
+    ref: 1d55dad0e7aea961c2164cfea229214b22e32aea
   test_notebooks:
     references/roman_notebooks/notebooks/aperture_photometry/aperture_photometry.ipynb: 
       roman_all
