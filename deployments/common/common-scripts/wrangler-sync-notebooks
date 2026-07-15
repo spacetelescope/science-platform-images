@@ -7,10 +7,12 @@ if [[ "${GIT_SYNC_OFF}" == "1" ]]; then
     exit 0
 fi
 
-for url_ref in nbw /opt/environments/nbw-wrangler-spec.yaml --print-repo-tags --quiet; do
-    url = cut -d ' ' -f 1 url_ref
-    ref = cut -d ' ' -f 2 url_ref
-    ref = ${GIT_SYNC_OVERRIDE_TAG:-${ref}}
+mamba activate base
+
+for url_ref in $(nbw /opt/environments/nbw-wrangler-spec.yaml --print-repo-tags --quiet); do
+    url=$(echo $url_ref | cut -d ' ' -f 1)
+    ref=$(echo $url_ref |  cut -d ' ' -f 2)
+    ref=${GIT_SYNC_OVERRIDE_TAG:-${ref}}
     out=$(basename $url | perl -p -e's/\.git//g')
     /opt/common-scripts/git-sync-v4 ${url} main ${HOME}/references/${out}   # -ref
 done
