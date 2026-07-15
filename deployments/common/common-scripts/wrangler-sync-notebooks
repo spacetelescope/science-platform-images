@@ -9,10 +9,10 @@ fi
 
 mamba activate base
 
-for url_ref in $(nbw /opt/environments/nbw-wrangler-spec.yaml --print-repo-tags --quiet); do
-    url=$(echo $url_ref | cut -d ' ' -f 1)
-    ref=$(echo $url_ref |  cut -d ' ' -f 2)
-    ref=${GIT_SYNC_OVERRIDE_TAG:-${ref}}
-    out=$(basename $url | perl -p -e's/\.git//g')
-    /opt/common-scripts/git-sync-v4 ${url} main ${HOME}/references/${out}   # -ref
-done
+while IFS= read -r line; do
+  read -r url ref <<<"$line"
+  echo "url=$url ref=$ref"
+  ref=${GIT_SYNC_OVERRIDE_TAG:-${ref}}
+  clone_dir=$(basename $url | perl -p -e's/\.git//g')
+  /opt/common-scripts/git-sync-v4 ${url} ${ref} ${HOME}/references/${clone_dir}
+done < <($(nbw /opt/environments/nbw-wrangler-spec.yaml --print-repo-tags --quiet)
