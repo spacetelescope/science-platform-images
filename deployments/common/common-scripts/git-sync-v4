@@ -7,6 +7,7 @@ their updates to git, git-sync-v4 will ensure that the student's copy is up to d
 Because the sync'ed clone is intended as an up-to-date reference copy,  user changes
 are discouraged while attempting to do as little damage as possible.
 """
+
 from collections.abc import Set as AbstractSet
 import os
 import sys
@@ -500,7 +501,7 @@ class Syncer:
         Do a second shallow clone, still without checking out, but only fetching the files we need.
         """
         log.info("Creating new clone.")
-        
+
         # Try cloning with branch parameter first (works for branches)
         try:
             self.repo = git.Repo.clone_from(
@@ -508,11 +509,13 @@ class Syncer:
             )
         except git.exc.GitCommandError:
             # If that fails (likely a tag or commit hash), clone without specifying branch
-            log.debug(f"Branch {self.branch} not found, trying to clone without branch specification")
+            log.debug(
+                f"Branch {self.branch} not found, trying to clone without branch specification"
+            )
             self.repo = git.Repo.clone_from(
                 self.repo_url, self.repo_dir, filter="blob:none"
             )
-        
+
         self.repo.git.config("safe.directory", self.repo_dir, "--global")
         self.repo.git.fetch("origin", self.branch)
 
@@ -644,25 +647,35 @@ class Syncer:
         """Updates the local git repo to the latest version of the remote."""
         log.debug("Resetting and updating.")
         #  self.repo.head.reset(index=True, working_tree=True)
-        
+
         # Check if self.branch is a tag (tags don't have origin/ counterparts)
         # Try both methods and use whichever works
         is_tag = False
         try:
             # If we can resolve the branch as origin/<branch>, it's likely a branch
-            shell(f"git rev-parse origin/{self.branch}", cwd=self.repo_dir, check=True, capture_output=True)
+            shell(
+                f"git rev-parse origin/{self.branch}",
+                cwd=self.repo_dir,
+                check=True,
+                capture_output=True,
+            )
         except subprocess.CalledProcessError:
             # If that fails, it might be a tag or commit hash
             try:
                 # Check if it's a valid tag
-                shell(f"git rev-parse tags/{self.branch}", cwd=self.repo_dir, check=True, capture_output=True)
+                shell(
+                    f"git rev-parse tags/{self.branch}",
+                    cwd=self.repo_dir,
+                    check=True,
+                    capture_output=True,
+                )
                 is_tag = True
             except subprocess.CalledProcessError:
                 # Not a tag, likely a commit hash or other ref
                 pass
-        
+
         checkout_ref = self.branch if is_tag else f"origin/{self.branch}"
-        
+
         return shell(
             f"""set -euo pipefail
 git reset HEAD .
@@ -707,7 +720,12 @@ git checkout {checkout_ref}
         if diff:
             # Check if self.branch is a tag to avoid using origin/<tag>
             try:
-                shell(f"git rev-parse origin/{self.branch}", cwd=self.repo_dir, check=True, capture_output=True)
+                shell(
+                    f"git rev-parse origin/{self.branch}",
+                    cwd=self.repo_dir,
+                    check=True,
+                    capture_output=True,
+                )
                 ref = f"origin/{self.branch}"
             except subprocess.CalledProcessError:
                 ref = self.branch
