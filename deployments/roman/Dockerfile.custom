@@ -1,20 +1,19 @@
 # ========================= vvvvv Custom  vvvvv =========================
 
 ARG BASE_IMAGE=notebook-common
-FROM ${BASE_IMAGE}
+FROM ${BASE_IMAGE} AS build
 
 ARG NBW_ROOT="/opt/nbw-live"
 ENV NBW_ROOT="${NBW_ROOT}"
+
 ARG NBW_PANTRY="/teams/admin/nbw-pantry"
+ENV NBW_PANTRY="${NBW_PANTRY}"
 
 # ----------------------------------------------------------------------
 # Duplicated in config,  these are for standalone non-hub lab use.
 
-ENV CRDS_PATH=$HOME/crds_cache
-ENV CRDS_SERVER_URL=https://roman-crds.stsci.edu
-# ENV CRDS_VERBOSITY=20
-ENV PYTHONPATH="/srv/jupyter"
 
+ENV PYTHONPATH="/srv/jupyter"
 
 # ------------------------------------------------------------------------------
 
@@ -25,7 +24,7 @@ USER root
 # Performing common update here enables mission specific frozen spec.
 
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
-COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
+COPY --chown=${NB_UID}:${NB_GID} environments/  /opt/environments/
 
 # ----------------------------------------------------------------------
 # Wrangler extensions for (a) extra apt packages and (b) custom script
@@ -35,7 +34,7 @@ RUN [ ! -f /opt/environments/apt-packages.txt ] || \
     /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
 
 # (b) Bash script for arbitrary commands
-RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+RUN [ ! -f /opt/environments/dockerfile-aux.sh ] || \
     bash /opt/environments/dockerfile-aux.sh
 
 # ------------------------------------------------------------------------------

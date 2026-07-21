@@ -6,7 +6,6 @@ FROM ${BASE_IMAGE} AS build
 ARG NBW_ROOT="/opt/nbw-live"
 ENV NBW_ROOT="${NBW_ROOT}"
 
-# ARG NBW_PANTRY="${HOME}/.nbw-pantry"
 ARG NBW_PANTRY="/teams/admin/nbw-pantry"
 ENV NBW_PANTRY="${NBW_PANTRY}"
 
@@ -26,8 +25,8 @@ RUN mkdir -p ${NBW_ROOT} && chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
 # Add jupyter-lab-extensions to base environment as well as standard packages.
 # Performing common update here enables mission specific frozen spec.
 
-COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/ /opt/env-frozen/base
+COPY --chown=${NB_UID}:${NB_GID} environments/  /opt/environments/
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 
 # ----------------------------------------------------------------------
 # Wrangler extensions for (a) extra apt packages and (b) custom script
@@ -37,28 +36,25 @@ RUN [ ! -f /opt/environments/apt-packages.txt ] || \
     /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
 
 # (b) Bash script for arbitrary commands
-RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+RUN [ ! -f /opt/environments/dockerfile-aux.sh ] || \
     bash /opt/environments/dockerfile-aux.sh
 
-# ----------------------------------------------------------------------
-# Optional mamba/pip extensions to base environment (jupyter/docker-stacks)
-# shared with mission env
+# ------------------------------------------------------------------------------
+# Install environments
+
+# All specs for frozen builds need to be available before their normal installs
+USER ${NB_UID}:${NB_GID}
 
 WORKDIR ${NBW_ROOT}
-USER ${NB_UID}
 
 RUN   /opt/common-scripts/install-common  base
 
-# ----------------------------------------------------------------------
-# Mission environment reinstalled from curated wrangler spec
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
-
 RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
-    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
     /opt/common-scripts/env-clean
 
 # Suppress tensorflow warnings by default, ERROR and up only
