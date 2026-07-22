@@ -8,12 +8,24 @@ on:
         required: true
         type: string
       roman_notebooks_ref:
-        description: Roman Notebooks CalVer tag to build from
+        description: Roman Notebooks tag to build from
         required: true
         type: string
-      roman_notebooks_calver:
-        description: Roman Notebooks CalVer release
+      roman_notebooks_version:
+        description: Roman Notebooks release or test version
         required: true
+        type: string
+      roman_notebooks_release_channel:
+        description: Image publication channel
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - test
+      roman_notebooks_calver:
+        description: Roman Notebooks CalVer release, used only for release images
+        required: false
         type: string
       roman_notebooks_sha:
         description: Commit SHA for the Roman Notebooks release
@@ -25,12 +37,12 @@ on:
         type: string
 
 concurrency:
-  group: roman-research-nexus-${{ inputs.roman_notebooks_calver }}
+  group: roman-research-nexus-${{ inputs.roman_notebooks_release_channel }}-${{ inputs.roman_notebooks_version }}
   cancel-in-progress: false
 
 jobs:
   build:
-    name: Roman Research Nexus ${{ inputs.roman_notebooks_calver }}
+    name: Roman Research Nexus ${{ inputs.roman_notebooks_version }}
     runs-on: ubuntu-22.04
 
     permissions:
@@ -47,15 +59,33 @@ jobs:
         env:
           SOURCE_REPOSITORY: ${{ inputs.source_repository }}
           ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
+          ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
+          ROMAN_NOTEBOOKS_RELEASE_CHANNEL: ${{ inputs.roman_notebooks_release_channel }}
           ROMAN_NOTEBOOKS_CALVER: ${{ inputs.roman_notebooks_calver }}
           ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
         run: |
           set -euo pipefail
 
           [[ "$SOURCE_REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
-          [[ "$ROMAN_NOTEBOOKS_CALVER" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+$ ]]
-          [[ "$ROMAN_NOTEBOOKS_REF" == "$ROMAN_NOTEBOOKS_CALVER" ]]
           [[ "$ROMAN_NOTEBOOKS_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+
+          case "$ROMAN_NOTEBOOKS_RELEASE_CHANNEL" in
+            release)
+              [[ "$ROMAN_NOTEBOOKS_VERSION" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+$ ]]
+              [[ "$ROMAN_NOTEBOOKS_REF" == "$ROMAN_NOTEBOOKS_VERSION" ]]
+              if [[ -n "$ROMAN_NOTEBOOKS_CALVER" ]]; then
+                [[ "$ROMAN_NOTEBOOKS_CALVER" == "$ROMAN_NOTEBOOKS_VERSION" ]]
+              fi
+              ;;
+            test)
+              [[ "$ROMAN_NOTEBOOKS_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+              [[ "$ROMAN_NOTEBOOKS_REF" == "$ROMAN_NOTEBOOKS_VERSION" ]]
+              ;;
+            *)
+              echo "Unsupported release channel: $ROMAN_NOTEBOOKS_RELEASE_CHANNEL" >&2
+              exit 1
+              ;;
+          esac
 
       - name: Verify Roman Notebooks release tag
         shell: bash
@@ -96,44 +126,54 @@ jobs:
         env:
           SOURCE_REPOSITORY: ${{ inputs.source_repository }}
           ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
-          ROMAN_NOTEBOOKS_CALVER: ${{ inputs.roman_notebooks_calver }}
+          ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
+          ROMAN_NOTEBOOKS_RELEASE_CHANNEL: ${{ inputs.roman_notebooks_release_channel }}
           ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
           ROMAN_NOTEBOOKS_RELEASE_URL: ${{ inputs.roman_notebooks_release_url }}
         run: |
           set -euo pipefail
 
           cat > /tmp/update_roman_spec.py <<'PY'
-import os
-from pathlib import Path
+          import os
+          from pathlib import Path
 
-import yaml
+          import yaml
 
-spec_path = Path("deployments/roman/environments/nbw-wrangler-spec.yaml")
-spec = yaml.safe_load(spec_path.read_text())
+          spec_path = Path("deployments/roman/environments/nbw-wrangler-spec.yaml")
+          spec = yaml.safe_load(spec_path.read_text())
 
-calver = os.environ["ROMAN_NOTEBOOKS_CALVER"]
-source_repository = os.environ["SOURCE_REPOSITORY"]
+          version = os.environ["ROMAN_NOTEBOOKS_VERSION"]
+          channel = os.environ["ROMAN_NOTEBOOKS_RELEASE_CHANNEL"]
+          source_repository = os.environ["SOURCE_REPOSITORY"]
 
-spec["repositories"]["roman_notebooks"]["url"] = (
-    f"https://github.com/{source_repository}.git"
-)
-spec["repositories"]["roman_notebooks"]["ref"] = os.environ["ROMAN_NOTEBOOKS_REF"]
-spec["system"]["primary_repo"] = source_repository
+          spec["repositories"]["roman_notebooks"]["url"] = (
+              f"https://github.com/{source_repository}.git"
+          )
+          spec["repositories"]["roman_notebooks"]["ref"] = os.environ["ROMAN_NOTEBOOKS_REF"]
+          spec["system"]["primary_repo"] = source_repository
 
-header = spec["image_spec_header"]
-header["image_name"] = f"RomanNexus-{calver}"
-header["kernel_name"] = f"RomanNexus-{calver}"
-header["display_name"] = f"Roman Research Nexus {calver}"
+          header = spec["image_spec_header"]
+          if channel == "release":
+              header["image_name"] = f"RomanNexus-{version}"
+              header["kernel_name"] = f"RomanNexus-{version}"
+              header["display_name"] = f"Roman Research Nexus {version}"
+          else:
+              header["image_name"] = f"RomanNexus-test-{version}"
+              header["kernel_name"] = f"RomanNexus-test-{version}"
+              header["display_name"] = f"Roman Research Nexus {version} test"
 
-spec.setdefault("release", {})
-spec["release"]["roman_notebooks_calver"] = calver
-spec["release"]["roman_notebooks_sha"] = os.environ["ROMAN_NOTEBOOKS_SHA"]
-spec["release"]["roman_notebooks_release_url"] = os.environ[
-    "ROMAN_NOTEBOOKS_RELEASE_URL"
-]
+          spec.setdefault("release", {})
+          spec["release"]["roman_notebooks_version"] = version
+          spec["release"]["roman_notebooks_channel"] = channel
+          if channel == "release":
+              spec["release"]["roman_notebooks_calver"] = version
+          spec["release"]["roman_notebooks_sha"] = os.environ["ROMAN_NOTEBOOKS_SHA"]
+          spec["release"]["roman_notebooks_release_url"] = os.environ[
+              "ROMAN_NOTEBOOKS_RELEASE_URL"
+          ]
 
-spec_path.write_text(yaml.safe_dump(spec, sort_keys=False))
-PY
+          spec_path.write_text(yaml.safe_dump(spec, sort_keys=False))
+          PY
           python /tmp/update_roman_spec.py
 
           git diff -- deployments/roman/environments/nbw-wrangler-spec.yaml
@@ -183,7 +223,8 @@ PY
         shell: bash
         env:
           GHCR_IMAGE: ghcr.io/spacetelescope/science-platform-images/roman-research-nexus
-          ROMAN_NOTEBOOKS_CALVER: ${{ inputs.roman_notebooks_calver }}
+          ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
+          ROMAN_NOTEBOOKS_RELEASE_CHANNEL: ${{ inputs.roman_notebooks_release_channel }}
           ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
         run: |
           set -euo pipefail
@@ -191,7 +232,13 @@ PY
           source setup-env
           short_sha="${ROMAN_NOTEBOOKS_SHA:0:7}"
 
-          for tag in latest "$ROMAN_NOTEBOOKS_CALVER" "sha-${short_sha}"; do
+          if [[ "$ROMAN_NOTEBOOKS_RELEASE_CHANNEL" == "release" ]]; then
+            tags=(latest "$ROMAN_NOTEBOOKS_VERSION" "sha-${short_sha}")
+          else
+            tags=(test "test-${ROMAN_NOTEBOOKS_VERSION}" "test-sha-${short_sha}")
+          fi
+
+          for tag in "${tags[@]}"; do
             docker tag "$NOTEBOOK_ID" "${GHCR_IMAGE}:${tag}"
             docker push "${GHCR_IMAGE}:${tag}"
           done
@@ -204,7 +251,8 @@ PY
             echo ""
             echo "| Field | Value |"
             echo "|---|---|"
-            echo "| Roman Notebooks release | ${{ inputs.roman_notebooks_calver }} |"
+            echo "| Channel | ${{ inputs.roman_notebooks_release_channel }} |"
+            echo "| Roman Notebooks version | ${{ inputs.roman_notebooks_version }} |"
             echo "| Roman Notebooks SHA | ${{ inputs.roman_notebooks_sha }} |"
             echo "| Release URL | ${{ inputs.roman_notebooks_release_url }} |"
           } >> "$GITHUB_STEP_SUMMARY"
