@@ -366,7 +366,7 @@ class Syncer:
     @property
     def git_files(self) -> SortedSet:
         """Return the sorted set of files owned by the repo vs. the user."""
-        return list_git_tree(self.repo_dir, self.branch)
+        return list_git_tree(self.repo_dir, "HEAD")
 
     @property
     def git_dirs(self) -> SortedSet:
@@ -518,6 +518,7 @@ class Syncer:
 
         self.repo.git.config("safe.directory", self.repo_dir, "--global")
         self.repo.git.fetch("origin", self.branch)
+        self.repo.git.checkout("--detach", "FETCH_HEAD")
 
     def add_sync_instructions(self) -> None:
         """Add the sync instructions file to the repo and the root directory."""
@@ -644,48 +645,13 @@ class Syncer:
         dump_set("Git files", self.git_files)
 
     def reset_and_update_branch(self) -> str:
-        """Updates the local git repo to the latest version of the remote."""
+        """Update the clone to the exact commit fetched for the configured ref."""
         log.debug("Resetting and updating.")
-        #  self.repo.head.reset(index=True, working_tree=True)
-
-        # Check if self.branch is a tag (tags don't have origin/ counterparts)
-        # Try both methods and use whichever works
-        is_tag = False
-        try:
-            # If we can resolve the branch as origin/<branch>, it's likely a branch
-            shell(
-                f"git rev-parse origin/{self.branch}",
-                cwd=self.repo_dir,
-                check=True,
-                capture_output=True,
-            )
-        except subprocess.CalledProcessError:
-            # If that fails, it might be a tag or commit hash
-            try:
-                # Check if it's a valid tag
-                shell(
-                    f"git rev-parse tags/{self.branch}",
-                    cwd=self.repo_dir,
-                    check=True,
-                    capture_output=True,
-                )
-                is_tag = True
-            except subprocess.CalledProcessError:
-                # Not a tag, likely a commit hash or other ref
-                pass
-
-        checkout_ref = self.branch if is_tag else f"origin/{self.branch}"
-
-        return shell(
-            f"""set -euo pipefail
-git reset HEAD .
-git status --porcelain
-git checkout -- .
-git checkout {checkout_ref}
-#git status --porcelain
-""",
-            cwd=self.repo_dir,
-        ).stdout
+        self.repo.git.reset("HEAD", ".")
+        self.repo.git.checkout("--", ".")
+        self.repo.git.checkout("--detach", "FETCH_HEAD")
+        self.repo.git.reset("--hard", "FETCH_HEAD")
+        return self.repo.git.status("--porcelain")
 
     def lock_clone(self):
         """Lock the repo by changing the permissions of all files and directories
@@ -718,18 +684,7 @@ git checkout {checkout_ref}
                 mode == "untracked"
             ), f"Expected only untracked artifacts to be present: {path}"
         if diff:
-            # Check if self.branch is a tag to avoid using origin/<tag>
-            try:
-                shell(
-                    f"git rev-parse origin/{self.branch}",
-                    cwd=self.repo_dir,
-                    check=True,
-                    capture_output=True,
-                )
-                ref = f"origin/{self.branch}"
-            except subprocess.CalledProcessError:
-                ref = self.branch
-            results = shell(f"git diff {ref}", cwd=self.repo_dir)
+            results = shell("git diff --exit-code HEAD", cwd=self.repo_dir, check=False)
             if results.returncode != 0:
                 raise ValueError("Expected a clean diff for updated-clone repo.")
 
