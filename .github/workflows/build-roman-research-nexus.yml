@@ -23,6 +23,14 @@ on:
         options:
           - release
           - test
+      roman_notebooks_delivery_mode_recommendation:
+        description: Advisory delivery mode from the Roman Notebooks release workflow
+        required: false
+        default: image
+        type: choice
+        options:
+          - image
+          - spec
       roman_notebooks_calver:
         description: Roman Notebooks CalVer release, used only for release images
         required: false
@@ -61,6 +69,7 @@ jobs:
           ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
           ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
           ROMAN_NOTEBOOKS_RELEASE_CHANNEL: ${{ inputs.roman_notebooks_release_channel }}
+          ROMAN_NOTEBOOKS_DELIVERY_MODE_RECOMMENDATION: ${{ inputs.roman_notebooks_delivery_mode_recommendation }}
           ROMAN_NOTEBOOKS_CALVER: ${{ inputs.roman_notebooks_calver }}
           ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
         run: |
@@ -68,11 +77,13 @@ jobs:
 
           [[ "$SOURCE_REPOSITORY" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]
           [[ "$ROMAN_NOTEBOOKS_SHA" =~ ^[0-9a-fA-F]{40}$ ]]
+          [[ "$ROMAN_NOTEBOOKS_DELIVERY_MODE_RECOMMENDATION" =~ ^(image|spec)$ ]]
 
           case "$ROMAN_NOTEBOOKS_RELEASE_CHANNEL" in
             release)
               [[ "$ROMAN_NOTEBOOKS_VERSION" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+$ ]]
               [[ "$ROMAN_NOTEBOOKS_REF" == "$ROMAN_NOTEBOOKS_VERSION" ]]
+              [[ "$ROMAN_NOTEBOOKS_DELIVERY_MODE_RECOMMENDATION" == "image" ]]
               if [[ -n "$ROMAN_NOTEBOOKS_CALVER" ]]; then
                 [[ "$ROMAN_NOTEBOOKS_CALVER" == "$ROMAN_NOTEBOOKS_VERSION" ]]
               fi
@@ -128,6 +139,7 @@ jobs:
           ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
           ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
           ROMAN_NOTEBOOKS_RELEASE_CHANNEL: ${{ inputs.roman_notebooks_release_channel }}
+          ROMAN_NOTEBOOKS_DELIVERY_MODE_RECOMMENDATION: ${{ inputs.roman_notebooks_delivery_mode_recommendation }}
           ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
           ROMAN_NOTEBOOKS_RELEASE_URL: ${{ inputs.roman_notebooks_release_url }}
         run: |
@@ -144,6 +156,7 @@ jobs:
 
           version = os.environ["ROMAN_NOTEBOOKS_VERSION"]
           channel = os.environ["ROMAN_NOTEBOOKS_RELEASE_CHANNEL"]
+          delivery_mode = os.environ["ROMAN_NOTEBOOKS_DELIVERY_MODE_RECOMMENDATION"]
           source_repository = os.environ["SOURCE_REPOSITORY"]
 
           spec["repositories"]["roman_notebooks"]["url"] = (
@@ -165,6 +178,7 @@ jobs:
           spec.setdefault("release", {})
           spec["release"]["roman_notebooks_version"] = version
           spec["release"]["roman_notebooks_channel"] = channel
+          spec["release"]["delivery_mode_recommendation"] = delivery_mode
           if channel == "release":
               spec["release"]["roman_notebooks_calver"] = version
           spec["release"]["roman_notebooks_sha"] = os.environ["ROMAN_NOTEBOOKS_SHA"]
@@ -252,6 +266,7 @@ jobs:
             echo "| Field | Value |"
             echo "|---|---|"
             echo "| Channel | ${{ inputs.roman_notebooks_release_channel }} |"
+            echo "| Delivery mode recommendation | ${{ inputs.roman_notebooks_delivery_mode_recommendation }} |"
             echo "| Roman Notebooks version | ${{ inputs.roman_notebooks_version }} |"
             echo "| Roman Notebooks SHA | ${{ inputs.roman_notebooks_sha }} |"
             echo "| Release URL | ${{ inputs.roman_notebooks_release_url }} |"
