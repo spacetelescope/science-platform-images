@@ -29,13 +29,16 @@ COPY --chown=${NB_UID}:${NB_GID} environments/  /opt/environments/
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 
 # ----------------------------------------------------------------------
-# Wrangler extensions for (a) extra apt packages and (b) custom script
 
-# (a) Optional Ubuntu packages if api-packages.txt is defined
+# (a) Wrangler/System bash script to copy assets to destinations
+RUN [ ! -f /opt/environments/install-assets.sh ] || \
+    bash /opt/environments/install-assets.sh
+
+# (b) Optional Ubuntu packages if api-packages.txt is defined
 RUN [ ! -f /opt/environments/apt-packages.txt ] || \
     /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
 
-# (b) Bash script for arbitrary commands
+# (c) Curator bash script for arbitrary commands
 RUN [ ! -f /opt/environments/dockerfile-aux.sh ] || \
     bash /opt/environments/dockerfile-aux.sh
 
