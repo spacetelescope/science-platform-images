@@ -7,7 +7,7 @@ if [[ "${GIT_SYNC_OFF}" == "1" ]]; then
     exit 0
 fi
 
-mamba activate base
+source /opt/common-scripts/env-activate base
 
 while IFS= read -r line; do
   read -r url ref <<<"$line"

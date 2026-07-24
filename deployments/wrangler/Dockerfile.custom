@@ -56,7 +56,7 @@ RUN   /opt/common-scripts/install-common  base
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
 RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
-    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print --data-env-vars-mode pantry --data-no-symlinks  >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
     /opt/common-scripts/env-clean
 
