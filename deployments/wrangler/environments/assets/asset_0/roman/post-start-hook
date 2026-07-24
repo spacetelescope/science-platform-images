@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# set -u
+
+# .............................................................................................
+#
+# This file is used to initialize $HOME after a notebook session has been spawned.
+#
+# When running on JupyterHub,  $HOME is backed by and overlay of EFS and AWS features
+#   are available.
+# When running in Docker,  $HOME is part of the image being initialized for standalone
+#   usage.   AWS features are assumed to be unavailable.
+#
+# ONLY this file should be called from the Dockerfile or hub post start hook.
+# When called on jupyterhub, the single optional parameter "on-hub" should be specified
+# to enable the initialization of features not needed/supported for standalone ops.
+#
+# .............................................................................................
+# Include multi-mission common behavior
+# .............................................................................................
+HUB_FLAG=${1:-"on-hub"}
+
+/opt/common-scripts/psh-preamble ${HUB_FLAG}
+set +e   # Do not let init failures block logins
+
+# .............................................................................................
+# # CRDS cache setup and sharing
+#
+# Only a hub installation is guaranteed to have a shared CRDS cache
+# which can be exploited by symlinking.  Note that this symlinking
+# process is a definite improvement over normal CRDS caching since a
+# user's cache can share system files while remaining writable for
+# files which are not available globally.
+# .............................................................................................
+if [[ $HUB_FLAG == "on-hub" ]]; then
+    /opt/common-scripts/symlink-crds
+fi
+# .............................................................................................
+# Sync reference notebook directories / branches.
+# .............................................................................................
+
+/opt/common-scripts/wrangler-sync-notebooks
+
+/opt/common-scripts/wrangler-register-kernel
+
+# .............................................................................................
+# Configure jupyter-app-launcher for custom launcher items
+# .............................................................................................
+mkdir -p $HOME/.local/share/jupyter/jupyter_app_launcher/
+cp /opt/environments/jp_app_launcher.yaml $HOME/.local/share/jupyter/jupyter_app_launcher/
+
+# Make sure the script does not *return* fail blocking spawn
+exit 0
