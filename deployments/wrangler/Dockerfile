@@ -36,7 +36,8 @@ USER root
 # (a) Wrangler/System bash script to copy assets to destinations
 RUN [ ! -f /opt/environments/install-assets.sh ] || \
     bash /opt/environments/install-assets.sh && \
-    fix-permissions $HOME /opt/environments
+    chown -R ${NB_UID}:${NB_GID} $HOME $CONDA_DIR /opt/environments && \
+    fix-permissions $HOME $CONDA_DIR /opt/environments
 
 # (b) Optional Ubuntu packages if api-packages.txt is defined
 RUN [ ! -f /opt/environments/apt-packages.txt ] || \
@@ -56,7 +57,7 @@ WORKDIR ${NBW_ROOT}
 
 USER root
 RUN   /opt/common-scripts/install-common  base && \
-      fix-permissions /opt/conda
+      fix-permissions $CONDA_DIR
 
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
