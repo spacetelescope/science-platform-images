@@ -35,17 +35,7 @@ if [[ $HUB_FLAG == "on-hub" ]]; then
     # /opt/common-scripts/kernel-setup
 fi
 
-# .............................................................................................
-# Configure lightkurve and astropy cache locations for automatic clearing
-# .............................................................................................
-rm -rf $HOME/.lightkurve-cache
-mkdir -p $HOME/.cache \
-      $HOME/.lightkurve/cache \
-      $HOME/.astropy/cache
-cd $HOME/.cache
-rm -f astropy lightkurve
-ln -s $HOME/.astropy/cache  astropy
-ln -s $HOME/.lightkurve/cache  lightkurve
+/opt/common-scripts/wrangler-clear-caches
 
 /opt/common-scripts/wrangler-sync-notebooks
 
