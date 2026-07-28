@@ -56,8 +56,7 @@ USER ${NB_UID}:${NB_GID}
 WORKDIR ${NBW_ROOT}
 
 USER root
-RUN   /opt/common-scripts/install-common  base && \
-      fix-permissions $CONDA_DIR
+RUN   /opt/common-scripts/install-common  base
 
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
