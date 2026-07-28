@@ -31,10 +31,12 @@ COPY --chown=${NB_UID}:${NB_GID} environments/  /opt/environments/
 COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 
 # ----------------------------------------------------------------------
+USER root
 
 # (a) Wrangler/System bash script to copy assets to destinations
 RUN [ ! -f /opt/environments/install-assets.sh ] || \
-    bash /opt/environments/install-assets.sh
+    bash /opt/environments/install-assets.sh && \
+    fix-permissions $HOME /opt/environments
 
 # (b) Optional Ubuntu packages if api-packages.txt is defined
 RUN [ ! -f /opt/environments/apt-packages.txt ] || \
@@ -52,7 +54,9 @@ USER ${NB_UID}:${NB_GID}
 
 WORKDIR ${NBW_ROOT}
 
-RUN   /opt/common-scripts/install-common  base
+USER root
+RUN   /opt/common-scripts/install-common  base && \
+      fix-permissions /opt/conda
 
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
@@ -60,7 +64,8 @@ RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print --data-env-vars-mode pantry --data-no-symlinks  >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
-    /opt/common-scripts/env-clean
+    /opt/common-scripts/env-clean && \
+    fix-permissions /opt/conda
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
