@@ -33,14 +33,17 @@ COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 # ----------------------------------------------------------------------
 
 # (a) Wrangler/System bash script to copy assets to destinations
+USER ${NB_UID}:${NB_GID}
 RUN [ ! -f /opt/environments/install-assets.sh ] || \
     bash /opt/environments/install-assets.sh
 
 # (b) Optional Ubuntu packages if api-packages.txt is defined
+USER root
 RUN [ ! -f /opt/environments/apt-packages.txt ] || \
     /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
 
 # (c) Curator bash script for arbitrary commands
+USER root
 RUN [ ! -f /opt/environments/dockerfile-aux.sh ] || \
     bash /opt/environments/dockerfile-aux.sh
 
@@ -70,17 +73,8 @@ USER ${NB_UID}:${NB_GID}
 # ========================= ^^^^^ Custom  ^^^^^ =========================
 # ========================= vvvvv Generic vvvvv  =========================
 
-USER ${NB_UID}:${NB_GID}
-
-# ----------------------------------------------------------------------
-
-#
-# RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
-# RUN /opt/common-scripts/wrangler-register-kernel  (post start hook)
-
-# ----------------------------------------------------------------------
 # As part of Dockerfile.trailer,  these statements are executed from the
-# perspective of the deployment image directory,  not common.
+# perspective of the deployment directory,  not common.
 
 USER root
 
