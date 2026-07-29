@@ -14,7 +14,7 @@ SHELL ["/bin/bash", "--login", "-c"]
 # ----------------------------------------------------------------------
 # Install environments
 
-ENV PYTHONPATH="/srv/jupyter"
+# ENV PYTHONPATH="/srv/jupyter"
 
 USER root
 RUN chown ${NB_UID}:${NB_GID} /opt/conda/conda-meta  && \
