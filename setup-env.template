@@ -57,7 +57,7 @@ export GITHUB_IMAGE_SLIM_ID=${GITHUB_IMAGE_ID}-slim
 
 export UBUNTU_TAG="24.04"            # # Image scanning,  report Ubuntu status for this version of Ubuntu
 
-export BASE_PYTHON_VERSION="3.12"
+export BASE_PYTHON_VERSION="3.13"
 
 # ----------------- vvvv less frequently changed vvvv -------------------------------
 

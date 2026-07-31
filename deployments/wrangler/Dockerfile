@@ -6,7 +6,6 @@ FROM ${BASE_IMAGE} AS build
 ARG NBW_ROOT="/opt/nbw-live"
 ENV NBW_ROOT="${NBW_ROOT}"
 
-# ARG NBW_PANTRY="${HOME}/.nbw-pantry"
 ARG NBW_PANTRY="/teams/admin/nbw-pantry"
 ENV NBW_PANTRY="${NBW_PANTRY}"
 
@@ -14,6 +13,8 @@ SHELL ["/bin/bash", "--login", "-c"]
 
 # ----------------------------------------------------------------------
 # Install environments
+
+# ENV PYTHONPATH="/srv/jupyter"
 
 USER root
 RUN chown ${NB_UID}:${NB_GID} /opt/conda/conda-meta  && \
@@ -26,40 +27,45 @@ RUN mkdir -p ${NBW_ROOT} && chown -R ${NB_UID}:${NB_GID} ${NBW_ROOT} && \
 # Add jupyter-lab-extensions to base environment as well as standard packages.
 # Performing common update here enables mission specific frozen spec.
 
-COPY --chown=${NB_UID}:${NB_GID} environments/ /opt/environments/
-COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/ /opt/env-frozen/base
+COPY --chown=${NB_UID}:${NB_GID} environments/  /opt/environments/
+COPY --chown=${NB_UID}:${NB_GID} env-frozen/base/  /opt/env-frozen/base/
 
 # ----------------------------------------------------------------------
-# Wrangler extensions for (a) extra apt packages and (b) custom script
+USER root
 
-# (a) Optional Ubuntu packages if api-packages.txt is defined
+# (a) Wrangler/System bash script to copy assets to destinations
+RUN [ ! -f /opt/environments/install-assets.sh ] || \
+    bash /opt/environments/install-assets.sh && \
+    chown -R ${NB_UID}:${NB_GID} $HOME $CONDA_DIR /opt/environments && \
+    fix-permissions $HOME $CONDA_DIR /opt/environments
+
+# (b) Optional Ubuntu packages if api-packages.txt is defined
 RUN [ ! -f /opt/environments/apt-packages.txt ] || \
     /opt/common-scripts/apt-install $(cat /opt/environments/apt-packages.txt)
 
-# (b) Bash script for arbitrary commands
-RUN [ ! -f /opt/environments/apt-packages.txt ] || \
+# (c) Curator bash script for arbitrary commands
+RUN [ ! -f /opt/environments/dockerfile-aux.sh ] || \
     bash /opt/environments/dockerfile-aux.sh
 
-# ----------------------------------------------------------------------
-# Optional mamba/pip extensions to base environment (jupyter/docker-stacks)
-# shared with mission env
+# ------------------------------------------------------------------------------
+# Install environments
+
+# All specs for frozen builds need to be available before their normal installs
+USER ${NB_UID}:${NB_GID}
 
 WORKDIR ${NBW_ROOT}
-USER ${NB_UID}
 
+USER root
 RUN   /opt/common-scripts/install-common  base
 
-# ----------------------------------------------------------------------
-# Mission environment reinstalled from curated wrangler spec
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
-
 RUN source /opt/common-scripts/env-activate base && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
-    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print >/opt/environments/nbw-exports.sh ) && \
+    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print --data-env-vars-mode pantry --data-no-symlinks  >/opt/environments/nbw-exports.sh ) && \
     ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
-    fix-permissions ${NBW_ROOT} ${NBW_PANTRY} /opt/conda && \
-    /opt/common-scripts/env-clean
+    /opt/common-scripts/env-clean && \
+    fix-permissions /opt/conda
 
 # Suppress tensorflow warnings by default, ERROR and up only
 ENV TF_CPP_MIN_LOG_LEVEL=2
@@ -69,17 +75,8 @@ USER ${NB_UID}:${NB_GID}
 # ========================= ^^^^^ Custom  ^^^^^ =========================
 # ========================= vvvvv Generic vvvvv  =========================
 
-USER ${NB_UID}:${NB_GID}
-
-# ----------------------------------------------------------------------
-
-#
-# RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
-# RUN /opt/common-scripts/wrangler-register-kernel  (post start hook)
-
-# ----------------------------------------------------------------------
 # As part of Dockerfile.trailer,  these statements are executed from the
-# perspective of the deployment image directory,  not common.
+# perspective of the deployment directory,  not common.
 
 USER root
 

@@ -28,4 +28,5 @@ fi
 
 /opt/common-scripts/env-clean
 
+chown -R ${NB_UID}:${NB_GID} $CONDA_DIR $HOME
 fix-permissions $CONDA_DIR $HOME

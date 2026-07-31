@@ -1,16 +1,7 @@
 # ========================= vvvvv Generic vvvvv  =========================
 
-USER ${NB_UID}:${NB_GID}
-
-# ----------------------------------------------------------------------
-
-#
-# RUN /opt/common-scripts/kernel-setup   # set up Ipython / JupyterLab kernels
-# RUN /opt/common-scripts/wrangler-register-kernel  (post start hook)
-
-# ----------------------------------------------------------------------
 # As part of Dockerfile.trailer,  these statements are executed from the
-# perspective of the deployment image directory,  not common.
+# perspective of the deployment directory,  not common.
 
 USER root
 

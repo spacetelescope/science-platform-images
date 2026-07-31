@@ -1,0 +1,13 @@
+#! /bin/bash
+
+# .............................................................................................
+# Configure lightkurve and astropy cache locations for automatic clearing
+# .............................................................................................
+rm -rf $HOME/.lightkurve-cache
+mkdir -p $HOME/.cache \
+      $HOME/.lightkurve/cache \
+      $HOME/.astropy/cache
+cd $HOME/.cache
+rm -f astropy lightkurve
+ln -s $HOME/.astropy/cache  astropy
+ln -s $HOME/.lightkurve/cache  lightkurve
