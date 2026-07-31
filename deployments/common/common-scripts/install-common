@@ -18,14 +18,6 @@ source /opt/common-scripts/env-activate ${env}
 # Save fully pinned requirements for base,  copy out of image to git later.
 ${CONDA_VER} env export --no-build -n base >/opt/env-frozen/base/requirements.yml
 
-if pip freeze | grep jupyter-server-proxy; then
-    jupyter labextension install @jupyterlab/server-proxy
-fi
-
-if [[ "${env}" == "base" ]]; then
-    pip install git+https://github.com/spacetelescope/stsci-announce
-fi
-
 /opt/common-scripts/env-clean
 
 chown -R ${NB_UID}:${NB_GID} $CONDA_DIR $HOME

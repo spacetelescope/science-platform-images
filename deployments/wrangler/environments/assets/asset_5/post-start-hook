@@ -1,0 +1,65 @@
+#!/bin/bash
+
+(
+
+HUB_FLAG=${1:-"on-hub"}
+
+set -e  # Quota check failures block logins by design.
+
+function divider {
+    echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+}
+
+source /opt/common-scripts/env-activate base
+
+# .............................................................................................
+# Quota checking is only relevant to cloud deployments,  standalone sessions have no quotas.
+# .............................................................................................
+
+/opt/common-scripts/wrangler-check-quota
+divider
+
+# .............................................................................................
+# In general, failure of a step should not prevent logins enabling users to correct
+# any issues with $HOME state and re-login w/o direct admin assistance.
+# .............................................................................................
+
+set +e
+
+# .............................................................................................
+# Initialize $HOME with things like rc-files, conda setup, and jupyterlab kernel definitions.
+# .............................................................................................
+
+/opt/common-scripts/copy-default-home  $HUB_FLAG
+divider
+
+# .............................................................................................
+# # CRDS cache setup and sharing
+#
+# Only a hub installation is guaranteed to have a shared CRDS cache
+# which can be exploited by symlinking.  Note that this symlinking
+# process is a definite improvement over normal CRDS caching since a
+# user's cache can share system files while remaining writable for
+# files which are not available globally.
+# .............................................................................................
+
+/opt/common-scripts/wrangler-symlink-crds
+divider
+
+# .............................................................................................
+# Sync reference notebook directories / branches.
+# .............................................................................................
+
+/opt/common-scripts/wrangler-sync-notebooks
+divider
+
+/opt/common-scripts/wrangler-register-kernel
+divider
+
+/opt/common-scripts/wrangler-install-app-launcher
+divider
+
+# Make sure the script does not *return* fail blocking spawn
+exit 0
+
+) 2>&1 | tee $HOME/.post-start-hook.log
