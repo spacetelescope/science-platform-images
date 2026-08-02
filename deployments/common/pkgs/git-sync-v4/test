@@ -14,6 +14,6 @@ python -m pytest -v -v -v  \
        --pdb \
        --doctest-report cdiff \
        --cov=git_sync_v4 --cov-report=html:htmlcov  \
-       tests.py tests.txt $*
+       tests.py tests.txt test_exact_refs.py $*
 
 rm -rf __pycache__

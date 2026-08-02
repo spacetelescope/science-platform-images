@@ -1,0 +1,410 @@
+name: Build Roman Research Nexus
+run-name: RRN ${{ inputs.target_environment }} ${{ inputs.roman_notebooks_version }} [${{ inputs.correlation_id }}]
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_repository:
+        description: Repository that published the Roman Notebooks version
+        required: true
+        type: string
+      roman_notebooks_ref:
+        description: Roman Notebooks tag to deliver
+        required: true
+        type: string
+      roman_notebooks_version:
+        description: Roman Notebooks SemVer or CalVer
+        required: true
+        type: string
+      roman_notebooks_version_kind:
+        description: Version scheme used by the source event
+        required: true
+        type: choice
+        options:
+          - semver
+          - calver
+      target_environment:
+        description: RRN deployment target
+        required: true
+        type: choice
+        options:
+          - test
+          - ops
+      roman_notebooks_delivery_mode_recommendation:
+        description: Automated delivery classification from Roman Notebooks
+        required: true
+        type: choice
+        options:
+          - image
+          - spec
+      roman_notebooks_sha:
+        description: Commit SHA for the Roman Notebooks version
+        required: true
+        type: string
+      roman_notebooks_release_url:
+        description: GitHub Release URL
+        required: true
+        type: string
+      correlation_id:
+        description: Unique identifier used to find downstream workflow runs
+        required: true
+        type: string
+
+concurrency:
+  group: roman-research-nexus-${{ inputs.target_environment }}
+  cancel-in-progress: false
+
+env:
+  GHCR_IMAGE: ghcr.io/spacetelescope/science-platform-images/roman-research-nexus
+
+jobs:
+  validate:
+    name: Validate delivery request
+    runs-on: ubuntu-latest
+    outputs:
+      delivery_mode: ${{ steps.request.outputs.delivery_mode }}
+      image_tag: ${{ steps.request.outputs.image_tag }}
+      sha_tag: ${{ steps.request.outputs.sha_tag }}
+    steps:
+      - name: Validate source, version, and target
+        id: request
+        shell: bash
+        env:
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+          ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
+          ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
+          VERSION_KIND: ${{ inputs.roman_notebooks_version_kind }}
+          TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
+          DELIVERY_MODE: ${{ inputs.roman_notebooks_delivery_mode_recommendation }}
+          ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
+          CORRELATION_ID: ${{ inputs.correlation_id }}
+        run: |
+          set -euo pipefail
+
+          [[ "$ROMAN_NOTEBOOKS_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$CORRELATION_ID" =~ ^[A-Za-z0-9._-]+$ ]]
+          [[ "$ROMAN_NOTEBOOKS_REF" == "$ROMAN_NOTEBOOKS_VERSION" ]]
+
+          case "$TARGET_ENVIRONMENT" in
+            test)
+              [[ "$SOURCE_REPOSITORY" == "spacetelescope/notebook-ci-testing" \
+                || "$SOURCE_REPOSITORY" == "spacetelescope/roman_notebooks" ]]
+              ;;
+            ops)
+              [[ "$SOURCE_REPOSITORY" == "spacetelescope/roman_notebooks" ]]
+              [[ "$VERSION_KIND" == "calver" ]]
+              [[ "$DELIVERY_MODE" == "image" ]]
+              ;;
+            *) echo "Unsupported target environment: $TARGET_ENVIRONMENT" >&2; exit 1 ;;
+          esac
+
+          case "$VERSION_KIND" in
+            semver)
+              [[ "$ROMAN_NOTEBOOKS_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+              [[ "$TARGET_ENVIRONMENT" == "test" ]]
+              ;;
+            calver)
+              [[ "$ROMAN_NOTEBOOKS_VERSION" =~ ^[0-9]{4}\.[0-9]+\.[0-9]+$ ]]
+              ;;
+            *) echo "Unsupported version kind: $VERSION_KIND" >&2; exit 1 ;;
+          esac
+
+          if [[ "$DELIVERY_MODE" == "spec" && "$TARGET_ENVIRONMENT" != "test" ]]; then
+            echo "Spec-only delivery is available only in test." >&2
+            exit 1
+          fi
+          [[ "$DELIVERY_MODE" =~ ^(image|spec)$ ]]
+
+          if [[ "$TARGET_ENVIRONMENT" == "test" ]]; then
+            image_tag="test-${ROMAN_NOTEBOOKS_VERSION}"
+            sha_tag="test-sha-${ROMAN_NOTEBOOKS_SHA}"
+          else
+            image_tag="$ROMAN_NOTEBOOKS_VERSION"
+            sha_tag="sha-${ROMAN_NOTEBOOKS_SHA}"
+          fi
+          {
+            echo "delivery_mode=$DELIVERY_MODE"
+            echo "image_tag=$image_tag"
+            echo "sha_tag=$sha_tag"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Verify Roman Notebooks tag
+        shell: bash
+        env:
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+          ROMAN_NOTEBOOKS_REF: ${{ inputs.roman_notebooks_ref }}
+          ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
+        run: |
+          set -euo pipefail
+          remote="https://github.com/${SOURCE_REPOSITORY}.git"
+          resolved=$(git ls-remote --tags "$remote" \
+            "refs/tags/${ROMAN_NOTEBOOKS_REF}" \
+            "refs/tags/${ROMAN_NOTEBOOKS_REF}^{}" \
+            | awk '/\^\{\}$/ {print $1; found=1} !/\^\{\}$/ {direct=$1} END {if (!found) print direct}')
+          if [[ -z "$resolved" || "$resolved" != "$ROMAN_NOTEBOOKS_SHA" ]]; then
+            echo "Tag $ROMAN_NOTEBOOKS_REF did not resolve to $ROMAN_NOTEBOOKS_SHA." >&2
+            echo "Resolved SHA: ${resolved:-not found}" >&2
+            exit 1
+          fi
+
+  image:
+    name: Build immutable image
+    needs: validate
+    if: needs.validate.outputs.delivery_mode == 'image'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_repository: ${{ steps.publish.outputs.image_repository }}
+      image_tag: ${{ steps.publish.outputs.image_tag }}
+      image_digest: ${{ steps.publish.outputs.image_digest }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for a completed retry
+        id: existing
+        shell: bash
+        env:
+          SHA_TAG: ${{ needs.validate.outputs.sha_tag }}
+        run: |
+          set -euo pipefail
+          if details=$(docker buildx imagetools inspect \
+            "${GHCR_IMAGE}:${SHA_TAG}" 2>/dev/null); then
+            digest=$(printf '%s\n' "$details" \
+              | awk '$1 == "Digest:" {print $2; exit}')
+            [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "digest=$digest" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.existing.outputs.found != 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Configure build environment
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        run: pip install -r requirements.txt
+
+      - name: Pin Roman wrangler spec to the verified commit
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        env:
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+          ROMAN_NOTEBOOKS_VERSION: ${{ inputs.roman_notebooks_version }}
+          VERSION_KIND: ${{ inputs.roman_notebooks_version_kind }}
+          TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
+          ROMAN_NOTEBOOKS_SHA: ${{ inputs.roman_notebooks_sha }}
+          ROMAN_NOTEBOOKS_RELEASE_URL: ${{ inputs.roman_notebooks_release_url }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+
+          import yaml
+
+          path = Path("deployments/roman/environments/nbw-wrangler-spec.yaml")
+          spec = yaml.safe_load(path.read_text())
+          version = os.environ["ROMAN_NOTEBOOKS_VERSION"]
+          sha = os.environ["ROMAN_NOTEBOOKS_SHA"]
+          target = os.environ["TARGET_ENVIRONMENT"]
+          source = os.environ["SOURCE_REPOSITORY"]
+
+          spec["repositories"]["roman_notebooks"]["url"] = f"https://github.com/{source}.git"
+          spec["repositories"]["roman_notebooks"]["ref"] = sha
+          spec["system"]["primary_repo"] = source
+          spec.pop("dev_overrides", None)
+
+          header = spec["image_spec_header"]
+          prefix = "RomanNexus-test" if target == "test" else "RomanNexus"
+          header["image_name"] = f"{prefix}-{version}"
+          header["kernel_name"] = f"{prefix}-{version}"
+          header["display_name"] = f"Roman Research Nexus {version}"
+
+          spec["release"] = {
+              "roman_notebooks_version": version,
+              "roman_notebooks_version_kind": os.environ["VERSION_KIND"],
+              "target_environment": target,
+              "roman_notebooks_sha": sha,
+              "roman_notebooks_release_url": os.environ["ROMAN_NOTEBOOKS_RELEASE_URL"],
+          }
+          path.write_text(yaml.safe_dump(spec, sort_keys=False))
+          PY
+          git diff -- deployments/roman/environments/nbw-wrangler-spec.yaml
+
+      - name: Free disk space
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          df -h
+          sudo apt clean
+          sudo rm -rf "/usr/local/share/boost" "$AGENT_TOOLSDIRECTORY" \
+            /usr/local/lib/android /usr/share/dotnet
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo fallocate -l 24G /swapfile
+          sudo chmod 0600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+
+      - name: Build image
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/image-configure roman --use-frozen 0 --freeze 1 --owner quay.io/jupyter
+          source setup-env
+          scripts/image-build
+
+      - name: Test image
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          source setup-env
+          scripts/image-test
+
+      - name: Record container scanning handoff
+        if: steps.existing.outputs.found != 'true'
+        shell: bash
+        run: echo "Container scanning remains a required integration point before ops promotion."
+
+      - name: Publish immutable tags
+        id: publish
+        shell: bash
+        env:
+          VERSION_TAG: ${{ needs.validate.outputs.image_tag }}
+          SHA_TAG: ${{ needs.validate.outputs.sha_tag }}
+          EXISTING_DIGEST: ${{ steps.existing.outputs.digest }}
+          IMAGE_EXISTS: ${{ steps.existing.outputs.found }}
+        run: |
+          set -euo pipefail
+          if [[ "$IMAGE_EXISTS" == "true" ]]; then
+            digest=$EXISTING_DIGEST
+          else
+            source setup-env
+            docker tag "$NOTEBOOK_ID" "${GHCR_IMAGE}:${SHA_TAG}"
+            docker push "${GHCR_IMAGE}:${SHA_TAG}"
+            details=$(docker buildx imagetools inspect "${GHCR_IMAGE}:${SHA_TAG}")
+            digest=$(printf '%s\n' "$details" \
+              | awk '$1 == "Digest:" {print $2; exit}')
+            [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]
+          fi
+
+          if version_details=$(docker buildx imagetools inspect \
+            "${GHCR_IMAGE}:${VERSION_TAG}" 2>/dev/null); then
+            version_digest=$(printf '%s\n' "$version_details" \
+              | awk '$1 == "Digest:" {print $2; exit}')
+            if [[ "$version_digest" != "$digest" ]]; then
+              echo "Immutable version tag ${VERSION_TAG} already points to ${version_digest}." >&2
+              exit 1
+            fi
+          else
+            docker pull "${GHCR_IMAGE}@${digest}"
+            docker tag "${GHCR_IMAGE}@${digest}" "${GHCR_IMAGE}:${VERSION_TAG}"
+            docker push "${GHCR_IMAGE}:${VERSION_TAG}"
+          fi
+
+          {
+            echo "image_repository=$GHCR_IMAGE"
+            echo "image_tag=$SHA_TAG"
+            echo "image_digest=$digest"
+          } >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to RRN ${{ inputs.target_environment }}
+    needs:
+      - validate
+      - image
+    if: >-
+      always() && needs.validate.result == 'success' &&
+      (needs.image.result == 'success' || needs.image.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: rrn-${{ inputs.target_environment }}
+    steps:
+      - name: Dispatch deployment
+        id: dispatch
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.RRN_DEPLOY_ACTIONS_TOKEN }}
+          TARGET_REPOSITORY: spacetelescope/jupyterhub-deploy
+          TARGET_WORKFLOW: deploy-roman-image.yml
+          TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
+          DELIVERY_MODE: ${{ needs.validate.outputs.delivery_mode }}
+          IMAGE_REPOSITORY: ${{ needs.image.outputs.image_repository }}
+          IMAGE_TAG: ${{ needs.image.outputs.image_tag }}
+          IMAGE_DIGEST: ${{ needs.image.outputs.image_digest }}
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+          SOURCE_VERSION: ${{ inputs.roman_notebooks_version }}
+          VERSION_KIND: ${{ inputs.roman_notebooks_version_kind }}
+          SOURCE_SHA: ${{ inputs.roman_notebooks_sha }}
+          RELEASE_URL: ${{ inputs.roman_notebooks_release_url }}
+          CORRELATION_ID: ${{ inputs.correlation_id }}-deploy
+        run: |
+          set -euo pipefail
+          args=(
+            -f target_environment="$TARGET_ENVIRONMENT"
+            -f delivery_mode="$DELIVERY_MODE"
+            -f image_repository="$IMAGE_REPOSITORY"
+            -f image_tag="$IMAGE_TAG"
+            -f image_digest="$IMAGE_DIGEST"
+            -f source_repository="$SOURCE_REPOSITORY"
+            -f roman_notebooks_version="$SOURCE_VERSION"
+            -f roman_notebooks_version_kind="$VERSION_KIND"
+            -f roman_notebooks_sha="$SOURCE_SHA"
+            -f roman_notebooks_release_url="$RELEASE_URL"
+            -f correlation_id="$CORRELATION_ID"
+          )
+          gh workflow run "$TARGET_WORKFLOW" --repo "$TARGET_REPOSITORY" "${args[@]}"
+
+          run_id=""
+          for attempt in $(seq 1 60); do
+            run_id=$(gh run list --repo "$TARGET_REPOSITORY" \
+              --workflow "$TARGET_WORKFLOW" --event workflow_dispatch \
+              --json databaseId,displayTitle,createdAt \
+              --jq ".[] | select(.displayTitle | contains(\"[$CORRELATION_ID]\")) | .databaseId" \
+              | head -n1)
+            [[ -n "$run_id" ]] && break
+            sleep 10
+          done
+          if [[ -z "$run_id" ]]; then
+            echo "Could not find the downstream deployment run." >&2
+            exit 1
+          fi
+          url="https://github.com/${TARGET_REPOSITORY}/actions/runs/${run_id}"
+          echo "deployment_run_url=$url" >> "$GITHUB_OUTPUT"
+          gh run watch "$run_id" --repo "$TARGET_REPOSITORY" --exit-status
+
+      - name: Summary
+        shell: bash
+        env:
+          DEPLOYMENT_RUN_URL: ${{ steps.dispatch.outputs.deployment_run_url }}
+        run: |
+          {
+            echo "### Roman Research Nexus delivery"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Version | ${{ inputs.roman_notebooks_version }} |"
+            echo "| Version kind | ${{ inputs.roman_notebooks_version_kind }} |"
+            echo "| Target | ${{ inputs.target_environment }} |"
+            echo "| Delivery mode | ${{ needs.validate.outputs.delivery_mode }} |"
+            echo "| Roman Notebooks SHA | ${{ inputs.roman_notebooks_sha }} |"
+            echo "| Deployment run | ${DEPLOYMENT_RUN_URL} |"
+          } >> "$GITHUB_STEP_SUMMARY"
