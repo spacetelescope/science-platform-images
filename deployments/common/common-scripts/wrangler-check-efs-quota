@@ -41,18 +41,7 @@ def human_format_number(number):
 # ---------------------------------------------------------
 
 
-def main(argv=()):
-
-    if len(args) >= 1:
-       if args[0] == "on-hub":
-          logger.info("Executing EFS quota check since on-hub specified.")
-          pass # postive case, "on-hub" explicitly specified, check EFS quota
-       else:
-          logger.info("Skipping EFS quota check since not on-hub specified.")
-          exit(0)
-    else:
-        logger.info("Skipping EFS quota check since no platform specified, defaulting off-hub.")
-        exit(0)
+def main(args=()):
 
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
@@ -60,6 +49,19 @@ def main(argv=()):
     consoleHandler = logging.StreamHandler(sys.stdout)
     consoleHandler.setFormatter(formatter)
     logger.addHandler(consoleHandler)
+
+    if len(args) >= 1:
+        if args[0] == "on-hub":
+            logger.info("Executing EFS quota check since on-hub specified.")
+            pass  # postive case, "on-hub" explicitly specified, check EFS quota
+        else:
+            logger.info("Skipping EFS quota check since not on-hub specified.")
+            exit(0)
+    else:
+        logger.info(
+            "Skipping EFS quota check since no platform specified, defaulting off-hub."
+        )
+        exit(0)
 
     if not os.path.exists(QUOTA_FILE):
         logger.info(f"No quota control file found: {QUOTA_FILE}")
