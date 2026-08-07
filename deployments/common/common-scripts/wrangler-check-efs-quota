@@ -52,7 +52,7 @@ def main(argv=()):
           exit(0)
     else:
         logger.info("Skipping EFS quota check since no platform specified, defaulting off-hub.")
-        exit 0
+        exit(0)
 
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
