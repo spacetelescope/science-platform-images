@@ -13,9 +13,6 @@ RUN  cp -r $HOME/.local /etc/default-home-contents && \
 
 COPY global_bashrc $HOME
 
-# Copy any remaining environments files not caught by more precise as-needed build copies
-COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
-
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
      printf '\nDefaults    lecture = never\n' >> /etc/sudoers && \
@@ -46,11 +43,12 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
 ENV NBW_PANTRY=/teams/admin/nbw-pantry
 RUN mkdir -p ${NBW_PANTRY} && chown -R ${NB_UID}:${NB_GID} ${NBW_PANTRY}
 
+USER root
+RUN fix-permissions $CONDA_DIR && \
+    chown -R ${NB_UID}:${NB_GID} $HOME
+
 USER ${NB_UID}:${NB_GID}
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
-
-USER root
-RUN fix-permissions $CONDA_DIR $HOME
 
 USER ${NB_UID}:${NB_GID}
 WORKDIR $HOME

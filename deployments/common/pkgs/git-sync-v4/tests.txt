@@ -2,6 +2,7 @@
 >>> import logging
 >>> import re
 >>> import doctest
+>>> import git
 
 >>> import tests
 >>> import git_sync_v4 as gs
@@ -261,7 +262,7 @@ but here we just dump the parsing without acting on it:
 >>> s.repo_dir
 DirPath('references/sync-test-ref')
 
->>> s.branch
+>>> s.ref
 'main'
 
 >>> oct(FilePath('references/sync-test-ref/new-dir/made-up-1.txt').stat().st_mode)
@@ -382,6 +383,7 @@ DEBUG -     references/sync-test-ref/change-mode.md.12345678
 DEBUG -     references/sync-test-ref/change.txt
 DEBUG -     references/sync-test-ref/copy-me-2.txt
 DEBUG -     references/sync-test-ref/copy-me.txt
+DEBUG -     references/sync-test-ref/gs4.failed.log
 DEBUG -     references/sync-test-ref/made-up-file.ipynb
 DEBUG -     references/sync-test-ref/new-dir/made-up-1.txt
 DEBUG -     references/sync-test-ref/new-dir/sub-dir/made-up-2.txt
@@ -429,6 +431,7 @@ DEBUG -     references/sync-test-ref/blocker-file
 DEBUG -     references/sync-test-ref/change-mode.md
 DEBUG -     references/sync-test-ref/change.txt
 DEBUG -     references/sync-test-ref/copy-me.txt
+DEBUG -     references/sync-test-ref/gs4.failed.log
 DEBUG -     references/sync-test-ref/poison.dir/unchanged.txt
 DEBUG -     references/sync-test-ref/rename-me.txt
 DEBUG -     references/sync-test-ref/rw_to_poison.dir/normal.txt
@@ -448,6 +451,7 @@ DEBUG - Locking file references/sync-test-ref/blocker-file.
 DEBUG - Locking file references/sync-test-ref/change-mode.md.
 DEBUG - Locking file references/sync-test-ref/change.txt.
 DEBUG - Locking file references/sync-test-ref/copy-me.txt.
+DEBUG - Locking file references/sync-test-ref/gs4.failed.log.
 DEBUG - Locking file references/sync-test-ref/poison.dir/unchanged.txt.
 DEBUG - Locking file references/sync-test-ref/rename-me.txt.
 DEBUG - Locking file references/sync-test-ref/rw_to_poison.dir/normal.txt.
@@ -482,7 +486,7 @@ Test basic sync with no existing clone
 
 >>> _ = shell(tests.CLEANUP_SCRIPT)
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Creating new clone.
 INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
@@ -493,13 +497,32 @@ Test basic sync with existing clone
 
 >>> _ = shell(tests.INIT_SCRIPT)
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
 INFO - Validating...
 INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
 INFO - Sync complete.
 0
+
+-------------------------------------------------------------------------------
+
+Test fetch_origin preserves partial-clone remote extension config:
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)
+>>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"])  # doctest: +ELLIPSIS
+INFO - Syncing Syncer(repo_url='...')
+INFO - Creating new clone.
+INFO - Validating...
+INFO - Locking clone references/sync-test-ref: files r/o,  dirs r/w.
+INFO - Sync complete.
+0
+>>> s2 = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
+>>> orig_config = (DirPath("references/sync-test-ref").absolute() / FilePath(".git/config")).read_text()
+>>> assert "promisor" in orig_config, "Missing promisor config on initial clone"
+>>> s2.fetch_origin()  # must NOT corrupt partial-clone config
+>>> post_config = (DirPath("references/sync-test-ref").absolute() / FilePath(".git/config")).read_text()
+>>> assert "promisor" in post_config, "promisor stripped by fetch_origin"
 
 -------------------------------------------------------------------------------
 
@@ -521,7 +544,7 @@ Check clone blocked by file
 >>> _ = shell(tests.CLEANUP_SCRIPT)
 >>> _ = shell("mkdir references; echo 'Not a git repo.' >references/sync-test-ref")
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Updating existing clone.
 INFO - Updating failed, falling back...
 INFO - Backing up existing clone to references/sync-test-ref.12345678 and re-cloning.
@@ -537,7 +560,7 @@ Check clone with trashed .git dir
 >>> _ = shell(tests.INIT_SCRIPT)
 >>> _ = shell("rm -rf references/sync-test-ref/.git")
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Updating existing clone.
 INFO - Updating failed, falling back...
 INFO - Backing up existing clone to references/sync-test-ref.12345678 and re-cloning.
@@ -553,7 +576,7 @@ Check clone with bad dir perms works:
 >>> _ = shell(tests.INIT_SCRIPT)
 >>> os.chmod("references/sync-test-ref", 0o000)
 >>> main(["./test", tests.REPO_URL, "main", "references/sync-test-ref"]) # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
 INFO - Validating...
@@ -569,7 +592,7 @@ Check clone on bad branch with bad origin works:
 >>> _ = shell(f"git remote rename origin foo", cwd=s.repo_dir)
 >>> s = Syncer(tests.REPO_URL, "references/sync-test-ref", "main", "./test")
 >>> s.sync()   # doctest: +ELLIPSIS
-INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', branch='main')
+INFO - Syncing Syncer(repo_url='https://github.com/spacetelescope/sync-test', repo_dir='references/sync-test-ref', ref='main')
 INFO - Updating existing clone.
 INFO - Restoring backups.
 INFO - Validating...
@@ -591,6 +614,35 @@ Traceback (most recent call last):
 RuntimeError: Syncing failed for some reason.
 1
 >>> Syncer.sync = temp
+
+-------------------------------------------------------------------------------
+
+Test that _resolve_checkout_spec helper is present and has the right signature:
+# Verifies task 3 of the plan — a single consolidated resolution helper exists.
+# This does not require network (no git calls are made).
+
+>>> assert hasattr(Syncer, "_resolve_checkout_spec")
+>>> import inspect
+>>> sig = inspect.signature(Syncer._resolve_checkout_spec)
+>>> list(sig.parameters.keys())
+['self']
+
+-------------------------------------------------------------------------------
+
+Optional: End-to-end sync against a tag and abbreviated commit hash.
+# requires network + stable refs (per plan risk #5). Each `>>>` line below is marked with bare doctest:+SKIP so collection succeeds offline; the suite stays green when spacetelescope/sync-test rotates tags/branches upstream. Remove SKIP only where network reachability AND ref stability are guaranteed before asserting on tag/hash sync output.
+
+>>> _ = shell(tests.CLEANUP_SCRIPT)  # doctest: +SKIP
+...   ; raise doctest.SkipTest("optional, requires network")              # noqa
+
+Cleanup is not needed above when skipped; the lines below document the two non-branch ref kinds handled by `_resolve_checkout_spec`. The helper tries origin/<ref>, then tags/<ref>, then raw <ref> (commit hash), in that order.
+
+>>> main(["./test", tests.REPO_URL, "v1.0",  # doctest: +SKIP
+...      "references/sync-test-vtag"])
+The tag example checks out detached HEAD at the tag target; git_files/diff validation paths still apply. Tag names are not guaranteed stable upstream so this is skipped by default.
+
+>>> _ = shell(f"git clone --bare {tests.REPO_URL} references/sync-test-bare")  # doctest: +SKIP
+The hash example needs a bare clone to read any short SHA; passing it as <ref> exercises helper step-3 (raw rev-parse of `<ref>`). Requires network so it is skipped by default.
 
 -------------------------------------------------------------------------------
 

@@ -201,21 +201,21 @@ WORKDIR /tmp
 # repo/branch,  e.g. spacetelescope/nb-wrangler@main
 COPY nbw-wrangler-spec.yaml /tmp/nbw-wrangler-spec.yaml
 
-RUN source /opt/common-scripts/env-activate base && \
-    curl https://raw.githubusercontent.com/spacetelescope/nb-wrangler/refs/heads/main/nb-wrangler  >nb-wrangler && \
-    chmod +x nb-wrangler && \
-    export NBW_DEV=1 && \
-    export NBW_SPEC=/tmp/nbw-wrangler-spec.yaml && \
-    export WRANGLER_URL=$(./nb-wrangler resolve-repo ${NBW_SPEC}) && \
-    export WRANGLER_REF=$(./nb-wrangler resolve-ref ${NBW_SPEC}) && \
-    git clone ${WRANGLER_URL} nb-wrangler-tool && \
-    cd nb-wrangler-tool && \
-    git checkout ${WRANGLER_REF} && \
-    pip install . && \
-    cp nb-wrangler /opt/tools && \
-    cd .. && \
-    /opt/common-scripts/env-clean && \
-    rm -rf nb-wrangler-tool
+# ----- RUN source /opt/common-scripts/env-activate base && \
+# -----     curl https://raw.githubusercontent.com/spacetelescope/nb-wrangler/refs/heads/main/nb-wrangler  >nb-wrangler && \
+# -----     chmod +x nb-wrangler && \
+# -----     export NBW_DEV=1 && \
+# -----     export NBW_SPEC=/tmp/nbw-wrangler-spec.yaml && \
+# -----     export WRANGLER_URL=$(./nb-wrangler resolve-repo ${NBW_SPEC}) && \
+# -----     export WRANGLER_REF=$(./nb-wrangler resolve-ref ${NBW_SPEC}) && \
+# -----     git clone ${WRANGLER_URL} nb-wrangler-tool && \
+# -----     cd nb-wrangler-tool && \
+# -----     git checkout ${WRANGLER_REF} && \
+# -----     pip install . && \
+# -----     cp nb-wrangler /opt/tools && \
+# -----     cd .. && \
+# -----     /opt/common-scripts/env-clean && \
+# -----     rm -rf nb-wrangler-tool
 
 USER root
 RUN source /etc/nb-wrangler.rc && \

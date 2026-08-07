@@ -37,7 +37,7 @@ class Log:
     def set_level(self, level):
         self.level = level
 
-    def log(self, level, *args, **keys):
+    def log(self, level, *args):
         message = " ".join(str(a) for a in args)
         for handle in [sys.stdout, self.handle]:
             print(level, "-", message, file=handle)
@@ -53,27 +53,40 @@ class Log:
     def clear(self):
         os.remove(self.filename)
 
-    def debug(self, *args, **keys):
+    def debug(self, *args):
         if self.level == "DEBUG":
-            self.log("DEBUG", *args, **keys)
+            self.log("DEBUG", *args)
 
-    def info(self, *args, **keys):
-        self.log("INFO", *args, **keys)
+    def info(self, *args):
+        self.log("INFO", *args)
 
-    def warning(self, *args, **keys):
-        self.log("WARN", *args, **keys)
+    def warning(self, *args):
+        self.log("WARN", *args)
 
-    def error(self, *args, **keys):
-        self.log("ERROR", *args, **keys)
+    def error(self, *args):
+        self.log("ERROR", *args)
 
-    def critical(self, *args, **keys):
-        self.log("CRITICAL", *args, **keys)
+    def critical(self, *args):
+        self.log("CRITICAL", *args)
 
     def exception(self, *args, **keys):
         tb = traceback.format_exc()
         message = " ".join(str(a) for a in args)
         self.error(f"{message}\n{tb.rstrip()}")
 
+
+_DELETED_MODES = frozenset({"deleted"})
+_USER_BACKUP_MODES = frozenset(
+    {
+        "untracked",
+        "modified",
+        "updated",  # but unmerged
+        "added",
+        "copied",
+        "renamed",
+        "typechange",
+    }
+)
 
 log = None
 
@@ -124,17 +137,31 @@ class DirPath(PosixPath):
         Handles various types of paths and ensures the returned path is the
         appropriate DirPath or FilePath subclass instance.
         """
-        combined = f"{str(self)}/{str(other)}"
+        # Normalize other to a string early so we only compute combined once
+        # and never re-enter __truediv__, avoiding recursion hazards with bare
+        # PosixPath inputs. Preserve: DirPath/FilePath, isdir/isfile detection, str fallback.
         if isinstance(other, (DirPath, FilePath)):
-            return other.__class__(combined)
+            other_str = str(other)
+            child_cls = type(other)
+        else:
+            other_str = str(other)
+            child_cls = None
+
+        combined = f"{str(self)}/{other_str}"
+
+        if child_cls is not None:
+            return child_cls(combined)
         elif isinstance(other, PosixPath):
-            return self / str(other)
-        elif os.path.isdir(combined):
+            # Bare PosixPath: defer filesystem check to avoid surprises with
+            # absolute paths or trailing separators; default to DirPath.
             return self.__class__(combined)
-        elif os.path.isfile(combined):
-            return FilePath(combined)
         elif isinstance(other, str):
-            return DirPath(combined)
+            if os.path.isdir(combined):
+                return self.__class__(combined)
+            elif os.path.isfile(combined):
+                return FilePath(combined)
+            else:
+                return DirPath(combined)
         else:
             raise ValueError(f"Cannot concatenate: {repr(self)} / {repr(other)}")
 
@@ -156,7 +183,7 @@ class DirPath(PosixPath):
             self.chmod(mode | 0o700)
 
     def rename(self, other):
-        shell(f"mv {str(self)} {str(other)}")
+        shutil.move(str(self), str(other))
 
 
 class FilePath(PosixPath):
@@ -176,7 +203,7 @@ class FilePath(PosixPath):
         return SortedSet([self.parent]), SortedSet([self])
 
     def rename(self, other):
-        shell(f"mv {str(self)} {str(other)}")
+        shutil.move(str(self), str(other))
 
 
 FileOrDirPath = Union[FilePath, DirPath]
@@ -243,8 +270,8 @@ def now() -> str:
 # ===========================================================================================
 
 
-def list_git_tree(repo_dir: str, branch: str) -> SortedSet[FileOrDirPath]:
-    result = shell(f"git ls-tree --full-tree -r --name-status {branch}", cwd=repo_dir)
+def list_git_tree(repo_dir: str, ref: str) -> SortedSet[FileOrDirPath]:
+    result = shell(f"git ls-tree --full-tree -r --name-status {ref}", cwd=repo_dir)
     return SortedSet(
         [
             file_or_dir_path(DirPath(repo_dir) / obj.strip())
@@ -334,12 +361,12 @@ class Syncer:
     Args:
       repo_url: The URL of the Git repository to sync.
       repo_dir: Local directory to clone the repo into.
-      branch: Git branch to check out.
+      ref: Git ref (branch name, tag, or commit hash) to check out.
 
     Attributes:
       repo_url: The repository URL.
       repo_dir: Local clone directory.
-      branch: Git branch name.
+      ref: Git ref (branch name, tag, or commit hash).
       user_files: Sorted set of user files.
       user_dirs: Sorted set of user directories.
       all_files: Sorted set of all files.
@@ -347,17 +374,17 @@ class Syncer:
       backups: Sorted set of backups.
     """
 
-    def __init__(self, repo_url: str, repo_dir: str, branch: str, program) -> None:
+    def __init__(self, repo_url: str, repo_dir: str, ref: str, program) -> None:
         self.repo_url = repo_url
         self.repo_dir = DirPath(repo_dir)
-        self.branch = branch
+        self.ref = ref
         self.program_dir = DirPath(os.path.dirname(program)).absolute()
         self.all_files = SortedSet()
         self.all_dirs = SortedSet()
         self.backups = SortedSet()
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(repo_url='{self.repo_url}', repo_dir='{self.repo_dir}', branch='{self.branch}')"
+        return f"{self.__class__.__name__}(repo_url='{self.repo_url}', repo_dir='{self.repo_dir}', ref='{self.ref}')"
 
     @property
     def backup_dir(self):
@@ -366,7 +393,7 @@ class Syncer:
     @property
     def git_files(self) -> SortedSet:
         """Return the sorted set of files owned by the repo vs. the user."""
-        return list_git_tree(self.repo_dir, self.branch)
+        return list_git_tree(self.repo_dir, self.ref)
 
     @property
     def git_dirs(self) -> SortedSet:
@@ -409,8 +436,8 @@ class Syncer:
                 self.finalize_update()
             log.info("Validating...")
             self.validate_sync_result()
-        except Exception:
-            log.info("Updating failed, falling back...")
+        except Exception as exc:
+            log.info(f"Updating failed, falling back due to: {exc}")
             self.fallback_sync()
         self.lock_clone()
         self.add_sync_instructions()
@@ -436,7 +463,7 @@ class Syncer:
         commits from the origin,  then resets the local branch to match the origin branch.
         """
         self.fetch_origin()
-        self.reset_and_update_branch()
+        self.reset_and_update_ref()
 
     def finalize_update(self) -> None:
         """
@@ -477,20 +504,20 @@ class Syncer:
 
     def fetch_origin(self) -> None:
         """Fetches repository after setting/restoring origin URL.
-        Sets the remote origin to self.repo_url.
+        Sets the remote origin to self.repo_url while preserving any partial-clone
+        extension config (remote.origin.promisor, partialclonefilter) that would be
+        stripped by delete_remote() + create_remote().
         Resets the repo to clear staged changes.
         """
         log.debug("Fetching", self.repo_url)
         self.repo = git.Repo(self.repo_dir)
         try:
             origin = self.repo.remote("origin")
-            self.repo.delete_remote(origin)
-        except Exception:
-            pass
-        finally:
+            origin.set_url(self.repo_url)
+        except ValueError:
             self.repo.create_remote("origin", self.repo_url)
-        self.repo.git.config("safe.directory", self.repo_dir, "--global")
-        self.repo.git.fetch("origin", self.branch)
+        self.repo.git.config("safe.directory", str(self.repo_dir))
+        self.repo.git.fetch("origin")
 
     def clone_origin(self) -> None:
         """Clone the git repository to self.repo_dir.
@@ -505,27 +532,31 @@ class Syncer:
         # Try cloning with branch parameter first (works for branches)
         try:
             self.repo = git.Repo.clone_from(
-                self.repo_url, self.repo_dir, filter="blob:none", branch=self.branch
+                self.repo_url, self.repo_dir, filter="blob:none", branch=self.ref
             )
         except git.exc.GitCommandError:
             # If that fails (likely a tag or commit hash), clone without specifying branch
-            log.debug(
-                f"Branch {self.branch} not found, trying to clone without branch specification"
-            )
+            log.debug(f"'{self.ref}' not resolved; retrying generic clone")
             self.repo = git.Repo.clone_from(
                 self.repo_url, self.repo_dir, filter="blob:none"
             )
 
-        self.repo.git.config("safe.directory", self.repo_dir, "--global")
-        self.repo.git.fetch("origin", self.branch)
+        self.repo.git.config("safe.directory", str(self.repo_dir))
+        self.repo.git.fetch("origin")
 
     def add_sync_instructions(self) -> None:
         """Add the sync instructions file to the repo and the root directory."""
         sync_file = FilePath("SYNC-INSTRUCTIONS.md")
         text = (self.program_dir / sync_file).read_text()
-        with open(self.repo_dir / sync_file, "w+") as f:
+        repo_file = self.repo_dir / sync_file
+        if repo_file.exists():
+            repo_file.chmod(0o664)
+        with repo_file.open("w+") as f:
             f.write(text)
-        with open(self.repo_dir.parent / sync_file, "w+") as f:
+        parent_file = self.repo_dir.parent / sync_file
+        if parent_file.exists():
+            parent_file.chmod(0o664)
+        with parent_file.open("w+") as f:
             f.write(text)
 
     def detoxify_repo(self) -> None:
@@ -570,18 +601,10 @@ class Syncer:
         backups = SortedSet()
         for mode, thing in git_status:
             log.debug(f"Classified {thing} as {mode}.")
-            if mode in ["deleted"]:
+            if mode in _DELETED_MODES:
                 # ignore deleted files; sync will restore missing file
                 pass
-            elif mode in [
-                "untracked",
-                "modified",
-                "updated",  # but unmerged
-                "added",
-                "copied",
-                "renamed",
-                "typechange",
-            ]:
+            elif mode in _USER_BACKUP_MODES:
                 backup_copy = self.backup_artifact(self.repo_dir / thing)
                 backups.add(backup_copy)
             else:
@@ -643,38 +666,50 @@ class Syncer:
         dump_set("Git dirs", self.git_dirs)
         dump_set("Git files", self.git_files)
 
-    def reset_and_update_branch(self) -> str:
-        """Updates the local git repo to the latest version of the remote."""
-        log.debug("Resetting and updating.")
-        #  self.repo.head.reset(index=True, working_tree=True)
+    def _resolve_checkout_spec(self) -> str | None:
+        """Return the exact refspec to hand to ``git checkout`` for ``self.ref``.
 
-        # Check if self.branch is a tag (tags don't have origin/ counterparts)
-        # Try both methods and use whichever works
-        is_tag = False
-        try:
-            # If we can resolve the branch as origin/<branch>, it's likely a branch
-            shell(
-                f"git rev-parse origin/{self.branch}",
-                cwd=self.repo_dir,
-                check=True,
-                capture_output=True,
-            )
-        except subprocess.CalledProcessError:
-            # If that fails, it might be a tag or commit hash
+        Resolution order (all checks against the local repo after fetch):
+
+        1. Remote-tracking branch: try ``origin/<ref>``. If present → return ``"origin/<ref>"``.
+        2. Tag: try ``tags/<ref>``. If present → return ``<ref>`` directly so ``git checkout <tag>`` works and leaves detached HEAD at the tag target.
+        3. Commit hash: try a direct rev-parse of raw ``<ref>``. Valid hashes resolve to themselves → return ``<ref>``. (Partial SHA-1s are accepted by git's rev-parse automatically.)
+
+        Returns ``None`` if no valid ref can be resolved, signalling the caller
+        that the ref is unknown and may require a retry / fallback.
+        """
+        specs = [
+            f"origin/{self.ref}",
+            f"tags/{self.ref}",
+            self.ref,
+        ]
+        for spec in specs:
             try:
-                # Check if it's a valid tag
                 shell(
-                    f"git rev-parse tags/{self.branch}",
+                    f"git rev-parse --verify {spec}",
                     cwd=self.repo_dir,
                     check=True,
                     capture_output=True,
                 )
-                is_tag = True
             except subprocess.CalledProcessError:
-                # Not a tag, likely a commit hash or other ref
-                pass
+                continue
+            if spec == self.ref or spec.startswith("tags/"):
+                return self.ref
+            else:
+                return spec
+        return None
 
-        checkout_ref = self.branch if is_tag else f"origin/{self.branch}"
+    def reset_and_update_ref(self) -> str:
+        """Updates the local git repo to the specified ref (branch, tag, or commit hash)."""
+        log.debug("Resetting and updating.")
+        #  self.repo.head.reset(index=True, working_tree=True)
+
+        checkout_ref = self._resolve_checkout_spec()
+        if not checkout_ref:
+            raise ValueError(
+                f"Cannot resolve git ref {self.ref!r} in "
+                f"{self.repo_dir}; cannot perform sync checkout."
+            )
 
         return shell(
             f"""set -euo pipefail
@@ -686,6 +721,10 @@ git checkout {checkout_ref}
 """,
             cwd=self.repo_dir,
         ).stdout
+
+    def reset_and_update_branch(self) -> str:
+        """Deprecated alias for :meth:`reset_and_update_ref`."""
+        return self.reset_and_update_ref()
 
     def lock_clone(self):
         """Lock the repo by changing the permissions of all files and directories
@@ -712,23 +751,18 @@ git checkout {checkout_ref}
             shutil.rmtree(self.backup_dir)
 
     def validate_clone(self, diff=True):
-        """Check that the sync result is as expecteqd."""
+        """Check that the sync result is as expected."""
         for mode, path in self.get_parsed_clone_status():
             assert (
                 mode == "untracked"
             ), f"Expected only untracked artifacts to be present: {path}"
         if diff:
-            # Check if self.branch is a tag to avoid using origin/<tag>
-            try:
-                shell(
-                    f"git rev-parse origin/{self.branch}",
-                    cwd=self.repo_dir,
-                    check=True,
-                    capture_output=True,
+            ref = self._resolve_checkout_spec()
+            if not ref:
+                raise ValueError(
+                    f"Cannot resolve git ref {self.ref!r} in "
+                    f"{self.repo_dir}; cannot run diff validation."
                 )
-                ref = f"origin/{self.branch}"
-            except subprocess.CalledProcessError:
-                ref = self.branch
             results = shell(f"git diff {ref}", cwd=self.repo_dir)
             if results.returncode != 0:
                 raise ValueError("Expected a clean diff for updated-clone repo.")
@@ -747,9 +781,9 @@ def parse_args(argv: List[str]) -> argparse.Namespace:
         help="The URL for the repo which is being synced.  Required.",
     )
     parser.add_argument(
-        "branch",
+        "ref",
         type=str,
-        help="The branch of the repo clone being checked out.  Required.",
+        help="The git ref (branch name, tag, or commit hash) to check out.  Required.",
     )
     parser.add_argument(
         "repo_dir",
@@ -788,7 +822,7 @@ def _main(program, args) -> int:
             log.info(f"git-sync is disabled by file {opt_out_file}.")
             log.info("Remove .git-sync-off to restore syncing.")
         else:
-            syncer = Syncer(args.repo_url, args.repo_dir, args.branch, program)
+            syncer = Syncer(args.repo_url, args.repo_dir, args.ref, program)
             syncer.sync()
     except Exception:
         log.exception("Failed to sync:")

@@ -14,6 +14,6 @@
 
 source /opt/common-scripts/env-activate base
 
-nbw /opt/environments/nbw-wrangler-spec.yaml --env-register --env-kernel-cleanup --data-env-vars-mode pantry --data-no-symlinks
+nbw /opt/environments/nbw-wrangler-spec.yaml --env-register --env-kernel-cleanup --data-env-vars-mode pantry --data-no-symlinks --data-clean-symlinks
 
 rm -f nb-wrangler.log

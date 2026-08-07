@@ -60,10 +60,12 @@ RUN   /opt/common-scripts/install-common  base
 
 # Run wrangler from base environment creating/installing spec'ed environment
 # If the spec says python3 ("base") it will add to the base environment instead of creating a second
+COPY environments/nbw-wrangler-spec.yaml /opt/environments/nbw-wrangler-spec.yaml
 RUN source /opt/common-scripts/env-activate base && \
-    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --reinstall ) && \
-    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --data-print --data-env-vars-mode pantry --data-no-symlinks  >/opt/environments/nbw-exports.sh ) && \
-    ( python -m nb_wrangler /opt/environments/nbw-wrangler-spec.yaml --env-compact --delete-repos ) && \
+    export NBW_SPEC=/opt/environments/nbw-wrangler-spec.yaml && \
+    nbw --reinstall && \
+    nbw --data-print --data-env-vars-mode pantry --data-no-symlinks  >/opt/environments/nbw-exports.sh && \
+    nbw --env-compact --delete-repos && \
     /opt/common-scripts/env-clean && \
     fix-permissions /opt/conda
 
@@ -87,9 +89,6 @@ RUN  cp -r $HOME/.local /etc/default-home-contents && \
      cp -r $HOME/.jupyter /etc/default-home-contents
 
 COPY global_bashrc $HOME
-
-# Copy any remaining environments files not caught by more precise as-needed build copies
-COPY --chown=${NB_UID}:${NB_GID} environments/    /opt/environments/
 
 RUN  cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.bashrc  && \
      cat $HOME/global_bashrc /opt/environments/nbw-exports.sh >> /etc/bash.env  && \
@@ -121,11 +120,12 @@ RUN echo "# -------------------------------- STSCI Config Overwrites -----------
 ENV NBW_PANTRY=/teams/admin/nbw-pantry
 RUN mkdir -p ${NBW_PANTRY} && chown -R ${NB_UID}:${NB_GID} ${NBW_PANTRY}
 
+USER root
+RUN fix-permissions $CONDA_DIR && \
+    chown -R ${NB_UID}:${NB_GID} $HOME
+
 USER ${NB_UID}:${NB_GID}
 RUN /opt/environments/post-start-hook  docker   # docker == do not run hub-specific functions of hook
-
-USER root
-RUN fix-permissions $CONDA_DIR $HOME
 
 USER ${NB_UID}:${NB_GID}
 WORKDIR $HOME
