@@ -35,5 +35,4 @@ jupyter-app-launcher
 voila>=0.5.11,<0.6
 #nbdime
 jupyterlab-git
-git+https://github.com/spacetelescope/nb-wrangler.git
 git+https://github.com/spacetelescope/stsci-announce.git
