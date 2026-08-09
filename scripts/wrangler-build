@@ -1,5 +1,13 @@
 #! /bin/bash
 
+
+echo ===========================================================
+echo WARNING: wrangler-build is deprecated and future versions
+echo WARNING: of science-platform-images will no longer support
+echo WARNING: nb-wrangler''s --spi-build-image feature
+echo WARNING: once wrangler-build is finally removed.
+echo ===========================================================
+
 #
 # This is a simple entry point called by nb-wrangler as a single
 # subprocess which can set up the shell environment on its own.
