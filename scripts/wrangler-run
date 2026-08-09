@@ -1,0 +1,33 @@
+#! /bin/bash
+
+set -e
+
+# usage:  scripts/wrangler-run  <deployment-name>  <actual-worker-script> <worker-script-parameters...>
+#
+# e.g. scripts/wrangler-run wrangler image-test --test-imports --dev
+#
+# explanation: performs setup-env and runs subordinate script in that context
+
+SP_SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Switch to the root of the science-platform-image clone (afer ..)
+cd ${SP_SCRIPTS}
+cd ..
+
+${SP_SCRIPTS}/image-configure $1
+shift;
+
+source setup-env
+
+$*
+
+#
+# This prevents the need to use a shell in subprocess.run which
+# is considered a security risk...  avoidable like this.
+#
+# Calling it requires knowing where it is.  It introspects,  then
+# changes directories to the root of the repo clone and mimics
+# a developer running image-configure,  sourcing setup-env, and
+# then running image-build.
+#
+#
