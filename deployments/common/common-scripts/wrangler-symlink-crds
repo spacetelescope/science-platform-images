@@ -1,0 +1,15 @@
+#! /bin/bash
+
+set -u
+
+set -e
+cd /data/preloaded-crds
+set +e
+
+for dir in `find . -type d`; do
+    mkdir -p $HOME/crds_cache/${dir}
+done
+
+for f in `find . -type f | sed -e's%^./%%g'`; do
+    ln -fs  /data/preloaded-crds/${f}   $HOME/crds_cache/${f}
+done
