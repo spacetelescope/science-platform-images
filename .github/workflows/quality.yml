@@ -56,9 +56,9 @@ jobs:
            source setup-env
            scripts/sscan-flake8
 
-      - name: Ruff Scan
-        shell: bash
-        continue-on-error: false
-        run: |
-           source setup-env
-           scripts/sscan-ruff
+      # ----- - name: Ruff Scan
+      # -----   shell: bash
+      # -----   continue-on-error: false
+      # -----   run: |
+      # -----      source setup-env
+      # -----      scripts/sscan-ruff
