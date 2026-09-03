@@ -2,4 +2,4 @@ pip
 pip-tools
 setuptools<82.0.0
 jupyter-packaging
-nodejs >=22.0,<26.0a0
+nodejs>=22.0,<26.0a0
