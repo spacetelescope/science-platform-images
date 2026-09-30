@@ -8,8 +8,8 @@ USER root
 # remove this step once nbgitpuller enabled; these contents will be in the
 #  jupyterhub-user-content repo.   Install deployment-specific $HOME files.
 COPY default-home-contents/ /etc/default-home-contents
-RUN  [ ! -e $HOME/.local ] || cp -r $HOME/.local /etc/default-home-contents && \
-     [ ! -e $HOME/.jupyter ] || cp -r $HOME/.jupyter /etc/default-home-contents
+RUN  [ ! -e $HOME/.local ] || cp -r $HOME/.local /etc/default-home-contents
+RUN  [ ! -e $HOME/.jupyter ] || cp -r $HOME/.jupyter /etc/default-home-contents
 
 COPY global_bashrc $HOME
 
