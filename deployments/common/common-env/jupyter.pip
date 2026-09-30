@@ -24,8 +24,8 @@ ipywebrtc
 ipykernel
 jupyter-resource-usage
 sidecar
-y-py
-ypy-websocket
+#y-py
+#ypy-websocket
 jupyter_bokeh
 solara
 ipypopout
