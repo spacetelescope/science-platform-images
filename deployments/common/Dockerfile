@@ -77,6 +77,7 @@ RUN /opt/common-scripts/apt-install \
         locales \
         less \
         ssh \
+        groff \
         htop \
         sysstat \
         net-tools \
